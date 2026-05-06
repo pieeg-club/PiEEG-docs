@@ -1,0 +1,57 @@
+---
+title: "How to start. Software with PiEEG"
+---
+
+# How to start. Software with PiEEG
+
+Software PiEEG-Server  is available for PiEEG in GitHub via the following [link](https://github.com/pieeg-club/PiEEG-server)
+
+![Image](https://pieeg.com/wp-content/uploads/2025/05/pieeg-1024x485.jpg)
+
+**SDK **
+
+Scripts available in [GitHub](https://github.com/pieeg-club): Read data with a band-pass filter and real-time visualisation with[RaspberryPi5](https://github.com/pieeg-club/GUI/blob/main/1.GUI/1.8_ch_Pi5.py) and [Pi4](https://github.com/pieeg-club/GUI/tree/main/1.GUI)
+
+To save Raw data to Excel, you can use the following [script for Pi5](https://github.com/pieeg-club/GUI/blob/main/1.GUI/save_data_short_Pi5.py) and for [Pi4](https://github.com/pieeg-club/GUI/blob/main/1.GUI/save_data_short_Pi4.py)
+
+**Libraries** for Python 3.11. 2
+
+- import spidev (pip install spidev)
+
+- from RPi import GPIO (pip install RPi.GPIO) for Pi4 only
+
+- from matplotlib import pyplot as plt (pip install matplotlib)
+
+- from scipy (pip install scipy)
+
+- import gpiod (gpiod==1.5.4) for Pi5 only
+
+**Available libraries as example** for Python 3.11. 2
+
+- matplotlib 3.6.3
+
+- spidev 3.5
+
+- RPi.GPIO 0.7.1a4 (For Pi4 only)
+
+- scipy 1.10.1
+
+1.8_ch_Pi5.py for gpiod 1.6.3 version (pip install gpiod==1.6.3)
+
+1.8_ch_Pi5_gpiod_1_5_4.py for gpiod 1.5.4 version (pip install gpiod==1.5.4)
+
+### Software with BrainFlow library for PiEEG
+
+PiEEG was added to [Brainflow](https://brainflow.readthedocs.io/en/stable/SupportedBoards.html) library
+
+To create such board, you need to specify the following board ID and fields of BrainFlowInputParams object:
+
+- BoardIds.PLAYBACK_FILE_BOARD
+
+- master_board, it should contain board ID of the device used to create playback files
+
+- file, it should contain full path to recorded file
+
+- optional: file_aux, use it if your master board has auxiliary preset
+
+- optional: file_anc, use it if your master board has ancillary preset

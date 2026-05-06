@@ -1,0 +1,87 @@
+---
+title: "How to eliminate noise during EEG measurement"
+---
+
+# How to eliminate noise during EEG measurement
+
+Electroencephalography (EEG) is a powerful tool for studying brain activity. PiEEG devices are systems that utilize Raspberry P/Arduino/Jetson Nano etc for EEG data acquisition. However, EEG signals are very delicate and susceptible to various types of noise, including electromagnetic interference. This manual provides guidelines for measuring EEG data using PiEEG while minimizing noise.
+
+For illustrative purposes, let’s take a look at PIEEG, but this concept applies to other boards as well.
+
+To begin, you’ll want to connect the cables and electrode clips. One clip electrode acts as a reference point, against which all EEG measurements, in microvolts, are conducted. In simpler terms, we measure the voltage between the ear and the electrode attachment point on the head. The bias electrode clip is needed for eliminating electromagnetic noise, but it is not enough to solve all problems.
+
+**It is necessary to pay attention to the next moments:**
+
+- It’s crucial that the device (RaspberryPI, PiEEG, screen, etc.) relies solely on battery power, completely independent from the grid power supply. Avoid using power from a PC, USB, etc.
+
+- Opt for wired connections for the keyboard and mouse to minimize wireless interference (not Radio).
+
+- Use as short an EEG electrode cable as possible
+
+- Disable Wi-Fi and Bluetooth on the Raspberry Pi.
+
+- Position the device away from sources of disruptive noise like computers, Wi-Fi routers, phones, etc.
+
+- Ensure there’s effective insulation between the device and its resting surface, such as a rubber mat or even a book.
+
+- Ground contact with your feet can introduce noise; consider using foot insulation or avoiding contact with the floor during measurements, and better yet, don’t use a metal stool.
+
+- Body movements can generate artifacts; hence, it’s vital for electrodes to establish good skin contact (without causing discomfort to the subject) and remain stationary.
+
+- Applying gel can enhance the electrode-to-skin contact area; although unpleasant, **it helps reduce noise** from electrode micro-movements.
+
+- Before starting the measure, confirm that connections between electrodes and skin are good. Better dont corrupt data during measurement, since the band-pass filter takes time to adjust.
+
+So, any ideas, let us know
+
+**If you have noisy EEG data **
+
+### Test 1: Hardware Validation
+
+The goal of this test is to verify the internal noise floor of the ADS1299 chip on the PiEEG board.
+
+- **Action:** Set all channel registers to "Input Short" mode by writing `0x01` to the configuration registers. **Command:** `write_byte(CHnSET, 0x01)`
+
+- **How it works:** This internally shorts the inputs of the ADS1299. Since the inputs are disconnected from external pins, you are measuring only the inherent noise of the hardware.
+
+- **How to confirm:** * **Visual:** Check the real-time graph; the signal should fluctuate within a range of **± a few microvolts**. **Data Analysis:** Export the raw data to Excel. If the values are consistently within **± 1-3 µV**, the hardware is functioning correctly.
+
+- **Troubleshooting:** If the noise is significantly higher, try moving your setup to a different location or reducing nearby sources of electromagnetic interference (EMI).
+
+### Test 2: Cables and Electrodes Validation
+
+If the hardware passes Test 1, use this step to check for noise introduced by your cables and environment.
+
+- **Action:** Enable Channel 1 for normal operation while keeping other channels shorted. **Command:** `write_byte(CH1SET, 0x00)` (Set others to `0x01`).
+
+- **How it works:** Channel 1 is now open to external signals. By comparing this to the results of Test 1, you can see how much electromagnetic noise is being picked up by the cables and electrode leads.
+
+- **How to confirm:** * **Visual:** Monitor the graph for Channel 1. Even with the electrodes connected (but not on a person), the noise should ideally remain within **± a few microvolts**. **Data Analysis:** Check the raw data in Excel for spikes or high-amplitude oscillations.
+
+- **Troubleshooting:** If the noise levels jump significantly in this step, your cables may be acting as antennas for EMI. Try the following: Relocate the setup away from power strips, monitors, or large appliances.
+
+- Ensure the cables are shielded or braided to reduce interference.
+
+![Image](https://pieeg.com/wp-content/uploads/2025/05/image.webp)
+
+This is a great final step. You are moving from hardware/cable validation to the most common source of noise: **Signal Acquisition and Impedance.**
+
+Here is the refined version of your third step, using more precise technical terms like **"Electrode-to-skin interface"** and **"Signal Grounding."**
+
+### Test 3: The Measurement Process (Skin-to-Electrode Interface)
+
+If the hardware and cables passed the previous tests but your data is still noisy during an actual recording, the issue likely lies in the physical connection or the measurement environment.
+
+- **Action:** Test with a single active channel. **Command:** Set Channel 1 to `0x00` (`write_byte(CH1SET, 0x00)`) and keep all others at `0x01` to minimize cross-talk.
+
+- **How it works:** By isolating a single channel, you can physically manipulate one electrode at a time to identify exactly where the connection is failing.
+
+- **How to confirm:** While viewing the real-time data, perform the following "Stress Tests" to identify the noise source: **Improve Contact:** Ensure the electrode is firmly pressed against the skin. Note: Do not touch the electrode directly with your fingers during a test, as your body will introduce 50/60Hz hum. Use a plastic tool or an insulated glove if you need to adjust it.
+
+- **Check the Reference:** Ensure the **Ear Clip** (Reference/Bias) has a solid, stable connection. This is the most common cause of a "floating" or railed signal.
+
+- **Use Conductive Gel:** If you are using "dry" electrodes and the signal is noisy, apply a small amount of conductive gel or saline to lower the impedance.
+
+- **Establish a Common Ground:** Ensure there is a stable connection between the **PiEEG GND** and the body (typically via a dedicated ground electrode or clip). This helps the ADS1299 reject common-mode noise.
+
+**Important:** Always compare your visual observations (movement, touching the cable, etc.) with the timestamps in your saved data to correlate physical actions with specific noise patterns.

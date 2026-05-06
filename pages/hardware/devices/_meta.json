@@ -1,0 +1,10 @@
+{
+  "index": "Device Overview",
+  "pieeg": "PiEEG",
+  "pieeg-16": "PiEEG-16",
+  "jneeg": "JNEEG",
+  "ardeeg": "ardEEG",
+  "ironbci": "IronBCI",
+  "microbci": "MicroBCI",
+  "ironbci-32": "IronBCI-32"
+}
