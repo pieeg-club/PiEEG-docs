@@ -1,10 +1,9 @@
 import React from 'react'
-import Image from 'next/image'
 import { DocsThemeConfig } from 'nextra-theme-docs'
 
 const config: DocsThemeConfig = {
   logo: (
-    <Image src="/logo.webp" alt="PiEEG" height={28} width={28} style={{ height: '1.75rem', width: 'auto', borderRadius: '4px' }} unoptimized />
+    <img src="/PiEEG-docs/logo.webp" alt="PiEEG" style={{ height: '1.75rem', width: 'auto', borderRadius: '4px' }} />
   ),
   project: {
     link: 'https://github.com/pieeg-club',
