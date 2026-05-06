@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "localize-images": "node scripts/localize-remote-images.mjs",
     "start": "next start",
     "lint": "next lint"
   },
