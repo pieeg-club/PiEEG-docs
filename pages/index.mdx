@@ -3,41 +3,120 @@ title: PiEEG Documentation
 description: Documentation for PiEEG hardware, PiEEG Server software, integrations, and brain-computer interface workflows.
 ---
 
-import { Cards, Callout } from 'nextra/components'
+import { Cards, Callout, Steps } from 'nextra/components'
 
-# PiEEG Documentation
+<div style={{
+  textAlign: 'center',
+  padding: '3.5rem 0 2.5rem',
+  marginBottom: '2.5rem',
+  borderBottom: '1px solid rgba(128,128,128,0.15)'
+}}>
+  <div style={{
+    display: 'inline-block',
+    fontSize: '0.75rem',
+    fontWeight: 700,
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase',
+    color: 'hsl(200, 80%, 50%)',
+    marginBottom: '1rem'
+  }}>Open-Source Brain-Computer Interface</div>
 
-PiEEG documentation now covers the full ecosystem: hardware devices, accessories, setup guidance, PiEEG Server software, APIs, dashboards, integrations, and signal-quality workflows.
+  <h1 style={{
+    fontSize: 'clamp(2rem, 5vw, 2.8rem)',
+    fontWeight: 800,
+    letterSpacing: '-0.03em',
+    lineHeight: 1.1,
+    margin: '0 0 1.1rem'
+  }}>PiEEG Documentation</h1>
+
+  <div style={{
+    fontSize: '1.1rem',
+    opacity: 0.65,
+    maxWidth: '560px',
+    margin: '0 auto 2rem',
+    lineHeight: 1.7
+  }}>
+    From electrode wiring to live WebSocket streams — complete coverage of
+    PiEEG hardware, PiEEG Server software, and all integrations.
+  </div>
+
+  <div style={{ display: 'flex', gap: '0.875rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+    <a
+      href="/software/getting-started/quick-start"
+      style={{
+        padding: '0.65rem 1.5rem',
+        background: 'hsl(200, 80%, 48%)',
+        color: '#fff',
+        borderRadius: '7px',
+        fontWeight: 600,
+        textDecoration: 'none',
+        fontSize: '0.95rem'
+      }}
+    >Quick Start</a>
+    <a
+      href="/hardware"
+      style={{
+        padding: '0.65rem 1.5rem',
+        border: '1px solid rgba(128,128,128,0.3)',
+        borderRadius: '7px',
+        fontWeight: 600,
+        textDecoration: 'none',
+        fontSize: '0.95rem'
+      }}
+    >Browse Hardware</a>
+  </div>
+</div>
+
+## What Is PiEEG?
+
+PiEEG is a family of EEG shields and boards that turn a Raspberry Pi, Jetson Nano, or standalone USB host into a multi-channel brain-computer interface.
+The companion **PiEEG Server** software acquires, streams, records, and exposes real-time EEG data over WebSocket, LSL, OSC, and webhooks — with a built-in browser dashboard out of the box.
 
 <Callout type="info">
-  If you only need streaming software, start with [PiEEG Software](/software). If you are wiring a device or choosing electrodes, start with [PiEEG Hardware](/hardware).
+  New to PiEEG? Follow the [Quick Start](/software/getting-started/quick-start) to get streaming in minutes. Setting up hardware for the first time? Start with [Hardware](/hardware) and pick your device.
 </Callout>
 
-## Start Here
+## Explore the Docs
 
 <Cards>
-  <Cards.Card title="Hardware" href="/hardware" />
-  <Cards.Card title="Devices" href="/hardware/devices" />
+  <Cards.Card title="Hardware Overview" href="/hardware" />
+  <Cards.Card title="All Devices" href="/hardware/devices" />
   <Cards.Card title="Accessories" href="/hardware/accessories" />
   <Cards.Card title="Signal Quality" href="/hardware/signal-quality/noise-elimination" />
   <Cards.Card title="Software" href="/software" />
   <Cards.Card title="Quick Start" href="/software/getting-started/quick-start" />
+  <Cards.Card title="Integrations" href="/software/integrations" />
+  <Cards.Card title="API Reference" href="/software/api/websocket" />
 </Cards>
 
-## What Is Covered
+## What's Covered
 
-- **Hardware**: PiEEG, PiEEG-16, JNEEG, ardEEG, IronBCI, MicroBCI, IronBCI-32, electrodes, caps, power, and setup notes.
-- **Software**: PiEEG Server installation, dashboard, WebSocket streaming, data format, recording, detectors, and architecture.
-- **Integrations**: Lab Streaming Layer, Jupyter notebooks, VRChat OSC, webhooks, IFTTT, Zapier, and native acceleration.
-- **Operations**: authentication, security, troubleshooting, development, and signal quality.
+| Area | Topics |
+|------|--------|
+| **Hardware** | PiEEG, PiEEG-16, JNEEG, ardEEG, IronBCI, MicroBCI, IronBCI-32, electrodes, caps, power |
+| **Software** | Server install, dashboard, WebSocket streaming, data format, recording, detectors |
+| **Integrations** | LSL, Jupyter notebooks, VRChat OSC, webhooks, IFTTT, Zapier |
+| **Operations** | Authentication, security, troubleshooting, development, signal quality |
 
-## Software Install
+## Install the Server
+
+<Steps>
+### One-line install (Linux / Raspberry Pi OS)
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/pieeg-club/PiEEG-server/main/install.sh | bash
 ```
 
-## Platform Overview
+### Open the dashboard
+
+Navigate to `http://<device-ip>:1617` in your browser.
+
+### Stream data
+
+Connect any WebSocket client to `ws://<device-ip>:1616`.
+</Steps>
+
+## Platform Architecture
 
 ```
 ┌──────────────────────────────────────────────────────────┐
