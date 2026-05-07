@@ -3,7 +3,7 @@ import { DocsThemeConfig } from 'nextra-theme-docs'
 
 const config: DocsThemeConfig = {
   logo: (
-    <img src="/PiEEG-docs/logo.webp" alt="PiEEG" style={{ height: '1.75rem', width: 'auto', borderRadius: '4px' }} />
+    <img src="/logo.webp" alt="PiEEG" style={{ height: '1.75rem', width: 'auto', borderRadius: '4px' }} />
   ),
   project: {
     link: 'https://github.com/pieeg-club',
