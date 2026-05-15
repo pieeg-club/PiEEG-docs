@@ -2,8 +2,29 @@
 title: "ardEEG"
 ---
 
-# ardEEG
 
-ardEEG shield for Arduino UNO R4 to measure EEG, EMG, and ECG bio-signals
+ardEEG is an open-source shield for the Arduino UNO R4 that measures biosignals — including EEG (electroencephalography), EMG (electromyography), and ECG (electrocardiography).
+### What It Does
+ardEEG brings biosignal acquisition to the Arduino platform, making it the most accessible and lowest-cost entry point in the PiEEG device family. It connects directly to the Arduino UNO R4 header and uses the ADS1299 analog front-end chip to capture high-quality biosignal data.
+ardEEG is ideal for students, hobbyists, and educators who want to explore EEG, EMG, and ECG measurement without the complexity or cost of a single-board computer setup. It is also well suited for embedded BCI prototypes and low-power standalone applications.
+
+### Key Features:
+- Supports EEG, EMG, and ECG measurements
+- Connects directly to the Arduino UNO R4 header
+- Powered by the ADS1299 analog front-end chip
+- Compatible with dry and Ag/AgCl wet electrodes via 2.54 mm pin pitch connectors
+- Low power — runs from a small 5V power bank (up to 1,000 mAh, max 1A)
+
+### How It Differs from PiEEG: 
+## Comparison: PiEEG vs. ardEEG
+
+| Feature | PiEEG | ardEEG |
+| :--- | :--- | :--- |
+| **Host board** | Raspberry Pi 4 / 5 | Arduino UNO R4 |
+| **Channels** | 8 | 8 |
+| **Power requirement** | 3A, up to 10,000 mAh | Max 1A, up to 1,000 mAh |
+| **Operating system** | Raspberry Pi OS (Linux) | Arduino firmware |
+| **Best for** | Research, full BCI setup | Education, prototyping, embedded |
+
 
 ![ardEEG Arduino low-cost device to measure EEG, EMG, EKG](/images/hardware/2024/05/genereal-300x112.jpg)
