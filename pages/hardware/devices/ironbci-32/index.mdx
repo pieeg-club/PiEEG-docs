@@ -13,3 +13,39 @@ IronBCI-32 documentation for startup, cable connections, and software workflows.
 	<Cards.Card title="Cable Connections" href="/hardware/devices/ironbci-32/cable-connections" />
 	<Cards.Card title="Software" href="/hardware/devices/ironbci-32/software" />
 </Cards>
+
+
+
+
+
+IronBCI-32 is a high-channel-count, brain-computer interface with 32 simultaneous channels for measuring EEG, EMG, ECG, and EOG biosignals. It connects to a laptop or desktop over USB serial, delivering a full 32-channel data stream compatible with the BrainFlow SDK and the PiEEG Server.
+### What It Does  
+IronBCI-32 is the highest channel count device in the PiEEG family, making it well suited for high-density EEG research, advanced neural decoding, and applications that require full-scalp coverage. It transmits data over a USB serial connection using the FreeEEG frame format, which is natively supported by BrainFlow.
+To ensure clean signal acquisition, IronBCI-32 requires galvanic isolation between the device and the host computer. The laptop receiving data must run on battery power only — disconnected from mains — to eliminate 50/60 Hz line noise and prevent ground loop interference.  
+### Key Features  
+- 32 channels of simultaneous biosignal acquisition
+- Supports EEG, EMG, ECG, and EOG measurements
+- USB serial connection to laptop or desktop
+- Compatible with BrainFlow SDK out of the box
+- Compatible with wet electrodes via 2.54 mm pin pitch connectors
+- Powered by 5V USB battery — mains power strictly not permitted
+- Supported by PiEEG Server for streaming and integrations
+
+
+### How It Differs
+Depending on your research needs, choose the model that fits your host environment and channel density requirements.
+
+| Feature | PiEEG | IronBCI | IronBCI-32 |
+| :--- | :--- | :--- | :--- |
+| **Host board** | Raspberry Pi | **None** (standalone) | Laptop / desktop |
+| **Channels** | 8 | 8 | **32** |
+| **Connectivity** | Wired (GPIO) | **Wireless** (BLE) | USB serial |
+| **BrainFlow support** | No | No | **Yes** |
+| **Best for** | General research | Wearable / mobile | High-density EEG |
+
+---
+
+Safety: IronBCI-32 must be powered from a 5V battery only. It must never be connected to mains power via USB or any other means. See the Liabilities page before use.
+
+### What You Need
+To get started with IronBCI-32 you need the device itself, two USB cables (one for power, one for data), a 5V battery, electrodes, and an EEG cap. See How to Start for the full requirements and cable details.    
