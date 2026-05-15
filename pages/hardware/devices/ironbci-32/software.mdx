@@ -3,6 +3,28 @@ title: "Software"
 ---
 
 # Software
+Official PiEEG-Server see on the Doc - Software. Also is available for ironbci-32 in GitHub via the following [link](https://github.com/pieeg-club/PiEEG-server) 
+
+![Image](/images/hardware/2025/05/pieeg-1024x485.jpg)
+
+
+### SDK
+IronBCI-32 uses BrainFlow as its primary data interface. BrainFlow is an open-source library that provides a unified API for biosignal acquisition, signal processing, and data streaming — available in Python, C++, Java, C#, R, and more.
+
+### Step 1 — Install BrainFlow
+Install the BrainFlow Python package:  
+pip install brainflow 
+
+### Step 2 — Find the Serial Port
+Before running any script, identify the serial port that IronBCI-32 is connected to.
+On Linux / macOS:  
+ls /dev/tty*  
+Look for a device named /dev/ttyUSB0 or /dev/tty.usbserial-XXXX.  
+
+On Windows:
+Open Device Manager and look for the device under Ports (COM & LPT). Note the COM port number (e.g. COM3).
+
+### Step 3 — Stream Data
 
 Software to operate with data implemented in [BrainFlow](https://brainflow.org/2026-01-23-ironbci/)
 
