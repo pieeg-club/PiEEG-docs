@@ -4,7 +4,25 @@ title: "Power Bank"
 
 # Power Bank
 
-All devices must work only from a battery 5V, with power not more than 10000mAh and an output current of at least 3A for JNEEG and piEEG, but not more than 3.5 A, with 5V and not more than 1000mAh for ardEEg. Can be used as one power bank to supply monitors for all PiEEG devices (PiEEG, ArdEEG, JNEEG...) USB cable for power supply should short as possible and **sufficient thickness**
+Power Bank
+All PiEEG devices must be powered from a battery (power bank) only — not from mains power. This ensures electrical isolation and safe, clean signal acquisition.
+Choosing a Power Bank
+For PiEEG, PiEEG-16, and JNEEG, use a power bank with a 5V output, a minimum output current of 3A, and a capacity of no more than 10,000 mAh.
+For ardEEG, use a smaller power bank: 5V output with no more than 1A output current and a capacity of up to 1,000 mAh.
+A single power bank can supply both the PiEEG device and a connected monitor at the same time, as long as it meets the current requirements for your device.
+Choosing a USB Cable
+Use the shortest USB cable practical for your setup. Longer cables increase resistance and can cause voltage drops that affect device stability. Always use a thick-gauge cable to ensure sufficient current is delivered to the device.
+
+### Power Specifications
+
+| Device | Voltage | Output Current | Capacity |
+| :--- | :--- | :--- | :--- |
+| **PiEEG** | 5V | 3A – 3.5A | Up to 10,000 mAh |
+| **PiEEG-16** | 5V | 3A – 3.5A | Up to 10,000 mAh |
+| **JNEEG** | 5V | 3A – 3.5A | Up to 10,000 mAh |
+| **ardEEG, MicroBCI** | 5V | Up to 1A | Up to 1,000 mAh |
+
+### Examples 
 
 JNEEG assembled for measurement
 
