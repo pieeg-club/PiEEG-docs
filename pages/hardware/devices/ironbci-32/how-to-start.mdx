@@ -3,37 +3,33 @@ title: "How to Start"
 ---
 
 
-###  Before You Begin
+###  Connection 
 >Safety — Battery Power Only. IronBCI-32 must be powered from a 5V USB battery only. The device must never be connected to mains power via USB or any other means. To ensure galvanic isolation and eliminate electromagnetic interference, the laptop receiving data must also run on battery power only — physically disconnected from the AC mains supply.   
 
+### What You Need:
+- IronBCI-32 device
+- Two Micro USB cables:
+- Cable 1 — power supply
+- Cable 2 — serial data stream
+- 5V USB battery
 
+>Important: The data cable must be a full data cable — not a charge-only cable. A charge-only cable contains only 2 wires and cannot transmit data. A data cable contains 4 wires. If you are unsure, check the cable packaging or test it with another device before use.
 
-**Connect Power and Serial Data**
+### Step 1 — Connect the Power Cable
+Connect the first Micro USB cable from your 5V battery to the power input port on IronBCI-32. This powers the device.
 
-Needs two cables: USB and Micro USB 
+### Step 2 — Connect the Data Cable
+Connect the second Micro USB cable from the serial data port on IronBCI-32 to a USB port on your laptop.
+Make sure your laptop is running on battery power and is unplugged from the mains before connecting.
+
+### Step 3 — Verify the Connection
+Once both cables are connected and the device is powered on, your laptop should detect IronBCI-32 as a serial port device. Note the port name — you will need it for the software setup.
+On Linux / macOS, the port will appear as something like /dev/ttyUSB0 or /dev/tty.usbserial-XXXX.  
+On Windows, it will appear as a COM port (e.g. COM3) in Device Manager.  
+
 
 ![Image](/images/hardware/2026/01/ST-Link-Connection-1.png)
 
-Fig.1.1  Micro USB cable in both cases
-
-One Micro Cable for Power Supply  - Power  
-
-One Micro USB  Cable for Stream Data via Serial Port 
-
-**Attention - The data streamer cable should be a cable that can transmit data in Fig.1.2 (not just for power, 4 cables inside)**
-
 ![Image](/images/hardware/2026/01/Stream-data.png)
 
-       Fig.1.2.  Connection - Power USB and Stream cables
-
-**To ensure galvanic isolation and minimize electromagnetic interference (EMI), the IronBCI-32 must transmit data to a laptop operating solely on DC battery power.
-
-The laptop must be physically disconnected from the AC mains power supply to eliminate 50/60Hz line noise and prevent ground loop interference .**
-
->The device must operate only from a battery - 5 V. Complete isolation from the mains power is required! The device MUST not be connected to any kind of mains power, via USB or otherwise.
-
-Power supply - only battery 5V.
-
-Please read the [liability information](/hardware/safety/liabilities).
-
-See [noise elimination guidance](/hardware/signal-quality/noise-elimination) to reduce noise during measurement.
+    
