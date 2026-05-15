@@ -19,57 +19,51 @@ For EEG measurements:
 ### Step 1 — Connect the Battery
 The LiPo battery connector is located on the bottom side of the IronBCI board. Plug in the battery before powering on.
 
+![connect battery to ironbci device](/images/hardware/2025/07/irronbci_1.bmp)
+
 > [!WARNING]
 > **Reverse Polarity Risk**: Some JST connectors have reversed polarity. Before connecting the battery for the first time, verify that the polarity of your battery matches the connector on the board. Connecting a reversed-polarity battery **will damage the device**.
 
-Connector for the lippo battery located on the bottom side of the device.
-
-![connect battery to ironbci device](/images/hardware/2025/07/irronbci_1.bmp)
-
-**Warning!** Some JST connector has the wrong polarity. Before making a connection, confirm that the polarity of the battery is correct
-
 ![Image](/images/hardware/2025/07/New-Bitmap-image-9.png)
 
-**2. Turn Switcher**
+### Step 2 — Turn On the Switches
 
-To start transmitting data need turn **ON** both switchers
+IronBCI has two switches. Their states control power and charging mode.
+### Switch Configurations
 
-During charging, Switch 1 - **ON**, Switch 2 - **OFF**. Dont use the device during Charging.
+The IronBCI has two switches that control power and charging modes. Use the table below to set the correct state:
+
+| Mode | Switch 1 | Switch 2 |
+| :--- | :--- | :--- |
+| **Normal operation** | ON | ON |
+| **Charging** | ON | OFF |
+
+Turn both switches ON to begin transmitting data. Once on, the device starts broadcasting BLE advertisements and is ready to pair.
+
+> [!WARNING]
+> **Do not use the device while charging. During charging, set Switch 1 to ON and Switch 2 to OFF **.
 
 ![Image](/images/hardware/2025/07/ironbci_2.bmp)
 
-**3. Charging Status LED**
+### Step 3 — Charge the Battery
+To charge IronBCI, connect a Micro USB cable (5V) to the charging port.
 
-For charging, use the Micro USB cable 5V
+### LED Indicators
 
-LED 1 is **ON** during charging
+| LED Status | Meaning |
+| :--- | :--- |
+| **LED 1 ON** | Charging in progress |
+| **LED 2 ON** | Battery fully charged |
 
-LED 2 if **ON** - Battery was charged
 
 ![Image](/images/hardware/2025/07/irronbci_133.bmp)
 
-**4. BLE statys LED**
+### Step 4 — Verify the BLE Connection
+Once both switches are ON, IronBCI begins publishing BLE advertisements. Pair it with your laptop or mobile device.
+When the BLE connection is established, the BLE status LED turns ON. The device then begins streaming 8 channels of biosignal data at 250 samples per second.
 
-If the connection is successful between the ironbci and Laptop or mobile Phone Status BLE LED is **ON**
 
 ![Image](/images/hardware/2025/07/itronbci_4-3.bmp)
 
-Once both switches are turned **ON**, the device starts publishing advertisements via BLE. Once connected to the device, the device starts transmitting data via 8 channels at a frequency of 250 samples per second.
 
-To start work with ironbci, you need a Lippo Battery (recommend **200 mAh**). Connector with a wire 2.0mm JST Connector
-
-To measure the EEG
-
-- EEG cap
-
-- 8 EEG electrodes (dry or wet) and cables (connector 2.54)
-
-- 2 clips Electrodes
-
-To measure EMG, EKG, and EOG
-
-- EMG electrodes
-
-- cables (connector 2.54)
-
-GitHub https://github.com/pieeg-club/ironbci
+GitHub for [ironbci](https://github.com/pieeg-club/ironbci) 
