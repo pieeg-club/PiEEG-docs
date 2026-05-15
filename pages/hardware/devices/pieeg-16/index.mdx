@@ -3,7 +3,25 @@ title: "PiEEG-16"
 ---
 
 # PiEEG-16
+PiEEG-16 is the expanded version of the original PiEEG shield, doubling the channel count from 8 to 16. It connects directly to the Raspberry Pi GPIO header and uses two ADS1299 analog front-end chips in daisy-chain configuration to deliver 16 channels of high-quality biosignal data in real time.  
+This makes PiEEG-16 well suited for full-coverage EEG recordings, higher-density EMG setups, and research applications that require more electrode positions than the 8-channel PiEEG can provide.  
+Captured data is streamed, recorded, and processed by the PiEEG Server software, which exposes it over WebSocket, LSL, OSC, and webhooks — with a built-in browser dashboard included.  
 
-PiEEG-16 – Brain-computer interface (EEG, EMG, and ECG bio-signals) is an open-source Raspberry Pi shield that measures biosignals such as those used in electroencephalography (EEG), electromyography (EMG), and electrocardiography (ECG) for 16 channels.
+Key Features:
+- 16 channels of simultaneous biosignal acquisition
+- Supports EEG, EMG, and ECG measurements
+- Connects directly to the Raspberry Pi GPIO header
+- Dual ADS1299 analog front-end chips in daisy-chain configuration
+- Compatible with dry and Ag/AgCl wet electrodes via 2.54 mm pin pitch connectors
+- Works with the PiEEG Server for real-time streaming, recording, and integrations
+
+## How It Differs from PiEEG
+
+| Feature | PiEEG | PiEEG-16 |
+| :--- | :--- | :--- |
+| **Channels** | 8 | 16 |
+| **ADS1299 chips** | 1 | 2 (daisy-chain) |
+| **Use case** | General BCI, research | High-density EEG, research |
+| **Form factor** | Raspberry Pi shield | Raspberry Pi shield |
 
 ![PiEEG measure 16 channels EEG with RAspberryPI](/images/hardware/2024/08/PiEEG-16_3-300x300.jpg)
