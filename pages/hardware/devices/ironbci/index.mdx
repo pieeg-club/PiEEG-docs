@@ -15,19 +15,26 @@ IronBCI documentation for device setup, wireless software, and video instruction
 </Cards>
 
 
-
-IronBCI
 IronBCI is a low-cost, wearable Bluetooth Low Energy (BLE) brain-computer interface with 8 channels for measuring EEG, EMG, ECG, and EOG biosignals. Unlike the PiEEG shield family, IronBCI is a fully standalone device — no Raspberry Pi or single-board computer required.
-What It Does
+### What It Does
 IronBCI connects wirelessly to a laptop, smartphone, or tablet over BLE, streaming 8 channels of biosignal data at 250 samples per second. It is powered by a small LiPo battery, making it compact and portable for wearable and mobile BCI applications.
 IronBCI includes a mobile SDK, making it suitable for building iOS and Android BCI applications as well as desktop integrations.
-Key Features
+### Key Features:
+- 8 channels of simultaneous biosignal acquisition
+- Supports EEG, EMG, ECG, and EOG measurements
+- Wireless BLE connection — no cables to a host computer
+- Streams at 250 samples per second
+- Compatible with dry and Ag/AgCl wet electrodes via 2.54 mm pin pitch connectors
+- Powered by a LiPo battery (200 mAh recommended, 2.0 mm JST connector)
+- Includes a mobile SDK for iOS and Android development, Python SDK and software PiEEG-server  
 
-8 channels of simultaneous biosignal acquisition
-Supports EEG, EMG, ECG, and EOG measurements
-Wireless BLE connection — no cables to a host computer
-Streams at 250 samples per second
-Compatible with dry and Ag/AgCl wet electrodes via 2.54 mm pin pitch connectors
-Powered by a LiPo battery (200 mAh recommended, 2.0 mm JST connector)
-Includes a mobile SDK for iOS and Android development
-Fully open-source hardware and software  
+### How It Differs from PiEEG
+
+| Feature | PiEEG | IronBCI |
+| :--- | :--- | :--- |
+| **Host required** | Raspberry Pi 4 / 5 | **None** — standalone |
+| **Connectivity** | Wired (GPIO) | **Wireless** (BLE) |
+| **Channels** | 8 | 8 |
+| **Power source** | Power bank (5V, 3A) | LiPo battery (200 mAh) |
+| **Mobile SDK** | No | **Yes** |
+| **Best for** | Desktop research, fixed setup | Wearable, mobile, on-the-go BCI |
