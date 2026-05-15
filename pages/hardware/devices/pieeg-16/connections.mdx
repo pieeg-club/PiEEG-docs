@@ -2,12 +2,24 @@
 title: "How to start. Connections with PiEEG-16"
 ---
 
-# How to start. Connections with PiEEG-16
+This page explains how to physically connect your PiEEG-16 shield, Raspberry Pi, and electrodes before starting a recording session.
 
-Connect the shield PiEEG-16 to Raspberry Pi via GPIO40
+### Step 1 — Attach the PiEEG-16 Shield  
+Align the PiEEG shield with the 40-pin GPIO header on your Raspberry Pi and press it firmly into place. Make sure all pins are seated correctly before powering on.  
+### Step 2 — Connect the Electrodes
+PiEEG-16 uses three types of electrode connections:  
+- Channel Electrodes (1–8)  
+  Connect 16 EEG electrodes to channels 1 through 16. These are placed on the scalp according to the 10-20 system and capture the EEG signal.  
+- Reference Electrode  
+  Attach a clip electrode to one ear. This provides a stable voltage reference for all 8 channels.  
+- Bias Electrode  
+  Attach a second clip electrode to the other ear. This actively cancels electromagnetic interference from the signal, reducing noise.  
 
-Manual is [here](https://github.com/pieeg-club/PiEEG/blob/main/Manual.%20Conenction%20and%20start%20-%20PiEEG.pdf) for connection and quick start, same as and for PiEEG
+Refer to the connection diagram image above for the exact pin positions of each electrode on the PiEEG connector header.  
 
-As example, you can use these types of Electrodes and Hat for 16 16-channel system from [PiEEG shop](https://pieeg.com/pieeg-shop/) - [YouTube](https://youtu.be/97dbUigpLjA)
+### Step 3 — Power On  
+Connect your power bank to the Raspberry Pi. Once booted, proceed to Software Setup to install and launch PiEEG Server.  
 
-![Schematic connection for PiEEG](/images/hardware/2024/08/Img4-2-300x138.png)
+![Image](/images/hardware/2024/08/Img4-2-300x138.png)  
+
+A full PDF quick start manual with connection diagrams is available on [GitHub](https://github.com/pieeg-club/PiEEG-16/blob/main/PiEEG_quick_start.pdf) with SDK launch     
