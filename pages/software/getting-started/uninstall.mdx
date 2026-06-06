@@ -1,0 +1,323 @@
+---
+title: Uninstall & Purge
+description: Complete removal guide for PiEEG Server installations
+---
+
+import { Tabs, Steps, Callout } from 'nextra/components'
+
+# Complete PiEEG Server Purge & Reinstall Guide
+
+**For users who need to start fresh or resolve installation issues**
+
+---
+
+## Understanding Your Installation
+
+When you ran the one-line installer:
+```bash
+curl -sSL https://raw.githubusercontent.com/pieeg-club/PiEEG-server/main/install.sh | bash
+```
+
+It automatically did these things:
+
+<Steps>
+### Cloned the repository
+Location: `~/PiEEG-server`
+
+### Created a Python virtual environment
+Location: `~/PiEEG-server/.venv`
+
+### Installed pieeg-server
+Inside the virtual environment with `pip install -e ".[rpi]"`
+
+### Created a systemd service
+Configured to auto-start on boot
+
+### Created a symlink
+At `/usr/local/bin/pieeg-server` for global access
+</Steps>
+
+<Callout type="warning">
+  **Why "Address already in use" errors happen:** The systemd service starts the server automatically on every boot, binding to port 1617!
+</Callout>
+
+---
+
+## Option 1: Complete Purge (Recommended)
+
+Use this if you want to completely remove everything and start fresh.
+
+<Steps>
+
+### Stop and remove the systemd service
+
+```bash
+# Stop the running service
+sudo systemctl stop pieeg-server
+
+# Disable auto-start on boot
+sudo systemctl disable pieeg-server
+
+# Remove the service file
+sudo rm /etc/systemd/system/pieeg-server.service
+
+# Reload systemd
+sudo systemctl daemon-reload
+
+# Verify it's gone
+sudo systemctl status pieeg-server  # Should say "could not be found"
+```
+
+### Remove the symlink
+
+```bash
+sudo rm /usr/local/bin/pieeg-server
+```
+
+### Remove the entire installation directory
+
+```bash
+# This removes the code, venv, and everything
+rm -rf ~/PiEEG-server
+```
+
+### Fresh install with manual control (no auto-start)
+
+```bash
+# Clone the repository
+git clone https://github.com/pieeg-club/PiEEG-server.git ~/PiEEG-server
+
+# Go into the directory
+cd ~/PiEEG-server
+
+# Create a fresh virtual environment
+python3 -m venv .venv
+
+# Activate it
+source .venv/bin/activate
+
+# Install the server (with Raspberry Pi hardware support)
+pip install -e ".[rpi]"
+
+# Test it works
+pieeg-server --mock
+```
+
+<Callout type="info">
+  **Note:** This installation method does NOT create a systemd service, so the server won't auto-start on boot. You control when it runs.
+</Callout>
+
+</Steps>
+
+---
+
+## Option 2: Fix the Existing Installation (Faster)
+
+Use this if you want to keep your installation but fix port conflicts or other issues.
+
+<Steps>
+
+### Stop the auto-starting service
+
+```bash
+# Stop it now
+sudo systemctl stop pieeg-server
+
+# Prevent auto-start on boot
+sudo systemctl disable pieeg-server
+
+# Verify it's stopped
+sudo systemctl status pieeg-server  # Should say "inactive (dead)"
+```
+
+### Test manually
+
+```bash
+# Activate the existing venv (this is the key!)
+source ~/PiEEG-server/.venv/bin/activate
+
+# Now you can use pieeg-server commands
+pieeg-server --mock
+
+# Or use the global symlink
+# (it points to the venv, so it works even without activating)
+pieeg-server --mock
+```
+
+</Steps>
+
+<Callout type="info">
+  **Why this works:** The installer created a venv at `~/PiEEG-server/.venv`. Modern Debian/Pi OS requires you to use virtual environments for `pip` commands. By activating this venv, you're using the environment where pieeg-server is installed.
+</Callout>
+
+---
+
+## About Virtual Environments: Best Practices
+
+### Quick answers to common questions:
+
+**Q: Do I need to find the environment from the one-line installer?**  
+A: Yes! It's at `~/PiEEG-server/.venv`. Activate it with:
+```bash
+source ~/PiEEG-server/.venv/bin/activate
+```
+
+**Q: Do I need to use the old virtual environment I created before?**  
+A: No, that was for the pre-server version. Use the new one at `~/PiEEG-server/.venv`.
+
+**Q: Should I create a virtual environment for every workflow?**  
+A: **Yes**, this is Python best practice:
+- ✓ Each project gets its own venv → no dependency conflicts
+- ✓ On modern Debian/Pi OS, it's **required** (PEP 668 protection)
+- ✓ Keeps your system Python clean
+
+**Q: Why do I get "non-debian packages" error?**  
+A: Modern Raspberry Pi OS uses PEP 668 to protect the system Python. Solutions:
+- ✓ **Use a venv** (recommended) — what the installer did
+- ✗ `pip install --break-system-packages` (dangerous, not recommended)
+- ✗ Use `pipx` for global tools (not needed here)
+
+---
+
+## How to Use PiEEG Server Going Forward
+
+<Tabs items={['Method A: Activate venv', 'Method B: Absolute path', 'Method C: Symlink']}>
+  <Tabs.Tab>
+    **Activate venv every time** (explicit)
+    ```bash
+    cd ~/PiEEG-server
+    source .venv/bin/activate
+    pieeg-server --mock  # or without --mock for real hardware
+    ```
+  </Tabs.Tab>
+  
+  <Tabs.Tab>
+    **Use absolute path** (no activation needed)
+    ```bash
+    ~/PiEEG-server/.venv/bin/pieeg-server --mock
+    ```
+  </Tabs.Tab>
+  
+  <Tabs.Tab>
+    **Create a symlink** (like the installer did)
+    ```bash
+    sudo ln -s ~/PiEEG-server/.venv/bin/pieeg-server /usr/local/bin/pieeg-server
+    pieeg-server --mock  # Now works from anywhere
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+---
+
+## About the "vcgencmd not available" Warning
+
+This is normal and just means you can't check the firmware date. The server will work fine. If you want to fix it:
+
+```bash
+# vcgencmd is part of libraspberrypi-bin
+sudo apt install libraspberrypi-bin
+
+# Test
+vcgencmd version
+```
+
+---
+
+## Troubleshooting
+
+### Port still in use after stopping the service?
+
+```bash
+# Find what's using port 1617
+sudo lsof -i :1617
+# or
+sudo ss -tlnp | grep 1617
+
+# Kill the process (replace <PID> with the number from above)
+kill <PID>
+# or force kill if needed
+kill -9 <PID>
+```
+
+### Want to re-enable auto-start later?
+
+```bash
+sudo systemctl enable pieeg-server
+sudo systemctl start pieeg-server
+```
+
+### Server still doesn't show data?
+
+<Steps>
+
+### Check if SPI is enabled
+
+```bash
+ls /dev/spidev*  # Should show /dev/spidev0.0 and /dev/spidev0.1
+```
+
+### Enable SPI if needed
+
+```bash
+# For Pi 5 / Bookworm
+sudo nano /boot/firmware/config.txt
+# OR for older Pi OS
+sudo nano /boot/config.txt
+
+# Add this line:
+dtparam=spi=on
+
+# Save (Ctrl+X, Y, Enter), then reboot
+sudo reboot
+```
+
+### Run the diagnostic
+
+```bash
+pieeg-server doctor
+```
+
+</Steps>
+
+---
+
+## Quick Reference
+
+### Fastest path to a working server:
+
+```bash
+# Stop auto-start service
+sudo systemctl stop pieeg-server
+sudo systemctl disable pieeg-server
+
+# Use the existing installation
+source ~/PiEEG-server/.venv/bin/activate
+pieeg-server --mock
+
+# Once you verify it works, test with real hardware:
+pieeg-server
+```
+
+### Cleanest path (nuclear option):
+
+```bash
+# Purge everything
+sudo systemctl stop pieeg-server
+sudo systemctl disable pieeg-server
+sudo rm /etc/systemd/system/pieeg-server.service
+sudo systemctl daemon-reload
+sudo rm /usr/local/bin/pieeg-server
+rm -rf ~/PiEEG-server
+
+# Fresh install
+git clone https://github.com/pieeg-club/PiEEG-server.git ~/PiEEG-server
+cd ~/PiEEG-server
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[rpi]"
+pieeg-server --mock
+```
+
+<Callout type="info">
+  **Need more help?** Drop the output of `pieeg-server doctor` in a [GitHub issue](https://github.com/pieeg-club/PiEEG-server/issues).
+</Callout>
