@@ -40,15 +40,20 @@ sudo reboot
 
 ### Port already in use
 
+The server binds two ports: **1616** (WebSocket stream) and **1617** (dashboard / HTTP). If either is taken — usually by a previous run or the systemd service — startup fails:
+
 ```
-Error: Address already in use (port 1616)
+Error: Address already in use (port 1616 or 1617)
 ```
 
-**Fix:** Stop the existing instance:
+**Fix:** Stop the existing instance or background service:
 ```bash
 sudo systemctl stop pieeg-server
-# or
+# prevent it from starting again after reboot
+sudo systemctl disable pieeg-server
+# or kill whatever is holding each port
 kill $(lsof -t -i:1616)
+kill $(lsof -t -i:1617)
 ```
 
 <Callout type="info">
