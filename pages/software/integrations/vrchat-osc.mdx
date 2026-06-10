@@ -30,15 +30,34 @@ pieeg-server --osc --osc-mode chatbox --osc-interval 0.5    # chatbox only, 2 Hz
 | `--osc-port` | `9000` | VRChat OSC port |
 | `--osc-mode` | `both` | `chatbox`, `parameters`, or `both` |
 | `--osc-interval` | `0.25` | Update rate in seconds |
+| `--osc-regions-setup` | — | Interactive wizard to define channel regions |
+
+### Channel Regions
+
+By default, OSC sends band powers averaged across all channels. Use `--osc-regions-setup` to define custom channel groups (e.g., EEG vs EOG, frontal vs parietal):
+
+```bash
+pieeg-server --osc-regions-setup
+```
+
+This creates `~/.pieeg/lsl_groups.json` with your region definitions. Both OSC and LSL integrations use this file for region-specific streaming.
 
 ## WebSocket Control
 
 ```json
 {"cmd": "osc_start"}
 {"cmd": "osc_stop"}
-{"cmd": "osc_configure", "host": "127.0.0.1", "port": 9000, "mode": "both", "interval": 0.25}
 {"cmd": "osc_status"}
+{"cmd": "osc_config", "config": {
+  "host": "127.0.0.1",
+  "port": 9000,
+  "mode": "both",
+  "interval": 0.25,
+  "channel": "avg"
+}}
 ```
+
+The `osc_config` command allows hot-reloading configuration while the bridge is running.
 
 ## Avatar Parameters
 

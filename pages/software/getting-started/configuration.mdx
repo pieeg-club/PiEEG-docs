@@ -21,11 +21,40 @@ pieeg-server [OPTIONS] [COMMAND]
 | `record FILE` | Record EEG to CSV (standalone, no server) |
 | `monitor` | Live terminal display (standalone, no server) |
 
+#### doctor
+
+```bash
+pieeg-server doctor          # full diagnostics with formatted output
+pieeg-server doctor --quiet  # only return exit code (0=ok, 1=warnings, 2=errors)
+```
+
+#### record
+
+```bash
+pieeg-server record session.csv                              # record until Ctrl-C
+pieeg-server record session.csv --duration 300               # 5 minutes
+pieeg-server record session.csv --device pieeg8 --mock       # 8-ch synthetic
+pieeg-server record session.csv --device ironbci8 --ble-name MyBoard
+pieeg-server record session.csv --device ironbci32 --serial-port /dev/ttyACM0
+```
+
+**Supported flags**: `--device`, `--duration`, `--mock`, `--gpio-chip`, `--profile`, `--ble-name`, `--ble-address`, `--serial-port`, `--verbose`
+
+#### monitor
+
+```bash
+pieeg-server monitor                    # live terminal display
+pieeg-server monitor --mock             # synthetic data
+pieeg-server monitor --device ironbci8  # IronBCI via BLE
+```
+
+**Supported flags**: `--device`, `--mock`, `--gpio-chip`, `--profile`, `--ble-name`, `--ble-address`, `--serial-port`, `--verbose`
+
 ### Server Options
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--device DEVICE` | `pieeg16` | `pieeg8`, `pieeg16`, or `ironbci8` |
+| `--device DEVICE` | `pieeg16` | `pieeg8`, `pieeg16`, `ironbci8`, or `ironbci32` |
 | `--host HOST` | `0.0.0.0` | Bind address |
 | `--port PORT` | `1616` | WebSocket port |
 | `--dashboard-port PORT` | `1617` | Dashboard HTTP port |
@@ -62,6 +91,16 @@ script manages the chip-select GPIO line directly).
   BLE options only apply when `--device ironbci8` is selected. Install the `ironbci` extra for Bluetooth support: `pip install pieeg-server[ironbci]`.
 </Callout>
 
+### Serial Options (IronBCI-32)
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--serial-port PORT` | — | Serial device (e.g. `COM3`, `/dev/ttyACM0`) |
+
+<Callout type="info">
+  `--serial-port` is **required** when `--device ironbci32` is selected. IronBCI-32 uses USB serial (921600 baud, FreeEEG wire protocol) for 32-channel streaming at ~500 SPS.
+</Callout>
+
 ### Filter Options
 
 | Flag | Default | Description |
@@ -89,9 +128,14 @@ script manages the chip-select GPIO line directly).
 | `--osc-port PORT` | `9000` | VRChat OSC port |
 | `--osc-mode MODE` | `both` | `chatbox`, `parameters`, or `both` |
 | `--osc-interval SEC` | `0.25` | OSC update rate |
+| `--osc-regions-setup` | — | Interactive wizard for OSC/LSL channel regions |
 | `--lsl` | — | Enable Lab Streaming Layer outlet |
 | `--lsl-name NAME` | `PiEEG` | LSL stream name |
 | `-v, --verbose` | — | Debug logging |
+
+<Callout type="tip">
+  Use `--osc-regions-setup` to define custom channel groups (e.g., EEG vs EOG). The wizard creates `~/.pieeg/lsl_groups.json` that both OSC and LSL integrations can use for region-specific streaming.
+</Callout>
 
 ## Systemd Service
 

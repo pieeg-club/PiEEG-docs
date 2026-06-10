@@ -79,8 +79,8 @@ async function connectAuthenticated(code: string): Promise<WebSocket> {
 ```json
 {"cmd": "osc_start"}
 {"cmd": "osc_stop"}
-{"cmd": "osc_configure", "host": "127.0.0.1", "port": 9000, "mode": "both", "interval": 0.25}
 {"cmd": "osc_status"}
+{"cmd": "osc_config", "config": {"host": "127.0.0.1", "port": 9000, "mode": "both", "interval": 0.25}}
 ```
 
 ### Lab Streaming Layer
@@ -89,6 +89,8 @@ async function connectAuthenticated(code: string): Promise<WebSocket> {
 {"cmd": "lsl_start"}
 {"cmd": "lsl_stop"}
 {"cmd": "lsl_status"}
+{"cmd": "lsl_groups_get"}
+{"cmd": "lsl_groups_set", "groups": [{"name": "EEG", "channels": [0, 1, 2, 3, 4, 5, 6]}, {"name": "EOG", "channels": [7]}]}
 ```
 
 ### Spike Filter
@@ -157,7 +159,7 @@ Sent on connect:
 }
 ```
 
-The `channels` field reflects the selected device: **16** for `pieeg16` (default), **8** for `pieeg8` or `ironbci8`.
+The `channels` field reflects the selected device: **8** for `pieeg8`/`ironbci8`, **16** for `pieeg16` (default), **32** for `ironbci32`.
 
 The `engine` field reports which DSP implementation is active. When the
 optional [`pieeg-core`](https://github.com/pieeg-club/PiEEG-core) wheel is

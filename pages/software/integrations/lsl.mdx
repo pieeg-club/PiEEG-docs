@@ -32,7 +32,41 @@ sample, timestamp = inlet.pull_sample()
 {"cmd": "lsl_start"}
 {"cmd": "lsl_stop"}
 {"cmd": "lsl_status"}
+{"cmd": "lsl_groups_get"}
+{"cmd": "lsl_groups_set", "groups": [
+  {"name": "EEG", "channels": [0, 1, 2, 3, 4, 5, 6]},
+  {"name": "EOG", "channels": [7]}
+]}
 ```
+
+## Channel Groups
+
+Configure multiple LSL outlets, each streaming a subset of channels. Useful for separating EEG from EOG/EMG channels.
+
+### Interactive Setup
+
+Use the regions setup wizard to define channel groups interactively:
+
+```bash
+pieeg-server --osc-regions-setup
+```
+
+This creates `~/.pieeg/lsl_groups.json` that both OSC and LSL integrations use.
+
+### WebSocket Configuration
+
+**Example**: Split 8-channel stream into EEG (Ch0–6) and EOG (Ch7):
+
+```json
+{"cmd": "lsl_groups_set", "groups": [
+  {"name": "EEG", "channels": [0, 1, 2, 3, 4, 5, 6]},
+  {"name": "EOG", "channels": [7]}
+]}
+```
+
+Each group creates a separate LSL stream named `{GroupName}_{StreamName}` (e.g., `EEG_PiEEG`, `EOG_PiEEG`).
+
+If no groups are configured, a single default outlet streams all channels.
 
 ## Stream Properties
 
@@ -40,8 +74,8 @@ sample, timestamp = inlet.pull_sample()
 |----------|-------|
 | **Name** | `PiEEG` (configurable via `--lsl-name`) |
 | **Type** | EEG |
-| **Channels** | 8 (`pieeg8` / `ironbci8`) or 16 (`pieeg16`) |
-| **Sample rate** | 250 Hz |
+| **Channels** | 8 (`pieeg8` / `ironbci8`), 16 (`pieeg16`), or 32 (`ironbci32`) |
+| **Sample rate** | 250 Hz (PiEEG/IronBCI-8) or 500 Hz (IronBCI-32) |
 | **Format** | float32 |
 
 <Callout type="info">

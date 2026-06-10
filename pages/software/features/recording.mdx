@@ -10,10 +10,18 @@ import { Callout } from 'nextra/components'
 ## Record
 
 ```bash
-pieeg-server record session.csv                    # standalone, Ctrl-C to stop
-pieeg-server record session.csv --duration 300     # 5 minutes
-pieeg-server --record session.csv                  # record while streaming
+pieeg-server record session.csv                              # standalone, Ctrl-C to stop
+pieeg-server record session.csv --duration 300               # 5 minutes
+pieeg-server record session.csv --device pieeg8              # 8-channel PiEEG
+pieeg-server record session.csv --device ironbci8 --ble-name MyBoard  # IronBCI via BLE
+pieeg-server record session.csv --device ironbci32 --serial-port /dev/ttyACM0  # 32-ch
+pieeg-server record session.csv --mock                       # synthetic data
+pieeg-server --record session.csv                            # record while streaming
 ```
+
+<Callout type="info">
+  The `record` subcommand runs standalone (no WebSocket server). To record while serving, use `--record FILE` instead.
+</Callout>
 
 You can also start/stop recording from the dashboard or via the WebSocket API:
 
