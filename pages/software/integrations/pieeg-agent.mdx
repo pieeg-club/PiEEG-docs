@@ -1,0 +1,205 @@
+---
+title: PiEEG Agent
+description: Natural language EEG lab notebook — train classifiers, analyze connectivity, and chat with an AI copilot that reads your live brain signals.
+---
+
+import { Callout, Steps, Tabs } from 'nextra/components'
+
+# PiEEG Agent
+
+Natural language EEG lab notebook. Train pattern classifiers, analyze connectivity, compare sessions — all by talking to an AI copilot that reads your live brain signals.
+
+**Requires:** [PiEEG-server](/software/getting-started) running with `--lsl`
+
+## Install
+
+<Tabs items={['Linux / macOS / WSL', 'Windows']}>
+  <Tabs.Tab>
+```bash
+# One-line remote install
+curl -sSL https://raw.githubusercontent.com/pieeg-club/PiEEG-agent/main/install.sh | bash
+
+# Or clone manually
+git clone https://github.com/pieeg-club/PiEEG-agent.git
+cd PiEEG-agent && chmod +x setup.sh && ./setup.sh
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```cmd
+git clone https://github.com/pieeg-club/PiEEG-agent.git
+cd PiEEG-agent
+install.cmd
+```
+  </Tabs.Tab>
+</Tabs>
+
+No Node.js required — the React frontend is prebuilt and bundled.
+
+## Quick Start
+
+```bash
+# Terminal 1 — start PiEEG server with LSL output
+pieeg-server --lsl
+
+# Terminal 2 — launch agent
+pieeg-agent web
+```
+
+Open **http://localhost:8000**. On first launch, a setup wizard prompts for an LLM provider and API key. Configuration is saved to `~/.pieeg-agent/config.json`.
+
+<Callout type="info">
+  No hardware? Run `pieeg-server --mock --lsl` in Terminal 1 to use synthetic data.
+</Callout>
+
+## What It Can Do
+
+### 1. Real-Time Brain State Monitoring
+
+```
+you > how's my signal?
+copilot > All channels read "good", quality 0.98 — trustworthy signal.
+
+you > am I focused or relaxed?
+copilot > Relaxed. Alpha is dominant (0.87) and focus is low (0.31).
+```
+
+Available tools: `get_neural_state`, `get_band_powers`, `get_channel_quality`, `get_recent_events`, `find_artifacts`
+
+### 2. Pattern Training
+
+Train custom mental-state classifiers by conversation:
+
+```
+you > train a pattern called "meditation"
+copilot > Starting pattern training for "meditation"…
+          First, sit normally with eyes open.
+          Ready to record 'rest' for 4 seconds? (say yes when ready)
+
+you > yes
+copilot > ✓ Captured 32 frames, quality 0.94.
+          Now close your eyes and meditate.
+
+[repeats 3 reps]
+
+copilot > Pattern "meditation" trained:
+          - Balanced accuracy: 0.89 (leave-one-rep-out CV)
+          - Top cue: Alpha increase in O1/O2
+          - Channel importance: O1★★★ O2★★★ C3★ C4★
+```
+
+Pattern classifiers use **L2 + group-lasso regularization** (spatial sparsity) and **leave-one-rep-out cross-validation** to prevent temporal leakage. Balanced accuracy is reported so class imbalance cannot inflate scores.
+
+### 3. Spectral Analysis
+
+```
+you > analyze my alpha rhythm
+copilot > Individual alpha peak (IAF): 10.2 Hz
+          Alpha power: 0.73 (dominant)
+          1/f slope: -1.1 (typical healthy EEG)
+          Spectral entropy: 0.68
+          Frontal alpha asymmetry: -0.05 (balanced)
+```
+
+### 4. Connectivity Analysis
+
+```
+you > show connectivity in the alpha band
+copilot > Mean correlation: 0.34
+          Strongest pair: C3↔C4 (r=0.72) — motor cortex synchrony
+          Most connected: C3 (6 strong links)
+```
+
+### 5. Session Recording & Comparison
+
+```
+you > record a session called "meditation" for 60 seconds
+[later]
+you > compare meditation vs eyes-open-focus
+copilot > Alpha power: +0.92 SD (meditation higher)
+          Beta power: -0.54 SD (meditation lower)
+          — effect sizes are within-session Cohen's d
+```
+
+### 6. Jupyter Notebook Generation
+
+```
+you > create a notebook analyzing my meditation pattern
+copilot > ✓ Created: meditation_analysis.ipynb
+          Includes: pattern ROC curve, feature importance, band power evolution
+```
+
+## CLI Commands
+
+```bash
+pieeg-agent streams     # Discover available LSL streams
+pieeg-agent monitor     # Live state monitor (no LLM)
+pieeg-agent ask "am I focused?"   # One-shot question
+pieeg-agent chat        # Interactive terminal chat
+pieeg-agent web         # Web interface (recommended)
+```
+
+## Device Control
+
+```bash
+# Preview mode — shows what the agent would do
+pieeg-agent web --allow-actions
+
+# Execute mode — actually controls the device
+pieeg-agent web --allow-actions --execute
+```
+
+All actions pass through a safety gate: allowlist → cooldown → dry-run → audit log.
+
+## LLM Providers
+
+| Provider | Type | Key Required |
+|----------|------|--------------|
+| Anthropic | Cloud | `ANTHROPIC_API_KEY` |
+| OpenAI | Cloud | `OPENAI_API_KEY` |
+| Groq | Cloud | `GROQ_API_KEY` |
+| Together AI | Cloud | `TOGETHER_API_KEY` |
+| Ollama | Local | None |
+| LM Studio | Local | None |
+| Echo | Debug | None (built-in) |
+
+```bash
+# Non-interactive / Docker / CI
+export PIEEG_LLM_PROVIDER=anthropic
+export ANTHROPIC_API_KEY=sk-ant-...
+pieeg-agent web
+```
+
+## Architecture
+
+PiEEG Agent solves the rate mismatch between LLMs (~1 Hz) and EEG (250–500 Hz) using a **perception cascade**:
+
+| Tier | Rate | Representation | LLM sees |
+|------|------|----------------|----------|
+| T0 Raw | 250 Hz | float32 µV samples | Never |
+| T1 Features | 8 Hz | band powers, quality | Never |
+| T2 State | 1 Hz | focus / relax / engagement | On demand |
+| T3 Events | ~sparse | `"focus_high"` @ timestamp | Yes — main input |
+| T4 Reason | on query | NL questions + tools | — |
+
+The LLM pulls state via tools — it is never streamed raw data. The ingestion thread runs independently of the LLM so no samples are lost.
+
+## Honest Metrics
+
+<Callout type="warning">
+  PiEEG Agent is designed for neurofeedback research and UX prototyping, not clinical use.
+</Callout>
+
+- **Brain state indices** (`focus`, `relax`, `engagement`) are normalized to a rolling 10-minute window. They mean "high *for you, right now*", not absolute or clinical values.
+- A `~` prefix marks the warm-up period before enough variance is established.
+- **Pattern CV scores** are leave-one-rep-out balanced accuracy — honest at the data scale you have.
+- **Session comparisons** report within-session Cohen's d with explicit caveats — not a generalization claim.
+
+## Environment Variables
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `PIEEG_LSL_NAME` | `PiEEG` | LSL stream name |
+| `PIEEG_LSL_TYPE` | `EEG` | LSL stream type |
+| `PIEEG_RING_SECONDS` | `60` | Ring buffer depth (seconds) |
+| `PIEEG_LLM_PROVIDER` | `anthropic` | LLM provider |
+| `PIEEG_LLM_MODEL` | provider default | Model override |

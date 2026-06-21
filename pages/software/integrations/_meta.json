@@ -4,5 +4,7 @@
   "vrchat-osc": "VRChat OSC",
   "lsl": "Lab Streaming Layer",
   "notebooks": "Jupyter Notebooks",
-  "pieeg-core": "Native accelerator"
+  "pieeg-core": "Native accelerator",
+  "pieeg-agent": "AI Copilot (pieeg-agent)",
+  "pieeg-chrome": "Chrome Extension"
 }

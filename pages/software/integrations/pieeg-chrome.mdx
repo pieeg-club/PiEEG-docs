@@ -1,0 +1,155 @@
+---
+title: Chrome Extension
+description: Real-time brain state feedback overlaid on any webpage — powered by PiEEG-server with optional AI insights from PiEEG-agent.
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# Chrome Extension
+
+Manifest V3 Chrome extension that connects to your PiEEG server and overlays real-time cognitive state insights on any webpage.
+
+**System flow:**
+```
+PiEEG Hardware → PiEEG-server → Chrome Extension
+                      ↓
+                PiEEG-agent (optional AI copilot)
+```
+
+## Prerequisites
+
+**Required:** [PiEEG-server](/software/getting-started) running
+
+```bash
+pieeg-server          # starts at http://localhost:1617
+pieeg-server --mock   # no hardware needed
+```
+
+**Optional:** [PiEEG-agent](/software/integrations/pieeg-agent) for AI-powered insights
+
+```bash
+pieeg-agent web       # starts AI copilot at http://localhost:8000
+```
+
+## Install
+
+<Callout type="info">
+  This extension is not on the Chrome Web Store — Chrome's policies don't allow localhost-only extensions. Load it unpacked in Developer mode.
+</Callout>
+
+<Steps>
+
+### Clone the repository
+
+```bash
+git clone https://github.com/pieeg-club/PiEEG-chrome.git
+```
+
+### Open Chrome extensions
+
+Go to `chrome://extensions`
+
+### Enable Developer mode
+
+Toggle **Developer mode** (top-right corner)
+
+### Load unpacked
+
+Click **Load unpacked** and select the `PiEEG-chrome` folder
+
+### Pin the icon
+
+The PiEEG icon appears in the toolbar. Pin it from the puzzle-piece menu if needed.
+
+</Steps>
+
+## Features
+
+### Toolbar Popup
+
+- **Status indicator** — checks `http://localhost:1617/api/info`; green (running), red (offline), yellow (checking)
+- **Server version** displayed when connected
+- **Open Dashboard** — opens `http://localhost:1617` in a new tab
+- **WS port copy** — copies `ws://localhost:1616` to clipboard
+- **Configurable port** — change HTTP port in the settings row (persisted via `chrome.storage.sync`)
+
+### Brain Insights Overlay
+
+A draggable, on-page HUD that turns live band power into real-time cognitive-state estimates.
+
+| Index | Formula | Reference |
+|-------|---------|-----------|
+| Engagement | β / (α + θ) | Pope, Bogart & Bartolome (1995) |
+| Workload | θ / α | Gevins et al. (1997); Holm (2009) |
+| Fatigue | (θ + α) / β | Eoh, Chung & Kim (2005) |
+| Calm | α / total power | Pfurtscheller & Lopes da Silva (1999) |
+
+Each index is normalized to an **adaptive within-session baseline** (EWMA z-score → logistic), so every level is relative to your own recent activity. Confidence reflects baseline coverage and live signal stability. All formulas and caveats are shown in an expandable details panel.
+
+Toggle from the popup. Drag anywhere on the page. Expand **Method & raw signals** for raw band values and index formulas.
+
+### Neural Feedback Assistant
+
+AI-powered chat copilot overlay (requires [PiEEG-agent](/software/integrations/pieeg-agent) on port 8000).
+
+- Natural language conversations about your brain state
+- Live brain state bars (Focus, Calm, Engagement, Workload)
+- Pattern training guidance and signal analysis
+- Connectivity exploration
+- Draggable glass morphism panel, minimizable
+- Streams via `ws://localhost:8000/ws/chat` and `ws://localhost:8000/ws/live`
+
+Click **"Show Neural Assistant"** in the popup to open on any tab.
+
+### Auto-Update Notifications
+
+The extension checks GitHub `main` on open and every 6 hours. When an update is available, a green dot appears on the toolbar icon and a banner appears in the popup.
+
+## Updating
+
+```bash
+git pull
+```
+
+Then click **Reload** in the popup banner. No need to visit `chrome://extensions`.
+
+<Callout type="info">
+  Auto-update via Chrome's built-in mechanism only works for packed `.crx` extensions from the Web Store — it is ignored for unpacked extensions. The in-extension update checker handles this instead.
+</Callout>
+
+## Default Ports
+
+| Service | Port |
+|---------|------|
+| HTTP dashboard | `1617` |
+| WebSocket stream | `1616` |
+| PiEEG-agent (optional) | `8000` |
+
+Change the HTTP port in the extension's settings row if you run the server on a different port.
+
+## Permissions
+
+| Permission | Why |
+|------------|-----|
+| `storage` | Persist the configured server port |
+| `tabs` | Open the dashboard in a new tab |
+| `alarms` | Schedule the periodic update check |
+| `host_permissions: http://localhost/*` | Fetch `/api/info` from the local server |
+| `host_permissions: https://raw.githubusercontent.com/*` | Read `manifest.json` on GitHub `main` to detect updates |
+
+## Project Structure
+
+```
+PiEEG-chrome/
+├── manifest.json       # Manifest V3
+├── popup.html          # Extension popup UI
+├── popup.js            # Status check + button logic
+├── chat-assistant.js   # Neural Feedback Assistant overlay
+├── overlay.js          # Brain Insights on-page HUD
+├── background.js       # Service worker: update checker + spectrum proxy
+├── update.js           # Shared update-check helpers
+└── icons/
+    ├── icon16.png
+    ├── icon48.png
+    └── icon128.png
+```
