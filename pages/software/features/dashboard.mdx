@@ -23,6 +23,47 @@ When you open the dashboard, you land on the **Session Lobby**:
   The hosted demo at [pieeg.vercel.app](https://cloud.pieeg.com) pre-fills the demo server URL automatically.
 </Callout>
 
+## Topographic Map
+
+The topographic map projects live band power across the head. It offers two views, toggled with the **3D / 2D** switch in the panel toolbar:
+
+- **3D (default)** — your EEG is painted onto a real 3D head model (the same realistic head used by the Face Trainer experience). Drag to rotate; it also auto-rotates on load. This is a true volumetric surface, so the sides and back of the head are represented without the distortion of a flattened disc.
+- **2D** — the classic flattened scalp disc, kept as a lightweight fallback.
+
+### Montages
+
+Use the montage buttons (visible in 3D mode) to choose how channels map onto the head:
+
+| Montage | Use case | Electrodes |
+|---------|----------|------------|
+| **Scalp** | PiEEG-8 / PiEEG-16 / IronBCI-32 | International 10-20 / 10-10 positions |
+| **XR Face** | PiEEG XR face interface | 6 or 8 forehead / temple / cheek / jaw sites |
+
+By default, channels are assigned in a sensible anatomical order (channel 1 → first position, and so on).
+
+### Placement editor
+
+Because everyone places and names their own electrodes, the default layout is only a starting point. Click the **⚙ gear** button on the map to open the placement editor and, per channel:
+
+- **Rename** the electrode label.
+- **Remap** it to any position from the standard list.
+
+Your layout is saved in the browser (per device profile and channel count) and restored automatically. Use **Reset** to return to the default montage.
+
+### Controls
+
+| Button | Action |
+|--------|--------|
+| **3D / 2D** | Switch between the 3D head and the flat disc |
+| **Scalp / XR Face** | Choose the montage family (3D mode) |
+| **⟳** | Toggle auto-rotate |
+| **Aa** | Toggle electrode labels |
+| **⚙** | Open the placement editor |
+
+<Callout type="info">
+  The 3D field is interpolated on the GPU using a Gaussian kernel over geodesic (great-circle) distance on the head surface, with a coverage fade that dims regions no electrode is near — so sparse montages (like the 8-channel XR face) never fake data where there is none.
+</Callout>
+
 ## Features
 
 | Feature | Description |
@@ -32,7 +73,7 @@ When you open the dashboard, you land on the **Session Lobby**:
 | **Channel detail panel** | Click to expand: zoomed trace, FFT, band power bars, histogram, statistics |
 | **Spectral analysis** | 256-point FFT in Web Worker; PSD (log dB / linear); band power bars δ θ α β γ |
 | **Spectrogram** | Scrolling time-frequency heatmap (Turbo colormap, –60 → 0 dB) |
-| **Topographic map** | IDW-interpolated scalp heatmap over 10-20 montage; selectable band metric |
+| **Topographic map** | Real-time **3D head** topography (GPU-interpolated) with a 2D fallback view; Scalp (10-20) & PiEEG XR face montages; editable electrode placement; selectable band metric |
 | **Statistics panel** | 10 metrics per channel; sortable columns; CSV export |
 | **Filter preview** | Live Butterworth magnitude response with –3 dB reference |
 | **Session library** | Browse, replay recordings; play/pause, seek, speed control (0.5×–2×); annotations |
@@ -72,7 +113,7 @@ The dashboard color-codes all spectral data using standard EEG bands:
 |-------|------|
 | Framework | React 19 |
 | Bundler | Vite 6 |
-| Rendering | Canvas 2D (waveforms, spectra), Three.js (WebXR) |
+| Rendering | Canvas 2D (waveforms, spectra), Three.js (3D topomap, WebXR) |
 | FFT | Pure-JS Cooley-Tukey radix-2 (256-point, Hanning window) |
 | State | React hooks + refs (no external state library) |
 | Styling | Plain CSS |
