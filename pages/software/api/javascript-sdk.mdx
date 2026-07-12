@@ -1,0 +1,276 @@
+---
+title: JavaScript SDK
+description: Browser SDK (pieeg.js) for connecting to PiEEG / IronBCI boards over Web Bluetooth and Web Serial, with built-in filtering and band-power analysis.
+---
+
+import { Tabs, Callout } from 'nextra/components'
+
+# JavaScript SDK (`pieeg.js`)
+
+`pieeg.js` is a zero-dependency browser library that connects **directly** to a
+board — no Python server required. It talks to the hardware over Web Bluetooth
+or Web Serial, runs the same signal chain as the PiEEG-server dashboard
+(Hampel spike removal → Butterworth bandpass → IIR notch), and exposes FFT band
+powers plus neural-state helpers.
+
+<Callout type="info">
+Web Bluetooth and Web Serial are only available in Chromium browsers
+(Chrome / Edge), require a **secure context** (HTTPS or `localhost`), and must be
+started from a **user gesture** (e.g. a button click).
+</Callout>
+
+## Install
+
+<Tabs items={['CDN', 'Script tag (local)', 'ES module / bundler']}>
+<Tabs.Tab>
+Load straight from jsDelivr — no download, no build step:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/pieeg-club/PiEEG-server@main/pieeg.js"></script>
+<script>
+  const eeg = new PiEEG();
+</script>
+```
+
+<Callout type="warning">
+`@main` always tracks the latest commit. Pin a tag or commit for reproducible
+builds, e.g. `.../PiEEG-server@v1.0.0/pieeg.js`.
+</Callout>
+</Tabs.Tab>
+<Tabs.Tab>
+Download `pieeg.js` next to your HTML and reference it directly:
+
+```html
+<script src="pieeg.js"></script>
+<script>
+  const eeg = new PiEEG();
+</script>
+```
+</Tabs.Tab>
+<Tabs.Tab>
+```js
+const PiEEG = require('./pieeg.js'); // CommonJS export
+const eeg = new PiEEG();
+```
+</Tabs.Tab>
+</Tabs>
+
+The file lives in the [PiEEG-server](https://github.com/pieeg-club/PiEEG-server)
+repository (`pieeg.js`).
+
+## Supported devices
+
+Pick a board with the `device` option on `connectBLE()` / `connectSerial()`.
+
+| `device` id   | Board       | ADC              | Transport    | Channels | Rate   |
+|---------------|-------------|------------------|--------------|----------|--------|
+| `ironbci-8`   | IronBCI-8   | 1 × ADS1299      | Web Bluetooth | 8        | 250 Hz |
+| `ironbci-16`  | IronBCI-16  | 2 × ADS1299      | Web Bluetooth | 16       | 250 Hz |
+| `octopus-16`  | Octopus 16  | 2 × ADS131M08    | Web Bluetooth | 16       | 250 Hz |
+| `ironbci-32`  | IronBCI-32  | AD7771           | Web Serial    | 32       | 500 Hz |
+
+`ironbci-8` is the default for `connectBLE()`; `ironbci-32` is the default for
+`connectSerial()`. Discover the list at runtime with `PiEEG.devices()`.
+
+## Quick start
+
+```js
+const eeg = new PiEEG();
+
+eeg.onBandPowers((powers) => {
+  console.log('Alpha', powers.Alpha, 'Beta', powers.Beta);
+  console.log('focus', eeg.getFocusIndex(), 'relax', eeg.getRelaxationIndex());
+});
+
+// Must be called from a click handler.
+connectButton.addEventListener('click', async () => {
+  const info = await eeg.connectBLE({ device: 'octopus-16' });
+  console.log(`Connected to ${info.deviceName}: ${info.channels} ch @ ${info.sampleRate} Hz`);
+});
+```
+
+## Full example (copy-paste)
+
+A complete, self-contained page — save as `index.html`, serve over `localhost`
+or HTTPS, and open it in Chrome/Edge:
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>PiEEG demo</title>
+    <script src="https://cdn.jsdelivr.net/gh/pieeg-club/PiEEG-server@main/pieeg.js"></script>
+  </head>
+  <body>
+    <button id="connect">Connect</button>
+    <pre id="out">Not connected.</pre>
+
+    <script>
+      const eeg = new PiEEG();
+      const out = document.getElementById('out');
+
+      eeg.onBandPowers((powers) => {
+        out.textContent =
+          `Alpha ${powers.Alpha.toFixed(2)}  Beta ${powers.Beta.toFixed(2)}\n` +
+          `focus ${eeg.getFocusIndex().toFixed(2)}  ` +
+          `relax ${eeg.getRelaxationIndex().toFixed(2)}`;
+      });
+
+      eeg.onDisconnect(() => { out.textContent = 'Disconnected.'; });
+      eeg.onError((err) => { out.textContent = 'Error: ' + err.message; });
+
+      document.getElementById('connect').addEventListener('click', async () => {
+        const info = await eeg.connectBLE({ device: 'octopus-16' });
+        out.textContent =
+          `Connected to ${info.deviceName}: ${info.channels} ch @ ${info.sampleRate} Hz`;
+      });
+    </script>
+  </body>
+</html>
+```
+
+## Connecting
+
+### `connectBLE(options?)`
+
+Prompts the browser device picker and connects a Bluetooth board.
+
+```js
+await eeg.connectBLE();                        // IronBCI-8 (default)
+await eeg.connectBLE({ device: 'ironbci-16' });
+await eeg.connectBLE({ device: 'octopus-16' });
+```
+
+### `connectSerial(options?)`
+
+Prompts the serial port picker and connects a USB board.
+
+```js
+await eeg.connectSerial();                     // IronBCI-32 (default)
+await eeg.connectSerial({ device: 'ironbci-32' });
+```
+
+Both resolve to a connection summary:
+
+```js
+{ device: 'octopus-16', deviceName: 'bioron_16', channels: 16, sampleRate: 250 }
+```
+
+### `disconnect()`
+
+Stops notifications / the serial read loop and releases the device.
+
+```js
+eeg.disconnect();
+```
+
+## Constructor options
+
+```js
+const eeg = new PiEEG({
+  fftSize: 256,        // FFT window (power of 2)
+  updateHz: 12,        // band-power callback rate
+  bufferSeconds: 4,    // per-channel ring buffer length
+  filter: true,        // browser-side DSP (see below)
+});
+```
+
+### The `filter` option
+
+Filtering is **on by default** and mirrors the server/dashboard defaults. Pass
+`false` to receive raw samples, or an object to customise individual stages.
+
+```js
+new PiEEG({ filter: false });                      // no filtering
+
+new PiEEG({ filter: {                              // customise stages
+  hampel: { enabled: true, windowSize: 5, nSigma: 3.0 },
+  bandpass: { low: 1, high: 40, order: 5 },
+  notch: 60,                                        // or { freq: 60, q: 30 }, or false
+}});
+```
+
+| Stage      | Default                                   |
+|------------|-------------------------------------------|
+| `hampel`   | `{ enabled: true, windowSize: 5, nSigma: 3.0 }` |
+| `bandpass` | `{ low: 1, high: 40, order: 5 }`          |
+| `notch`    | `false` (disabled)                        |
+
+Stages can also be changed live after connecting:
+
+```js
+eeg.setBandpass(true, 1, 40, 5);   // enabled, lowcut, highcut, order
+eeg.setNotch(true, 60, 30);        // enabled, freq, Q
+eeg.setHampel({ windowSize: 7 });
+eeg.getFilterConfig();             // current chain config
+```
+
+## Events
+
+```js
+eeg.onData((channels, timestamp) => { /* raw/filtered µV per channel */ });
+eeg.onBandPowers((powers) => { /* averaged across channels, at updateHz */ });
+eeg.onError((err) => { /* stream/decoder error */ });
+eeg.onDisconnect(() => { /* device dropped */ });
+```
+
+`powers` is keyed by band name — `Delta`, `Theta`, `Alpha`, `Beta`, `Gamma`
+(see `PiEEG.FREQUENCY_BANDS`).
+
+## Neural-state helpers
+
+Derived from the latest band powers:
+
+| Method | Returns |
+|--------|---------|
+| `getFocusIndex()` | Beta / (Beta + Theta) |
+| `getRelaxationIndex()` | Alpha / (Alpha + Beta) |
+| `getMeditationIndex()` | (Theta + Alpha) / total power |
+| `isFocused(threshold = 0.6)` | boolean |
+| `isRelaxed(threshold = 0.6)` | boolean |
+| `getBandPower(name)` | single band value |
+| `getBandPowers()` | copy of all band powers |
+| `getSpectrum()` | latest FFT spectrum |
+
+## Status
+
+### `getStats()`
+
+```js
+{
+  connected: true,
+  device: 'octopus-16',
+  deviceLabel: 'Octopus 16',
+  deviceType: 'ble',       // transport: 'ble' | 'serial'
+  numChannels: 16,
+  sampleRate: 250,
+  samplesReceived: 12500,
+  bufferFill: 1.0,         // 0..1 ring-buffer fullness
+}
+```
+
+## Static members
+
+| Member | Description |
+|--------|-------------|
+| `PiEEG.VERSION` | SDK version string |
+| `PiEEG.isWebBluetoothSupported()` | Web Bluetooth availability |
+| `PiEEG.isWebSerialSupported()` | Web Serial availability |
+| `PiEEG.devices(transport?)` | List supported devices (`'ble'` \| `'serial'`) |
+| `PiEEG.FREQUENCY_BANDS` | Band definitions (name, range, colour) |
+
+```js
+PiEEG.devices('ble');
+// [
+//   { id: 'ironbci-8',  label: 'IronBCI-8',  transport: 'ble', channels: 8,  sampleRate: 250 },
+//   { id: 'ironbci-16', label: 'IronBCI-16', transport: 'ble', channels: 16, sampleRate: 250 },
+//   { id: 'octopus-16', label: 'Octopus 16', transport: 'ble', channels: 16, sampleRate: 250 },
+// ]
+```
+
+<Callout type="default">
+For a server-based setup (multiple clients, recording, webhooks, OSC) use the
+[WebSocket API](/software/api/websocket) instead — it needs no browser transport
+permissions and works in any browser.
+</Callout>
