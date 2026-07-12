@@ -21,7 +21,10 @@ started from a **user gesture** (e.g. a button click).
 
 ## Install
 
-<Tabs items={['CDN', 'Script tag (local)', 'ES module / bundler']}>
+`pieeg.js` is a single file, distributed **straight from GitHub** — there is no
+npm account or publish step involved.
+
+<Tabs items={['CDN', 'Package manager', 'Script tag (local)', 'Bundler import']}>
 <Tabs.Tab>
 Load straight from jsDelivr — no download, no build step:
 
@@ -34,8 +37,32 @@ Load straight from jsDelivr — no download, no build step:
 
 <Callout type="warning">
 `@main` always tracks the latest commit. Pin a tag or commit for reproducible
-builds, e.g. `.../PiEEG-server@v1.0.0/pieeg.js`.
+builds, e.g. `.../PiEEG-server@v1.2.0/pieeg.js`.
 </Callout>
+</Tabs.Tab>
+<Tabs.Tab>
+Install directly from the GitHub repo — no registry account required:
+
+```sh
+pnpm add github:pieeg-club/PiEEG-server
+# or
+npm  install pieeg-club/PiEEG-server
+# or
+yarn add pieeg-club/PiEEG-server
+```
+
+Pin a tag or commit for reproducible installs:
+
+```sh
+pnpm add github:pieeg-club/PiEEG-server#v1.2.0
+```
+
+Then import it by package name:
+
+```js
+import PiEEG from '@pieeg/sdk';
+const eeg = new PiEEG();
+```
 </Tabs.Tab>
 <Tabs.Tab>
 Download `pieeg.js` next to your HTML and reference it directly:
@@ -48,8 +75,13 @@ Download `pieeg.js` next to your HTML and reference it directly:
 ```
 </Tabs.Tab>
 <Tabs.Tab>
+Works with any bundler (Vite, webpack, Rollup, esbuild):
+
 ```js
-const PiEEG = require('./pieeg.js'); // CommonJS export
+import PiEEG from '@pieeg/sdk';   // when installed via package manager
+// or, from a local copy:
+const PiEEG = require('./pieeg.js');
+
 const eeg = new PiEEG();
 ```
 </Tabs.Tab>
