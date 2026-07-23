@@ -1,0 +1,208 @@
+---
+title: Buddy — EEG AI Agent
+description: Buddy is a 100% browser-based EEG copilot and AI agent. Live brain panel, a tool-using LLM that reads your brain state, and guided pattern training over Web Bluetooth / Web Serial. No server, no login.
+---
+
+import { Cards, Callout, Steps } from 'nextra/components'
+
+# Buddy — the EEG AI Agent
+
+**Buddy is a 100% browser-based EEG copilot — and it *is* the AI agent.** It pairs a live brain panel with a tool-using LLM that reads your neural state client-side, plus guided pattern training — all powered by Web Bluetooth / Web Serial. There is no server to run, no account to create, and no data leaves the tab.
+
+Buddy is part of [PiEEG Cloud](/cloud). Where the [dashboard](https://cloud.pieeg.com) is for *watching* your signal, Buddy is for *talking to it* — asking questions in plain language, training custom mental-state detectors, and reading an honest, explained picture of your live brain state.
+
+<Cards>
+  <Cards.Card title="Open Buddy → buddy.pieeg.com" href="https://buddy.pieeg.com/" />
+</Cards>
+
+<Callout type="info">
+  Buddy runs entirely in a Chromium browser (Chrome, Edge, Brave, Opera). The signal pipeline, feature extraction, pattern training, and the AI agent's tool calls all execute client-side — no PiEEG server, no login.
+</Callout>
+
+## Getting started
+
+<Steps>
+### Open Buddy and pick a source
+
+Go to **[buddy.pieeg.com](https://buddy.pieeg.com/)**. The **Lobby** asks you to choose a signal source:
+
+- **Demo signal (8 / 16 ch)** — synthetic EEG, no hardware needed.
+- **IronBCI-8 / IronBCI-16 / Octopus 16** — pair over Web Bluetooth.
+- **IronBCI-32** — connect over Web Serial (USB).
+
+### (Optional) Add an AI provider
+
+Choose an [LLM provider](#providers) and paste an API key to enable the chat copilot. Skip it to use Buddy as a pure brain panel, or pick the built-in **Echo** provider for a no-key demo.
+
+### Connect
+
+Click **Connect**. Buddy runs the device pairing gesture, starts the cascade, and drops you into the live panel.
+</Steps>
+
+<Callout type="warning">
+  Web Bluetooth and Web Serial are only available in Chromium browsers over HTTPS or `localhost`. Firefox and Safari cannot pair boards.
+</Callout>
+
+## The brain panel
+
+Buddy reduces the raw stream into language-sized facts and renders them live:
+
+| Card | What it shows |
+|------|---------------|
+| **State** | Smoothed `focus` / `relax` / `engagement` indices (0–1, within-session), dominant band, and a `warming_up` flag while readings settle. |
+| **Band powers** | Relative δ / θ / α / β / γ power, with a per-channel breakdown. |
+| **Quality grid** | Per-channel signal status: `good` / `flat` / `rail` / `noisy` / `line`, with RMS and line ratio. |
+| **Artifacts** | Discrete transients: blinks, double-blinks, jaw clenches, motion. |
+| **Connectivity** | Cross-channel amplitude coupling (Pearson *r* over log band-power envelopes) for a chosen band. |
+| **Trends** | Rolling history of state and band power over the session. |
+| **Cascade monitor** | Live view of the perception tiers (features → quality → state → events). |
+| **Pattern ticker** | Which trained patterns are firing right now, with smoothed probabilities. |
+
+## The AI agent
+
+The chat copilot is a tool-using LLM that runs a multi-turn loop over your live neural cascade — reading state, spectra, artifacts, connectivity, and your trained patterns through read-only tools — and answers in plain language.
+
+It is **100% browser-based**. You bring your own API key, and the agent talks to your chosen provider directly from the tab. There is no PiEEG server hop, and no raw EEG is ever sent to the model.
+
+<Callout type="info">
+  This is the browser-native sibling of the server-side [PiEEG Agent](/software/integrations/pieeg-agent). Same idea — talk to your brain signal — but with no Python, no LSL, and no server. See [Browser vs. server-side](#browser-vs-server-side).
+</Callout>
+
+### How it works
+
+The agent runs a bounded **tool-calling loop**:
+
+1. Your question is appended to the conversation.
+2. The model streams a response; if it requests tools, the agent runs them against the live `BuddyEngine`.
+3. Tool results are fed back and the model continues, up to a small iteration cap, until it answers.
+
+The model **pulls** state through tools on demand — it is never streamed raw samples. This solves the rate mismatch between an LLM (~1 Hz of reasoning) and EEG (250–500 Hz of data).
+
+### Perception cascade (browser edition)
+
+The agent reads a layered reduction of the signal — trimmed to the senses that exist in-browser (no server, no actuators, no notebook/session store):
+
+| Tier | Rate | Representation | Agent sees |
+|------|------|----------------|------------|
+| T0 Raw | 250 Hz | µV samples | Never |
+| T1 Features | ~feature Hz | band powers, quality | Via tools |
+| T2 State | ~1 Hz | focus / relax / engagement | Via tools |
+| T3 Events | sparse | debounced transitions, artifacts | Via tools |
+| T4 Reason | on query | natural-language Q&A + tools | — |
+
+<Callout type="warning">
+  The agent **observes and explains — it does not control the device.** Every tool is read-only. If no data is available yet, it says the stream is still warming up rather than guessing.
+</Callout>
+
+### Tools
+
+The agent grounds every claim in a fresh tool call against the live engine:
+
+| Tool | Returns |
+|------|---------|
+| `get_neural_state` | Smoothed focus / relax / engagement (0–1, within-session), dominant band, quality, `warming_up`. |
+| `get_band_powers` | Relative δ / θ / α / β / γ power and per-channel breakdown. |
+| `analyze_spectrum` | Individual alpha peak (IAF), aperiodic 1/f slope, theta/beta ratio, spectral entropy, frontal alpha asymmetry (optional single channel). |
+| `find_artifacts` | Recent blinks, double-blinks, jaw clenches, motion. |
+| `get_recent_events` | Debounced state transitions (focus/relax/engagement/quality high↔low). |
+| `get_channel_quality` | Per-channel status (`good`/`flat`/`rail`/`noisy`/`line`), RMS, line ratio. |
+| `connectivity` | Cross-channel amplitude coupling (Pearson *r* over log band-power envelopes) for one band. |
+| `list_patterns` | Trained pattern detectors with cross-validated balanced accuracy. |
+| `detect_patterns` | Which trained patterns are firing now, with smoothed probabilities. |
+| `explain_pattern` | Justifies one pattern: threshold, cross-validation, per-channel importance, top features. |
+
+### Providers
+
+Pick a provider in the Lobby or in **Settings** and paste an API key. Cloud providers stream over their standard APIs; local providers run on your own machine; **Echo** needs no key and is handy for a no-cost demo.
+
+| Provider | Type | Key required |
+|----------|------|--------------|
+| Anthropic | Cloud | Yes |
+| OpenAI | Cloud | Yes |
+| Groq | Cloud | Yes |
+| Together AI | Cloud | Yes |
+| Ollama | Local | No |
+| LM Studio | Local | No |
+| Echo | Debug | No (built-in) |
+
+<Callout type="info">
+  One normalized message/tool shape drives all providers: the OpenAI-compatible Chat Completions API (OpenAI, Groq, Together, Ollama, LM Studio), the Anthropic Messages API, and the offline Echo provider.
+</Callout>
+
+### Example conversation
+
+```text
+you > how's my signal?
+buddy > All channels read "good", quality 0.97 — trustworthy.
+
+you > am I focused or relaxed right now?
+buddy > Relaxed, for you right now. Alpha is dominant and focus is low.
+        (Readings are within-session, not clinical.)
+
+you > which of my trained patterns is firing?
+buddy > "meditation" is active (p≈0.88). It's a strong detector —
+        leave-one-rep-out balanced accuracy 0.89, reading mostly O1/O2.
+```
+
+## Pattern training
+
+Buddy's most powerful sense is a **trained pattern detector** — a custom classifier for any mental state you can reproduce (meditation, focus, imagined movement, etc.).
+
+Training is **contrastive**: you record a `REST` baseline and an `ACTIVE` state across several reps. Buddy then fits a per-pattern detector and scores it honestly:
+
+- **Leave-one-rep-out cross-validation (LORO-CV)** splits by rep, not by sample, so temporal leakage cannot inflate the score.
+- **Balanced accuracy** is reported so class imbalance cannot flatter the result.
+- **Channel importance** is exposed via spatial (group-lasso) sparsity — you can see which electrodes the detector actually reads.
+
+A trained detector is far more meaningful than the generic `focus` / `relax` indices, and the AI agent can list, detect, and explain your patterns on demand.
+
+<Callout type="warning">
+  Buddy is designed for neurofeedback research and UX prototyping — **not clinical use**. All indices are within-session and descriptive, not diagnostic.
+</Callout>
+
+## Honest metrics
+
+Buddy is deliberate about what its numbers mean, and its system prompt keeps the agent candid:
+
+- `focus` / `relax` / `engagement` are **0–1 values relative to this session's own range** — described as "high/low for you right now", never absolute or clinical.
+- A `warming_up` flag marks the settling period before enough variance is established; the agent says so when a reading is still settling.
+- **Pattern scores** are leave-one-rep-out balanced accuracy — honest at the data scale you actually have.
+- Poor signal quality or flagged channels are surfaced **before** conclusions are drawn.
+
+## Privacy
+
+Everything stays in your browser tab:
+
+- Raw EEG is decoded, filtered, and analyzed **client-side** — it is never uploaded to a PiEEG server.
+- Trained patterns persist locally in your browser.
+- Your API key and every agent request go **directly** from the tab to your chosen LLM provider — there is no PiEEG middleman. The model receives only the **reduced, language-sized facts** returned by tools, never raw EEG. You choose whether to persist the key.
+
+## Browser vs. server-side
+
+| | **Buddy (browser)** | **[PiEEG Agent](/software/integrations/pieeg-agent) (server-side)** |
+|---|---|---|
+| Runtime | 100% browser | Python process + [PiEEG Server](/software) |
+| Requires | A Chromium browser + API key | `pieeg-server --lsl` running |
+| Data source | Web Bluetooth / Web Serial | Lab Streaming Layer |
+| Senses | State, spectra, artifacts, connectivity, patterns | + session recording, comparison, notebook generation |
+| Device control | Read-only (observe & explain) | Optional, behind a safety gate |
+| Best for | Instant, no-install copilot | Lab notebooks, recording, automation |
+
+## Supported devices
+
+| Source | Channels | Transport |
+|--------|----------|-----------|
+| Demo signal | 8 / 16 | Synthetic (in-browser) |
+| IronBCI-8 | 8 | Web Bluetooth (BLE) |
+| IronBCI-16 | 16 | Web Bluetooth (BLE) |
+| Octopus 16 | 16 | Web Bluetooth (BLE) |
+| IronBCI-32 | 32 | Web Serial (USB) |
+
+## Next steps
+
+<Cards>
+  <Cards.Card title="Open Buddy → buddy.pieeg.com" href="https://buddy.pieeg.com/" />
+  <Cards.Card title="Cloud overview" href="/cloud" />
+  <Cards.Card title="Dashboard" href="https://cloud.pieeg.com" />
+  <Cards.Card title="PiEEG Agent (server-side)" href="/software/integrations/pieeg-agent" />
+</Cards>

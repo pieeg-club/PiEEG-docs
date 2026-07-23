@@ -1,0 +1,87 @@
+---
+title: PiEEG Cloud
+description: cloud.pieeg.com — the 100% browser-based PiEEG platform. Stream, visualize, and decode EEG with zero install, no login, and Web Bluetooth / Web Serial.
+---
+
+import { Cards, Callout, Steps } from 'nextra/components'
+
+# PiEEG Cloud
+
+**[cloud.pieeg.com](https://cloud.pieeg.com) is the 100% cloud, browser-based PiEEG platform.** Open it in Chrome or Edge and stream in seconds — no Python, no install, no login, no account. Packet decoding, DSP, FFT, spectral analysis, and every experience run entirely client-side in your browser.
+
+<Callout type="info">
+  Nothing to set up. Point a Chromium browser at **[cloud.pieeg.com](https://cloud.pieeg.com)**, pick a signal source, and you are streaming. Your EEG never leaves the tab.
+</Callout>
+
+## What runs in the cloud
+
+The cloud platform is built from the [PiEEG-server-cloud](https://github.com/pieeg-club/PiEEG-server-plus) project and ships two browser apps plus an optional installable desktop app:
+
+<Cards>
+  <Cards.Card title="Dashboard (cloud.pieeg.com)" href="https://cloud.pieeg.com" />
+  <Cards.Card title="Buddy — EEG AI agent" href="/cloud/buddy" />
+</Cards>
+
+| App | What it is | Where it runs |
+|-----|-----------|---------------|
+| **Dashboard** | Live waveforms, spectral analysis, topographic maps, session playback, WebXR view, and the experiences gallery. | 100% browser — [cloud.pieeg.com](https://cloud.pieeg.com) |
+| **[Buddy](/cloud/buddy)** | A browser-native EEG copilot and AI agent: live brain panel, a tool-using LLM that reads your brain state (BYO API key), and guided pattern training. | 100% browser — [buddy.pieeg.com](https://buddy.pieeg.com/) |
+
+<Callout type="info">
+  Want native-only features the browser can't reach — Raspberry Pi **SPI** shields, **Lab Streaming Layer**, or **VRChat OSC**? Install **PiEEG Server Plus**, the one-click desktop app that runs the server for you and serves this same dashboard. See the [Desktop App](https://github.com/pieeg-club/PiEEG-server-plus#desktop-app).
+</Callout>
+
+## Connect a device
+
+cloud.pieeg.com talks to hardware directly from the browser using the **Web Bluetooth** and **Web Serial** APIs — no drivers, no server hop. From the Session Lobby you can:
+
+<Steps>
+### Use the Demo Server
+
+Click **▶ Use Demo Server** to stream synthetic EEG (Fly.io mock server) — perfect for exploring without hardware.
+
+### Connect over Web Bluetooth
+
+Pair an **IronBCI** (8 ch) or **IronBCI-16 / Octopus 16** (16 ch) board over Bluetooth LE, straight from the browser.
+
+### Connect over Web Serial
+
+Plug in an **IronBCI-32** (32 ch, USB) and connect over Web Serial at 921600 baud.
+</Steps>
+
+### Supported sources
+
+| Source | Channels | Transport |
+|--------|----------|-----------|
+| Demo signal | 8 / 16 | Synthetic (in-browser) |
+| IronBCI-8 | 8 | Web Bluetooth (BLE) |
+| IronBCI-16 | 16 | Web Bluetooth (BLE) |
+| Octopus 16 | 16 | Web Bluetooth (BLE) |
+| IronBCI-32 | 32 | Web Serial (USB) |
+
+<Callout type="warning">
+  Web Bluetooth and Web Serial require a Chromium-based browser (Chrome, Edge, Brave, Opera) over HTTPS or `localhost`. Firefox and Safari do not expose these APIs.
+</Callout>
+
+## Browser vs. self-hosted
+
+| | **Cloud (cloud.pieeg.com)** | **Self-hosted [PiEEG Server](/software)** |
+|---|---|---|
+| Install | None | Python / Raspberry Pi setup |
+| Boards | IronBCI (BLE), IronBCI-32 (Serial) | + Raspberry Pi SPI shields (PiEEG / PiEEG-16) |
+| DSP & FFT | In-browser | On the server |
+| LSL / OSC | Desktop app only | Yes |
+| Login | None | Optional access code |
+| Best for | Instant demos, BLE/USB boards, sharing | Pi shields, LSL/OSC, automation, recording |
+
+## Privacy
+
+Everything on cloud.pieeg.com happens **inside your browser tab**. Raw samples are decoded, filtered, and analyzed client-side and are never uploaded to a PiEEG server. When you use [Buddy](/cloud/buddy), your API key and chat requests go directly from your browser to the LLM provider you choose — there is no PiEEG middleman.
+
+## Next steps
+
+<Cards>
+  <Cards.Card title="Buddy — EEG AI agent" href="/cloud/buddy" />
+  <Cards.Card title="Self-host the server" href="/software/getting-started/installation" />
+  <Cards.Card title="JavaScript SDK" href="/software/api/javascript-sdk" />
+</Cards>
