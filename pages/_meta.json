@@ -3,6 +3,7 @@
   "hardware": "Hardware",
   "software": "Software",
   "cloud": "Cloud",
+  "about": "About",
   "---": {
     "type": "separator",
     "title": "Links"

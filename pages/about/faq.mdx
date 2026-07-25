@@ -1,0 +1,79 @@
+---
+title: FAQ
+description: Frequently asked questions about PiEEG — what it is, supported hardware, medical-device status, pricing, educational discounts, shipping, support, and licensing.
+---
+
+import { Callout } from 'nextra/components'
+
+# Frequently Asked Questions
+
+## General
+
+### What is PiEEG?
+
+PiEEG is a family of EEG shields and boards that turn a Raspberry Pi, Jetson Nano, Arduino, or standalone USB host into a multi-channel brain-computer interface. It measures biosignals including EEG (brain), EMG (muscles), ECG/EKG (heart), and EOG (eyes). The companion PiEEG Server software streams, records, and exposes real-time data over WebSocket, LSL, OSC, and webhooks.
+
+### Who is PiEEG for?
+
+Researchers, students, makers, startups, and educators who want research-grade biosignal acquisition without the cost of traditional lab equipment. If you can run a Python script, you can get started.
+
+### What hardware platforms are available?
+
+There are 7 hardware platforms ranging from 8 to 32 channels: PiEEG, PiEEG-16, IronBCI, IronBCI-32, MicroBCI, ardEEG, and JNEEG. See the [Hardware](/hardware) section for full specifications.
+
+## Medical & Safety
+
+### Is PiEEG FDA/CE approved for medical use?
+
+<Callout type="error">
+  **No.** PiEEG devices are **not** medical devices and have **not** been certified by any government regulatory agency (FDA, CE, or equivalent). They are designed for education, research, and engineering purposes only.
+</Callout>
+
+PiEEG must not be used for medical diagnosis, treatment, clinical applications, life-support, or any safety-critical use. See [Liabilities](/hardware/safety/liabilities) and [Safety](/hardware/safety) for full details.
+
+### Is PiEEG safe to use on humans?
+
+When used correctly, yes — but you must follow critical safety rules:
+
+- **Always use battery power** (5 V DC) when measuring biosignals from humans. Never connect a PiEEG device to mains power, USB from a grid-connected computer, or wall outlets while in use with human subjects.
+- Do not use if you have a pacemaker or other implanted medical device without consulting a physician first.
+- Discontinue use if you experience discomfort or skin irritation.
+- There is no patient isolation circuitry on the device, so battery isolation is essential.
+
+You are fully responsible for the safe use of the device.
+
+## Purchasing & Support
+
+### Where can I buy PiEEG hardware?
+
+Hardware is sold and shipped through [Elecrow](https://www.elecrow.com/catalogsearch/result/?q=pieeg). Official distribution and support in China is available at [pieeg.cn](https://www.pieeg.cn/).
+
+### What is the typical delivery time?
+
+In-stock items typically ship within 1–2 business days. Custom configurations usually ship within 2–3 weeks. International shipping adds roughly 5–14 days depending on location.
+
+### Do you offer educational discounts?
+
+Universities and educational institutions may qualify for discounts on bulk orders. Contact the team with your institution email for details.
+
+### How do I get technical support?
+
+Join the [Discord community](https://discord.gg/neJ45FR6Sv) for community support, or email pieeg@pieeg.com for technical assistance. Hardware purchases include email support. See [Support & Contact](/about/support) for all channels.
+
+## Software & Licensing
+
+### Is PiEEG open source?
+
+The **software and SDKs are MIT licensed** (including PiEEG Server) and fully public on [GitHub](https://github.com/pieeg-club). Hardware designs are proprietary. You can fork, modify, and build freely on the software side.
+
+### Do I need to write code to use PiEEG?
+
+No. The PiEEG Server includes a browser dashboard for real-time visualization and CSV recording with no code required. For programmatic access, connect any WebSocket client — plain JSON, no SDK required. See the [Quick Start](/software/getting-started/quick-start).
+
+### What integrations are supported?
+
+Lab Streaming Layer (LSL) for OpenViBE / MNE / LabRecorder, Jupyter notebooks, VRChat OSC, webhooks, IFTTT, and Zapier. See [Integrations](/software/integrations).
+
+### How do I troubleshoot problems?
+
+Run `pieeg-server doctor` for self-diagnostics, or test without hardware using `pieeg-server --mock`. See the [Troubleshooting](/software/reference/troubleshooting) guide for common SPI, port, hardware, and dashboard fixes.

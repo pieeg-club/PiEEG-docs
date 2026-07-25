@@ -1,0 +1,63 @@
+---
+title: Support & Contact
+description: How to get help with PiEEG hardware and software — Discord community, GitHub issues, email support, documentation, and self-diagnostics.
+---
+
+import { Callout } from 'nextra/components'
+
+# Support & Contact
+
+Questions about hardware, technical support, partnerships, or general inquiries — here is how to reach the PiEEG team and community.
+
+## Contact Channels
+
+| Channel | Best for | Where |
+|---------|----------|-------|
+| **Discord community** | Real-time help and discussion (2000+ members) | [discord.gg/neJ45FR6Sv](https://discord.gg/neJ45FR6Sv) |
+| **GitHub** | Bug reports, feature requests, contributing code | [github.com/pieeg-club](https://github.com/pieeg-club) |
+| **Email** | Technical support and general inquiries | pieeg@pieeg.com |
+
+For team-specific contact, see the [Team](/about/team) page (Ildar Rakhmatulin — ildar@pieeg.com; Youssef El Abbassi — youssef@pieeg.com).
+
+## Documentation & Self-Help
+
+Before reaching out, the documentation covers most setup and usage questions:
+
+- [Installation](/software/getting-started/installation) — one-line install on Raspberry Pi OS
+- [Quick Start](/software/getting-started/quick-start) — get streaming in under 5 minutes
+- [Configuration](/software/getting-started/configuration) — CLI flags, config file, and service options
+- [Dashboard](/software/features/dashboard) — browser-based real-time visualization
+- [WebSocket API](/software/api/websocket) — real-time data stream on port 1616
+- [Troubleshooting](/software/reference/troubleshooting) — common SPI, port, hardware, and dashboard fixes
+- [Security](/software/reference/security) — authentication, TLS, and network exposure guidance
+- [Signal Quality](/hardware/signal-quality/noise-elimination) — noise elimination and best practices
+
+### Self-Diagnostics
+
+Run the built-in diagnostics to check your setup end-to-end:
+
+```bash
+pieeg-server doctor
+```
+
+Test the software without hardware connected using mock mode:
+
+```bash
+pieeg-server --mock
+```
+
+## Quick Start Recap
+
+1. **Install the server** — one-line install on Raspberry Pi OS enables SPI, installs `pieeg-server`, and starts the service.
+2. **Open the dashboard** — browse to `http://raspberrypi.local:1617`, click **Connect**, and start streaming in real time.
+3. **Stream from code** — connect any WebSocket client to `ws://raspberrypi.local:1616` using plain JSON, no SDK required.
+
+## Support Expectations
+
+- In-stock hardware typically ships within 1–2 business days; custom configurations usually ship within 2–3 weeks. International shipping adds roughly 5–14 days depending on location.
+- Hardware purchases include email support (contact pieeg@pieeg.com), and community support is always available on Discord.
+- Educational institutions may qualify for discounts on bulk orders — contact the team with an institution email for details.
+
+<Callout type="warning">
+  PiEEG is designed for research and engineering purposes only. It is **not a medical device** and is **not FDA/CE certified** for clinical use. For compliance questions, contact the [partnership](/about/partnership) team.
+</Callout>
