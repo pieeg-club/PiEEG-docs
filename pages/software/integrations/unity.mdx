@@ -1,0 +1,233 @@
+---
+title: Unity Plugin
+description: Stream live EEG into Unity and build no-code neuro-reactive avatars with the PiEEG Unity plugin.
+---
+
+import { Callout, Steps, Tabs } from 'nextra/components'
+
+# PiEEG Unity Plugin
+
+Stream live EEG from PiEEG-server into Unity and build no-code neuro-reactive avatars. Map EEG bands to blendshapes or shader properties with a visual routing table, preview with live signals in the editor, and deploy to VRChat or any Unity project.
+
+<Callout type="info">
+  **Current version:** 0.2.0  
+  **Requires:** Unity 2022.3+ • [PiEEG-server](/software/getting-started/installation) running  
+  **VRChat users need:** [VRChat Avatars SDK 3.0](https://vrchat.com/home/download) + [Modular Avatar](https://modular-avatar.nadena.dev/)
+</Callout>
+
+## Features
+
+| Component | What it does | Works without VRChat? |
+|-----------|--------------|----------------------|
+| **Neuro Binder** | UI Toolkit routing table: map EEG bands (`Alpha`, `Focus_Ratio`, etc.) to blendshapes or material properties via AnimationCurve | ✅ |
+| **Live Preview** | Connects to the server in Edit mode, runs FFT, drives your avatar while you tune curves wearing the headset | ✅ |
+| **Neuro Reactor** | Runtime MonoBehaviour that applies bindings in any standalone/XR Unity build | ✅ |
+| **VRChat SDK Automator** | Generates clips + 1D blend tree, merges via Modular Avatar without mutating base FX | VRChat only |
+
+The band-power math (radix-2 FFT, Hanning window, rolling-max normalization, δ/θ/α/β/γ) is a faithful port of the server's spectral pipeline — **what you preview is what OSC delivers**.
+
+## Installation
+
+<Steps>
+
+### Install via Unity Package Manager
+
+1. Open Unity 2022.3 LTS
+2. Go to **Window → Package Manager**
+3. Click **+ → Install package from git URL…**
+4. Enter:
+
+```
+https://github.com/pieeg-club/PiEEG-unity.git?path=/Packages/com.pieeg.unity
+```
+
+No third-party runtime dependencies (uses `System.Net.WebSockets.ClientWebSocket`).
+
+### For VRChat users only
+
+Install these dependencies:
+- [VRChat Avatars SDK 3.0](https://vrchat.com/home/download) (via VCC)
+- [Modular Avatar](https://modular-avatar.nadena.dev/) (via VCC)
+
+The VRChat assembly compiles *only* when both are detected (gated by assembly `defineConstraints`), so the package imports cleanly in plain Unity projects too.
+
+</Steps>
+
+## Quick Start — VRChat
+
+<Steps>
+
+### Select your avatar
+
+Choose the GameObject with a **VRC Avatar Descriptor** component.
+
+### Add Neuro Binder
+
+Add **PiEEG → Neuro Binder** component (via Add Component), or open **Window → PiEEG → Neuro Binder** and it adopts the current selection.
+
+### Add a mapping
+
+1. Choose a **Source** (e.g., `EEG_Alpha`)
+2. Set **Target** to:
+   - *Blendshape*: pick a SkinnedMeshRenderer + blendshape name
+   - *Material Float*: pick a Material + shader property
+3. Shape the **Response Curve** (default is linear 0→1)
+
+### Live preview
+
+1. Start [PiEEG-server](/software/getting-started/installation)
+2. Press **Start Live Preview** in the Neuro Binder
+3. Watch the avatar react in Edit mode while you tune curves
+
+### Build mappings
+
+1. Press **Build Mappings**
+2. This writes `Assets/PiEEG/Generated/<Avatar>/PiEEG_FX.controller`
+3. Adds a `PiEEG Neuro` child GameObject with Modular Avatar components
+4. Upload as usual — nothing in your base FX changed
+
+</Steps>
+
+<Callout type="info">
+  On the server, run the [OSC/VRChat bridge](/software/integrations/vrchat-osc) so it emits `/avatar/parameters/EEG_<Band>` (0–1). The parameter names registered by the Automator match exactly.
+</Callout>
+
+## Quick Start — Any Unity Project
+
+For desktop, mobile, or XR experiences (no VRChat):
+
+<Steps>
+
+### Add components
+
+Add both **Neuro Binder** + **Neuro Reactor** to a GameObject.
+
+### Wire bindings
+
+Create mappings the same way as VRChat (source → target → curve).
+
+### Runtime
+
+The Reactor applies bindings at runtime and in Edit mode automatically.
+
+</Steps>
+
+## Available EEG Sources
+
+| Source | Description |
+|--------|-------------|
+| `EEG_Delta` | 0.5–4 Hz (slow waves, deep sleep) |
+| `EEG_Theta` | 4–8 Hz (meditation, drowsiness) |
+| `EEG_Alpha` | 8–13 Hz (relaxed, eyes closed) |
+| `EEG_Beta` | 13–30 Hz (focus, active thinking) |
+| `EEG_Gamma` | 30–100 Hz (high cognition) |
+| `EEG_Focus_Ratio` | Beta / (Alpha + Theta) |
+| Custom | Define in server config |
+
+All sources are normalized 0–1 via rolling-max with configurable window (default 10 seconds).
+
+## Raw Stream API
+
+If you need frame-level access instead of band powers:
+
+```csharp
+using PiEEG.Unity;
+using UnityEngine;
+
+public class BrainDemo : MonoBehaviour
+{
+    public PiEEGStream stream;
+    
+    void OnEnable()  => stream.OnFrame += HandleFrame;
+    void OnDisable() => stream.OnFrame -= HandleFrame;
+    
+    void HandleFrame(PiEEGFrame frame)
+    {
+        // frame.channels[i] = µV
+        // frame.t = unix timestamp (seconds)
+        // frame.n = sample index
+        float ch0 = frame.channels[0];
+        transform.localScale = Vector3.one * (1f + Mathf.Abs(ch0) * 0.001f);
+    }
+}
+```
+
+## Testing
+
+The package includes hardware-free unit tests:
+
+1. Open **Window → General → Test Runner → EditMode**
+2. Run **SpectralTests**
+
+These feed synthetic sine waves and assert the band-power pipeline (`FftEngine`, `BandPowerAnalyzer`, `RollingNormalizer`, `NeuroBinding`) behaves like the server.
+
+End-to-end testing (with hardware) follows the Quick Start flow above.
+
+## Architecture
+
+```
+┌─────────────────┐
+│  PiEEG-server   │  ← WebSocket (ws://raspberrypi.local:1616)
+└────────┬────────┘
+         │ JSON frames { t, n, channels: [...] }
+         ↓
+┌─────────────────┐
+│  PiEEGStream    │  ← C# WebSocket client (ClientWebSocket)
+└────────┬────────┘
+         │ OnFrame event
+         ↓
+┌─────────────────┐
+│  FftEngine      │  ← 256-sample FFT, Hanning window
+└────────┬────────┘
+         │ Spectral bins
+         ↓
+┌─────────────────┐
+│ BandPowerAnalyzer│ ← Log power per band (δθαβγ)
+└────────┬────────┘
+         │ Raw band powers
+         ↓
+┌─────────────────┐
+│ RollingNormalizer│ ← 10s rolling max → [0,1]
+└────────┬────────┘
+         │ Normalized floats
+         ↓
+┌─────────────────┐
+│  NeuroBinding   │  ← AnimationCurve → target value
+└────────┬────────┘
+         │
+    ┌────┴────┐
+    ↓         ↓
+Blendshape  Material.SetFloat()
+```
+
+## Troubleshooting
+
+### Live preview not connecting
+
+- Verify PiEEG-server is running: `pieeg-server` (default port 1616)
+- Check WebSocket URL in Neuro Binder (default: `ws://raspberrypi.local:1616`)
+- Ensure firewall allows WebSocket connections
+
+### VRChat parameters not updating
+
+- Enable OSC in VRChat: **Options → OSC → Enable**
+- Run server with `--osc` flag: `pieeg-server --osc`
+- Check parameter names match: `/avatar/parameters/EEG_Alpha` etc.
+
+### Build Mappings button grayed out
+
+- Ensure VRChat SDK and Modular Avatar are installed
+- Select a GameObject with VRC Avatar Descriptor
+- Check Unity version is 2022.3+
+
+## Repository & License
+
+- **Source:** [github.com/pieeg-club/PiEEG-unity](https://github.com/pieeg-club/PiEEG-unity)
+- **License:** MIT
+- **Package name:** `com.pieeg.unity`
+
+## Related Documentation
+
+- [VRChat OSC Integration](/software/integrations/vrchat-osc) — Server-side OSC bridge configuration
+- [WebSocket API](/software/api/websocket) — Low-level protocol reference
+- [PiEEG Server Features](/software/features/server) — Server capabilities overview
