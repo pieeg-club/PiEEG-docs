@@ -1,6 +1,6 @@
 {
   "index": "PiEEG XR Intro",
   "required-equipment": "Required Equipment",
-  "Connections": "Connection",
+  "connections": "Connection",
   "software": "Software Setup"
 }
