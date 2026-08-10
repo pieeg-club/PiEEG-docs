@@ -1,4 +1,3 @@
-
 ---
 title: "Service"
 ---
@@ -33,7 +32,7 @@ Download and install **STM32CubeProgrammer** — the official STMicroelectronics
 
 ### Step 3 — Wire the Device (SWD)
 
-Connect the ST-Link to the **ironbci** board (the PiEEG BCI, modified for PiEEG XR) using the four cables. We use the **SWD (Serial Wire Debug)** interface — a two-wire programming and debug protocol for STM32 microcontrollers, plus ground and reset.
+Connect the ST-Link to the **ironbci** board using the four cables, over the **SWD** interface.
 
 | ST-Link | ironbci | Signal |
 |---------|---------|--------|
@@ -44,7 +43,6 @@ Connect the ST-Link to the **ironbci** board (the PiEEG BCI, modified for PiEEG 
 
 ![SWD wiring between ST-Link and ironbci](/images/hardware/2026/01/PiEEG_XR_13.png)
 ![images](/images/hardware/2026/01/PiEEG_XR_14.jpg)
-
 
 ### Step 4 — Flash the Firmware
 
@@ -61,20 +59,11 @@ Get the latest hex file here:
 
 <Cards>
   <Cards.Card title="Video: Update the firmware step by step" href="https://youtu.be/zU82j_DZxko" />
-
-
-
+</Cards>
 
 ## 2. Poor Mechanical Contact
 
 Check the connection between the electrodes and the skin — it should be firm and consistent.
-
-If contact is poor at a specific point, you can add a new electrode position:
-
-1. Disconnect the cable from the electrode.
-2. Make a new hole in the silicone part.
-3. Insert the electrode into the new hole.
-4. Reconnect the cable.
 
 ## 3. Noise
 
@@ -84,20 +73,7 @@ To eliminate noise, follow the standard recommendations that apply to all PiEEG 
 
 ## 4. Mask Doesn't Sit Correctly
 
-If the mask has shifted or fallen out of position:
-
-1. Reseat the soft part of the mask so it sits in exactly the right position — no gaps and no bending.
-2. If needed, try removing the soft part behind the silicone and using the mask without it.
-3. Use stickers to hold the mask securely in place.
+If the mask has shifted or fallen out of position, reseat the soft part so it sits correctly.
 
 > [!TIP]
 > A stable, well-positioned mask is the single biggest factor in clean signal quality.
-
-
-
-
-
-https://youtu.be/zU82j_DZxko
-
-
-</Cards>
