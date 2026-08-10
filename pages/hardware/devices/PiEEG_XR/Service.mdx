@@ -5,4 +5,68 @@ title: "Service"
 
 
 
-test 
+---
+title: "Service"
+---
+
+import { Cards } from 'nextra/components'
+
+# Service
+
+## Update Framework
+
+If you have trouble connecting to the software over **BLE**, the fix is usually to update the microcontroller firmware by uploading a new **hex file**.
+
+### What You Need
+
+- An **ST-Link** programmer
+- The cables included in the package with the ST-Link
+- A computer with a free USB port
+
+> [!NOTE]
+> The ST-Link and its cables ship inside the same package.
+
+![ST-Link programmer](/images/hardware/2026/01/PiEEG_XR_stlink.png)
+
+### Step 1 — Connect the ST-Link
+
+Connect the ST-Link to your computer over USB. It should appear as a **COM port** in Device Manager.
+
+> [!IMPORTANT]
+> If the ST-Link is not recognized, update its **driver** and reconnect.
+
+### Step 2 — Install STM32CubeProgrammer
+
+Download and install **STM32CubeProgrammer** — the official STMicroelectronics tool for flashing firmware:
+
+[st.com/en/development-tools/stm32cubeprog.html](https://www.st.com/en/development-tools/stm32cubeprog.html)
+
+### Step 3 — Wire the Device (SWD)
+
+Connect the ST-Link to the **ironbci** board (the PiEEG BCI, modified for PiEEG XR) using the four cables. We use the **SWD (Serial Wire Debug)** interface — a two-wire programming and debug protocol for STM32 microcontrollers, plus ground and reset.
+
+| ST-Link | ironbci | Signal |
+|---------|---------|--------|
+| GND | GND | Ground reference |
+| RST | RST | Reset (NRST) |
+| SWD | SWD | Data line (SWDIO) |
+| CLK | CLK | Clock line (SWCLK) |
+
+![SWD wiring between ST-Link and ironbci](/images/hardware/2026/01/PiEEG_XR_swd.png)
+
+### Step 4 — Flash the Firmware
+
+1. In **STM32CubeProgrammer**, click **Connect**.
+2. Open the new **hex file**.
+3. Upload it to the device.
+4. **Disconnect** the device and **reset** it.
+
+Get the latest hex file here:
+
+[PiEEG_XR_Hardware / Firmware / hex](https://github.com/pieeg-club/PiEEG_XR_Hardware/tree/main/Firmware/hex)
+
+### Video Guide
+
+<Cards>
+  <Cards.Card title="Video: Update the firmware step by step" href="ADD_VIDEO_URL" />
+</Cards>
