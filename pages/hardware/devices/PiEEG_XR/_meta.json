@@ -3,5 +3,6 @@
   "required-equipment": "Required Equipment",
   "connections": "Connection",
   "software": "Software Setup",
-  "Service":"Service"
+  "Service":"Service",
+   "FQA":"FQA"
 }
