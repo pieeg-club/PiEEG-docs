@@ -1,31 +1,68 @@
+
 ---
 title: "How to connect PiEEG XR"
 ---
 
-The BCI unit is located inside the enclosure. The enclosure features mounting wings on the bottom that attach directly to the side straps of the Meta Quest.
-General view of device. Example for Meta Quest S3  
-![Image](/images/hardware/2026/01/pieeg_XR_back.png)  
+# How to Connect PiEEG XR
 
-To establish the setup, you need to remove the old mask from the Meta Quest and put the PiEEG XR 
-as shown in this image   
+## How It Works
+
+The PiEEG XR has two physical parts that attach to your headset:
+
+1. A **silicone face mask** with built-in electrodes. This replaces (or sits in place of) your headset's original facial interface and touches your face to pick up EEG/EMG signals.
+2. A **BCI enclosure (box)** connected to the mask by a cable. Inside the box is the brain-computer interface, which streams data wirelessly over **BLE (Bluetooth Low Energy)**.
+
+To set up, you swap in the mask, mount the box on the headset, and power it from a USB-C power bank. Once powered, the device starts advertising over Bluetooth under the name **`PiEEG XR`**.
+
+> [!NOTE]
+> Example shown is for the **Meta Quest 3**. The enclosure and mask are configured per headset model — see the [Required Equipment](#) page for compatibility.
+
+General view of the device:
+
+![PiEEG XR — rear view](/images/hardware/2026/01/pieeg_XR_back.png)
+
+---
+
+## Step 1 — Replace the Face Mask
+
+Remove the original facial interface from your headset and snap the PiEEG XR mask into place. It attaches with four buckles.
+
+1. Remove the original facial interface.
+2. Align the four buckles on the interface.
+3. Press down to snap the **two back** buckles.
+4. Press down to snap the **two front** buckles.
+
+![Replacing the PiEEG XR face mask](/images/hardware/2026/01/pieeg_xr_mask_steps.png)
+
+> [!TIP]
+> If you'd rather keep your existing mask, you can instead remove just the **silicone insert** from the PiEEG XR and fit it into your own setup.
+
+---
+
+## Step 2 — Mount the BCI Enclosure
+
+The BCI box mounts to the headset using the head strap. The best fit is achieved by removing the strap, seating the box, and reattaching the strap over it.
+
+1. Remove the head strap from the VR headset.
+2. Place the plastic BCI box against the headset, then reattach the head strap to hold it in place.
+3. Route the cable from the mask to the box. The device is now mounted.
+
+![Mounting the PiEEG XR BCI enclosure](/images/hardware/2026/01/pieeg_xr_box_steps.png)
+
+---
+
+## Step 3 — Power On
+
+Connect a **5 V USB-C power bank** to the PiEEG XR.
+
+Once powered, the device begins advertising over Bluetooth as **`PiEEG XR`**. You can now pair it and start streaming — see the [PiEEG Software page](#) for connecting and recording.
+
+
+
+
+
+
+
+
+
 ![Image](/images/hardware/2026/01/pieeg_xr1.jpg)    
-
-After that, need put box with the brain-computer interface inside the headset 
-According to this image   
-![Image](/images/hardware/2026/01/PiEEG_XR_10.png)    
-
-Step 1 — Mount the PiEEG Enclosure
-Detach the side strap from your Meta Quest 3S.
-
-Insert the strap through the mounting wings on the bottom of the PiEEG enclosure.
-Reattach the side strap back onto the headset.
-
-Step 2 — Replace the Facial Interface
-Remove the original facial interface (mask) from the Meta Quest 3S and snap the new interface into place.
-
-Step 3 — Power On
-Connect your external power bank to the PiEEG XR to power on the device.
-
-
-
-
