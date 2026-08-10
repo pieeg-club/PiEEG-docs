@@ -1,5 +1,54 @@
-
-
 ---
-title: "FQA"
+title: "FAQ"
 ---
+
+import { Cards } from 'nextra/components'
+
+# Frequently Asked Questions
+
+### The device is not visible
+
+This is usually a power supply problem.
+
+- Use a **USB-to-USB** cable (USB on one end, USB on the other). This is the most reliable option.
+- To connect to a battery, you can use a **USB to USB-C adapter** on the other end.
+- Open the case from the box and check whether an **LED lights up inside** when you connect power. If no LED comes on, check your cable.
+
+See [Required Equipment](#) for the recommended power setup.
+
+### The silicone mask fell off
+
+Use your headset's **original mask together with our silicone insert**, and adjust it manually until it sits firmly in place with no gaps or bending.
+
+More detail on [How to Connect PiEEG XR](#).
+
+### I can't connect to the data
+
+This is usually a **BLE** issue — the fix is to update the microcontroller firmware.
+
+See [Service → Update Framework](#) for step-by-step instructions.
+
+### The data is too noisy
+
+Poor contact or environmental noise is the most common cause.
+
+See [Poor Signal / Noise](#) and the [Noise Elimination Guide](https://docs.pieeg.com/hardware/signal-quality/noise-elimination/).
+
+### I need support
+
+We're happy to help — reach out any time:
+
+<Cards>
+  <Cards.Card title="Ask on Discord" href="ADD_DISCORD_INVITE" />
+  <Cards.Card title="Email us" href="mailto:pieeg@pieeg.com" />
+</Cards>
+
+### I want to contribute
+
+Contributions are always welcome. Get in touch on Discord or by email, and check the hardware repository:
+
+[PiEEG XR Hardware on GitHub](https://github.com/pieeg-club/PiEEG_XR_Hardware)
+
+### Is this a medical or consumer device?
+
+**No.** PiEEG XR is a **research setup intended for research purposes only**. It is not a medical device and is not intended for diagnosis, treatment, or any clinical or consumer medical use.
