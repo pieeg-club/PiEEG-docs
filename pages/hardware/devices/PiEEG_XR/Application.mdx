@@ -42,7 +42,7 @@ Wipe the electrode contact areas with an alcohol pad to remove oil, sweat residu
  
 Use your headset's **original mask together with the silicone insert**, and adjust it until it sits firmly with no gaps or bending. Every electrode needs steady, even pressure — a mask that shifts under the headset is the fastest way to lose the signal.
  
-### Assist dry electrodes with a little gel
+### Optionally. Assist dry electrodes with a little gel
  
 The XR mask supports both **dry and gel** electrodes. Adding a small amount of conductive gel or saline to the dry contacts stabilizes the electrode–skin interface and is the single most effective way to cut motion artifact during activity.
  
@@ -75,7 +75,7 @@ With the mask on and sitting still, each channel should be a **relatively flat l
 | What you see | What it means | Fix |
 | --- | --- | --- |
 | Gentle line, small wander, reacts to blinks | **Good** — real signal | Ready to test below |
-| Flat straight line, no movement | Dead channel / no contact | Reseat that electrode, add gel |
+| Flat straight line, no movement | Dead channel / no contact | Reseat that electrode, add gel (Optionally) |
 | Pinned at the top or bottom (railed) | Saturated — usually a bad **reference** | Re-check reference / bias / ground |
 | Thick constant fuzzy band | **50/60 Hz mains hum** | Battery power only, move from EMI, apply notch |
 | Large slow rolling wander | Drift (sweat, motion, filter settling) | Wait to settle, dry skin, steady the mask |
@@ -90,10 +90,10 @@ These prove the signal is **coming from you**, not from the environment. Do each
 | **Blink test** | Blink hard 3–5 times | Large, sharp deflections — strongest in the **front (forehead) channels** | Frontal electrodes have good contact and are picking up real biosignal |
 | **Eye movement** | Look left, then right | Slower deflections, opposite direction on left vs right frontal channels | Frontal contact and correct channel mapping |
 | **Jaw clench** | Clench your teeth briefly | A burst of **high-frequency fuzz** (EMG) that stops when you relax | Electrodes are responsive; also shows what muscle noise looks like |
-| **Alpha test** | Sit still, relax, **close eyes ~10 s**, then open | A rise in smooth **8–12 Hz (alpha)** waves in the **back (occipital) channels** while eyes are closed, dropping when you open them | This is the definitive proof you are recording real brain activity |
+| **Alpha test** | Only for Academic Version. Sit still, relax, **close eyes ~10 s**, then open | A rise in smooth **8–12 Hz (alpha)** waves in the **back (occipital) channels** while eyes are closed, dropping when you open them | This is the definitive proof you are recording real brain activity |
  
 <Callout type="warning">
-  **The blink test is your one-second sanity check — always do it.** If blinking produces no visible deflection on the frontal channels, those electrodes are not making contact. Stop and fix the fit (reseat, add gel, tighten the mask) before going any further. There is no point recording a channel that can't even see a blink.
+  **The blink test is your one-second sanity check — always do it.** If blinking produces no visible deflection on the frontal channels, those electrodes are not making contact. Stop and fix the fit (reseat, add gel(Optionally), tighten the mask) before going any further. There is no point recording a channel that can't even see a blink.
 </Callout>
 ### Take a still baseline
  
@@ -122,7 +122,7 @@ Even with a good setup, moving data benefits from processing:
 - [ ] Board noise floor verified clean (Test 1 in the Noise Elimination Guide)
 - [ ] Skin wiped with alcohol and dried
 - [ ] Mask firm and even under the headset, no shifting
-- [ ] A little gel/saline on dry electrodes
+- [ ] Optionally, A little gel/saline on dry electrodes
 - [ ] Streaming over BLE, or cable clipped with a strain-relief loop
 - [ ] Reference / bias / ground contacts solid
 - [ ] **Data streaming, every channel moving (none flat or railed)**
