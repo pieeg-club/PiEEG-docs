@@ -5,5 +5,6 @@
   "connections": "Connection",
   "software": "Software Setup",
   "Service":"Service",
+  "Application":"Application",
    "FQA":"FQA"
 }
