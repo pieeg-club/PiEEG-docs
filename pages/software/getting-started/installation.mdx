@@ -59,6 +59,26 @@ pieeg-server --device ironbci8 --ble-address AA:BB:CC:DD:EE:FF  # skip scan
   IronBCI boards use the ADS1299 chip over BLE and support 8 channels. The BLE transport requires the `bleak` Python package (≥0.21).
 </Callout>
 
+## JNEEG (NVIDIA Jetson Nano)
+
+The JNEEG shield (8-channel, single ADS1299) runs on the Jetson Nano. Install the
+SPI dependency and run with `--device jneeg`:
+
+```bash
+pip install pieeg-server[rpi]
+pieeg-server --device jneeg
+```
+
+`--device jneeg` applies the `jetson-nano` profile automatically (600 kHz SPI,
+GPIO on `/dev/gpiochip0`). Enable SPI on the 40-pin header with `jetson-io`
+first — [Software with JNEEG](/hardware/devices/jneeg/software) walks through
+SPI enablement and GPIO permissions.
+
+<Callout type="info">
+  The `rpi` extra just installs `spidev`, which is generic Linux SPI and works on
+  the Jetson Nano. The Pi-only `setup.sh` script is not used on Jetson.
+</Callout>
+
 ## Optional Dependencies
 
 | Extra | Install | Use case |

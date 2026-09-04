@@ -2,6 +2,80 @@
 title: "How to start. Software with JNEEG"
 ---
 
+import { Steps, Callout } from 'nextra/components'
+
+# How to start. Software with JNEEG
+
+### PiEEG Server
+
+JNEEG runs the official [PiEEG Server](https://github.com/pieeg-club/PiEEG-server) —
+the same real-time streaming, dashboard, recording, and integrations available on
+the Raspberry Pi boards. It is an 8-channel board (single ADS1299); run it with
+`--device jneeg`, which applies the `jetson-nano` hardware profile automatically
+(600 kHz SPI, GPIO on `/dev/gpiochip0`).
+
+<Steps>
+
+#### Enable SPI on the 40-pin header
+
+SPI is off by default on the Nano. Enable it with NVIDIA's config tool:
+
+```bash
+sudo /opt/nvidia/jetson-io/jetson-io.py
+```
+
+In the menu: **Configure 40-pin header** → enable **spi1** → **Save and reboot**.
+After reboot, confirm the device node exists:
+
+```bash
+ls /dev/spidev0.0
+```
+
+#### Grant SPI/GPIO access
+
+Add your user to the `spi` and `gpio` groups so you don't need `sudo`:
+
+```bash
+sudo groupadd -f spi
+sudo usermod -aG spi,gpio "$USER"
+```
+
+Log out and back in (or reboot) for the groups to take effect.
+
+#### Install the server
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install pieeg-server[rpi]
+```
+
+<Callout type="info">
+  The `rpi` extra just installs `spidev`, which is generic Linux SPI and works on
+  the Jetson Nano. The Pi-only `setup.sh` script is not used on Jetson.
+</Callout>
+
+#### Verify and run
+
+```bash
+pieeg-server doctor          # diagnose SPI, GPIO, and dependencies
+pieeg-server --device jneeg  # start streaming (8 channels)
+```
+
+The `jetson-nano` profile auto-detects from `/proc/device-tree/model`. Open
+**http://localhost:1617** for the dashboard.
+
+</Steps>
+
+<Callout type="warning">
+  **DRDY pin check (one-time).** The `jetson-nano` profile assumes the data-ready
+  line (header pin 7) maps to line offset **216** on `/dev/gpiochip0`. If samples
+  never arrive, confirm the offset for your JetPack release with
+  `sudo apt install -y gpiod && gpioinfo gpiochip0`, then pass the chip explicitly:
+  `pieeg-server --device jneeg --gpio-chip /dev/gpiochip0`.
+</Callout>
+
 ### SDK   
 
 Scripts are available on GitHub. Read data with a band-pass filter and real-time visualisation with Jetson Nano for [graph](https://github.com/Ildaron/EEG-with-JetsonNano/blob/master/GUI/1.Graph_real_time.py)  
