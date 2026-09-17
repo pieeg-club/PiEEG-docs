@@ -3,6 +3,7 @@
   "dashboard": "Dashboard",
   "registers": "ADS1299 Registers",
   "experiences": "Experiences",
+  "biopose": "BioPose Recorder",
   "detectors": "Detectors",
   "recording": "Recording"
 }

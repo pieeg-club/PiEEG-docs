@@ -1,37 +1,178 @@
 ---
 title: Experiences Gallery
-description: Community-driven immersive EEG visualizations — lazy-loaded, card-based launcher.
+description: Community-driven immersive EEG visualizations, games, and ML labs — lazy-loaded from the cloud dashboard registry.
 ---
 
-import { Callout, Steps } from 'nextra/components'
+import { Callout, Steps, Cards } from 'nextra/components'
 
 # Experiences Gallery
 
-Community-driven immersive EEG visualizations — lazy-loaded, card-based launcher, simple registry for contributors.
+The gallery on **[cloud.pieeg.com](https://cloud.pieeg.com)** (and the self-hosted dashboard) is a card-based launcher for immersive EEG experiences. Every entry is lazy-loaded from a single registry — adding one does not grow the initial dashboard bundle.
 
-## Built-in Experiences
+Open the gallery with **`V`**, or from the dashboard header. Search and filter by category (VR, AR, XR/MR, BCI, ML, EOG, Face/EMG, Audio, Games, Lab, Meditation). Featured cards currently highlight **octoCaptcha**, **Neural Flight**, **PiEEG Virtual Lab**, **Room Buddy**, **Mind Reader**, and **Spoon Bend**.
 
-| Experience | Description |
+<Callout type="info">
+  Catalog below matches the local PiEEG-server-cloud registry (`cloud/src/experiences/registry.ts`) — **34** playable experiences. Empty folders that are not registered (`blink-runner`, `affective-mirror`) are omitted.
+</Callout>
+
+## How to run them
+
+| Where | How |
 |---|---|
-| **Neural Wave Space** | Three.js 3D arc of 16 wave strips with amplitude-responsive color, starfield, WebXR + hand tracking |
-| **Blink Browser** | Scroll articles via eye blinks; per-user calibration; frontal electrode monitoring |
-| **Neural Sonification** | Brainwaves → live music; bands mapped to drone, FM pad, lead, harmonics, shimmer; DJ controls |
-| **VRChat OSC** | Stream band powers into VRChat; chatbox + avatar parameter output; live config UI |
-| **Spoon Bend** | Matrix-style telekinesis controlled by focus/beta/gamma; 3D spoon + digital rain |
-| **Webhook Wizard** | Guided 60-second first-webhook setup; live EEG feedback; IFTTT/Zapier templates |
-| **Eye Track** | EOG-based gaze estimation from Fp1/Fp2; polynomial ridge regression with online adaptive learning; save/load models; live algorithm editor |
+| **Cloud** | [cloud.pieeg.com](https://cloud.pieeg.com) → connect a board (or **Use Demo Server**) → **`V`** |
+| **Self-hosted** | PiEEG Server dashboard at `http://<host>:1617` → same gallery |
+| **Hardware** | Most run on the raw browser EEG stream (IronBCI BLE / Serial, demo signal). A few need extra hardware or a local server — see badges below. |
+
+| Badge | Meaning |
+|---|---|
+| **PiEEG Server** | Needs a locally running PiEEG Server (WebSocket commands). Will not work in 100% cloud. |
+| **Aura required** | Needs Aura VR (8-ch palm EMG + IMU). |
+| **VR / hands** | WebXR headset and optional hand tracking. |
+
+Every experience must explain itself in the UI: a **How it works** overlay on first open, a header button to reopen it, and honest sensor limits. Do not bury that only in a README.
+
+---
+
+## Featured
+
+| Experience | Tag | Description |
+|---|---|---|
+| **octoCaptcha** | EOG / Liveness | Cognitive CAPTCHA: blink N times after a random GO cue. Verifies living EOG morphology on Fp1/Fp2 (envelope, spatial coherence, count, human timing). Proof-of-concept liveness, not a production credential. |
+| **Neural Flight** | VR / AR | First-person flight over a procedural world — focus is lift. Demo autopilot, then Live. Asset-free noise terrain. VR or AR. |
+| **PiEEG Virtual Lab** | Lab / VR | Photoreal lab with the live dashboard on the workstation monitor. WASD + mouse, sit to interact, or enter VR. |
+| **Room Buddy (AR)** | AR | Place a buddy on your floor with phone AR. It waves, hops on focus, flinches on blink. Vanilla three.js WebXR. |
+| **Mind Reader** | BCI / ML | P300 “guess my number” (1–9). Cued teaching trains placement-agnostic shrinkage-LDA; Bayesian accumulation reads live. Each round folds back into training. |
+| **Spoon Bend** | Focus | Matrix-style telekinesis. Beta/gamma drive the 3D spoon; digital rain; baseline calibration. |
+
+---
+
+## Liveness & identity
+
+| Experience | Tag | Description |
+|---|---|---|
+| **octoCaptcha** | EOG / Liveness | Random nonce blink count after GO. Replay fails; a compromised EEG source can spoof any sensor CAPTCHA. |
+| **octoAuth** | BCI / Biometric | Octopus-16 neck array. Random neck-action challenge + high-density EMG identity (group-lasso electrode map, LORO-CV). Proof-of-concept, not a production credential. |
+
+---
+
+## Learn
+
+| Experience | Tag | Description |
+|---|---|---|
+| **Signal Lab** | Learn / Game | DSP mini-course: Time Domain → Cleaning → Frequency Domain. Theory, live EEG sandbox, quiz (up to 3 stars). Progress saved. |
+
+---
+
+## XR, VR & AR
+
+| Experience | Tag | Notes | Description |
+|---|---|---|---|
+| **Room Buddy (AR)** | AR | | Phone AR buddy driven by focus and blinks. |
+| **PiEEG Virtual Lab** | Lab / VR | VR + hands | Walk a neuroscience lab; full dashboard on the in-world monitor. |
+| **Neural Wave Space** | VR / 3D | VR + hands | 3D EEG wave arc in a starfield. |
+| **Neural Flight** | VR / AR | VR + hands | Focus-controlled flight over an endless daylit world. |
+| **Northern Lights** | VR / Audio | VR + hands | Aurora curtains shaped by δ/α/γ; ethereal sonification. |
+| **Premeditatio Malorum** | XR / Stoic | VR | Mixed-reality Stoic pairs of 360° YouTube scenes. Hold high alpha through disruption; score is beta-spike recovery to baseline. |
+| **The Glitching Reality** | MR / Shader | | Camera passthrough + WebGL2. Frontal Alpha Asymmetry: equanimity keeps the room clear; load shreds it. Optional mental-arithmetic stressor. |
+
+---
+
+## Audio
+
+| Experience | Tag | Description |
+|---|---|---|
+| **Neural Sonification** | Audio | Bands → music: Delta drone, Theta FM pad, Alpha lead, Beta harmonics, Gamma shimmer. DJ controls for scale, key, reverb, delay. |
+| **MindCast** | Audio | Podcast speed follows focus — zone out and it slows, lock in and it speeds up. |
+| **Northern Lights** | VR / Audio | Wind, drones, and chimes layered on the aurora. |
+
+---
+
+## Games
+
+| Experience | Tag | Notes | Description |
+|---|---|---|---|
+| **Spoon Bend** | Focus | | Bend a virtual spoon with focus. |
+| **Penalty Shooters** | BCI / Game | | Retro SNES penalty kicks. Blink to shoot; trainless adaptive frontal detector. |
+| **Neural Maze Lock** | BCI / Game | | EOG gaze maze with focus / calm / blink gates. Tracks false triggers and completion time. |
+| **Orb Control** | BCI / EOG | | Focus grabs the orb, gaze moves it, calm steadies it, artifacts destabilize it, blink releases charge. |
+| **Hand of God** | BCI / Game / sEMG | Aura | Mexico ’86 hang-ball punch. Space/click, or Aura fist. Score only when the referee looks away. |
+
+---
+
+## BCI & machine learning
+
+| Experience | Tag | Description |
+|---|---|---|
+| **Blink Browser** | BCI | Scroll articles with blinks. Per-user calibration on frontal electrodes. |
+| **Eye Track** | BCI | EOG gaze from Fp1/Fp2. Polynomial ridge regression, online adaptive learning, `localStorage` models, live algorithm editor. |
+| **P300 Mini-Game** | BCI / ML | Shrinkage-LDA P300 decoder, Bayesian accumulation, labelled-dataset export. Themeable stimulus grid; reusable marker contract. |
+| **Mind Reader** | BCI / ML | P300 number oracle with live teaching. |
+| **Silent Speech Interface** | BCI / ML / sEMG | Subvocal word decoder (AlterEgo-inspired). Closed vocabulary, onset epoching, L2 + group-lasso, LORO-CV. Not open dictation. |
+
+See also [Detectors](/software/features/detectors) for the shared `useFocus` / `useRelax` / `useBlink` / `useBandPowers` hooks many of these sit on.
+
+---
+
+## Avatar, face & EMG
+
+| Experience | Tag | Description |
+|---|---|---|
+| **Avatar Neurofeedback Studio** | BCI / Avatar | VRM face from EEG. Drag channel × band → expression. Contrastive REST vs ACTIVE trainer ranks 32 ch × 5 bands by Cohen’s d. |
+| **Avatar Neurofeedback Studio v2** | BCI / Avatar | Same mapping studio on the v2 trainer shell. |
+| **Face Trainer** | BCI / ML / Face | Placement-agnostic 8-ch fEMG. Per-expression L2 + group-lasso, leave-one-rep-out balanced accuracy, channel-importance bars. |
+| **Face Trainer v2** | BCI / ML / Face | 3-2-1 recording (3× samples per press). 3 reps vs 6 in v1. Independent storage. |
+
+---
+
+## Aura VR (palm EMG + IMU)
+
+These need **Aura VR**. Orientation comes from the IMU; EMG is for grip / pen-down — not wrist pose.
+
+| Experience | Tag | Description |
+|---|---|---|
+| **Hand Trainer** | BCI / ML / sEMG | Fist, open, pinch, point, thumb-up. Face Trainer v2 protocol on 8-ch palm EMG. Wrist flexion is not a class. |
+| **Aura IMU Lab** | IMU / Debug | LSM6DS3 debugger: still-hold cal, gravity-compensated accel, ZUPT, translating 3D hand. 6-axis, no magnetometer — position drifts. |
+| **Aura Dataset Lab** | sEMG / Dataset | Guided 3-2-1 EMG + IMU with rest/hold labels. Optional MediaPipe Hand Landmarker autolabel. Export JSON or 50 Hz CSV. |
+| **Aura Handwriting** | IMU / sEMG / Game | EMG gates pen-down; yaw/pitch rates draw a unistroke. 1-NN Sakoe-Chiba DTW. EMG does not identify the glyph. |
+| **Hand of God** | BCI / Game / sEMG | Optional Aura fist → punch. |
+
+---
+
+## Lab & recording
+
+| Experience | Tag | Description |
+|---|---|---|
+| **PiEEG Virtual Lab** | Lab / VR | In-world dashboard workstation. |
+| **Signal Lab** | Learn / Game | Interactive DSP curriculum on live EEG. |
+| **[BioPose Recorder](/software/features/biopose)** | Lab / Pose | Split bench: 33-point body stick + live bio traces on **independent clocks**. Review holds last pose ≤150 ms. Export `biopose-take:v1` JSON (points only — camera pixels are not stored). Pose is a vision estimate, not mocap. |
+
+---
+
+## Integrations (need PiEEG Server)
+
+These send commands or OSC and **will not work** in the 100% cloud tab. Use self-hosted PiEEG Server, or [Local Bridge](/cloud/local-bridge) where OSC is involved.
+
+| Experience | Tag | Description |
+|---|---|---|
+| **VRChat OSC Bridge** | VRChat | Band powers over OSC UDP. Chatbox bubble + avatar float parameters. |
+| **VRChat OSC · Brain Regions** | VRChat | Per-region band powers (`/avatar/parameters/EEG_{Region}_{Band}`). Montage presets, sync-budget guide. |
+| **Webhook Wizard** | Automation | 60-second first webhook — IFTTT, Zapier, or any URL — with live EEG feedback. |
+
+---
 
 ## Creating an Experience
 
 <Callout type="info">
-  **Time to first playable: ~15 minutes.** One `.tsx` file + one line in the registry.
+  **Time to first playable: ~15 minutes.** One `.tsx` file + one entry in the registry.
 </Callout>
+
+Cloud path: `cloud/src/experiences/`. Self-hosted path: `dashboard/src/experiences/`. Same contract.
 
 <Steps>
 
 ### Create your component
 
-Create `dashboard/src/experiences/my-game/MyGame.tsx`:
+Create `cloud/src/experiences/my-game/MyGame.tsx` (or the dashboard equivalent):
 
 ```tsx
 import { useRef, useEffect } from "react";
@@ -70,7 +211,7 @@ export default function MyGame({ eegData, onExit }: ExperienceProps) {
 
 ### Register in the gallery
 
-Add to `dashboard/src/experiences/registry.ts`:
+Add to `cloud/src/experiences/registry.ts` (and the matching dashboard file if you ship both):
 
 ```ts
 const MyGameExperience = lazy(() => import("./my-game/MyGame"));
@@ -87,26 +228,47 @@ const MyGameExperience = lazy(() => import("./my-game/MyGame"));
 }
 ```
 
+### Explain how it works
+
+Required in the UI, not only in a README:
+
+- **How it works** overlay on first open (`useState(true)`).
+- Header **How it works** button to reopen.
+- Cover purpose, live loop, numbered protocol, and honest sensor limits.
+
 </Steps>
 
 The gallery picks it up automatically. Each experience is code-split — no impact on initial load.
 
-## Advanced: Eye Track (EOG Gaze Estimation)
+### `ExperienceProps`
 
-The **Eye Track** experience demonstrates a more advanced pattern — direct ring-buffer signal extraction, multi-phase calibration, and a trained ML model.
+| Field | Type | Description |
+|---|---|---|
+| `eegData` | `EEGData` | Ring buffers with live samples (mutable refs — no re-renders) |
+| `yScale` | `number` | Current amplitude scale |
+| `onExit` | `() => void` | Return to the gallery |
+| `sendCommand?` | `(cmd) => void` | WebSocket command to pieeg-server |
+| `wsUrl?` | `string` | Live connection URL (e.g. Virtual Lab embeds the dashboard) |
+| `bridge?` | `OscBridgeHandle` | Shared [Local Bridge](/cloud/local-bridge) handle for OSC. Never create a second bridge. |
+
+Set `requiresServer: true` or `requiresAura: true` on the registry entry so the gallery can badge the card.
+
+Shared detector hooks (`useBandPowers`, `useBlink`, `useFocus`, `useRelax`) are documented in [Detectors](/software/features/detectors).
+
+---
+
+## Advanced: Eye Track (EOG gaze estimation)
+
+**Eye Track** bypasses the detector hooks and reads the ring buffer directly — custom signal processing, multi-phase calibration, and a trained model.
 
 ### How it works
 
-1. **EOG extraction** — Horizontal gaze ≈ Fp2 − Fp1 (differential), Vertical ≈ (Fp1 + Fp2) / 2 (common-mode). The corneal-retinal dipole (~0.4–1.0 mV) shifts proportionally with gaze angle.
-2. **5-point calibration** — The user fixates on targets (center, up, down, left, right) for 2.5 s each. Mean EOG features are collected per target.
-3. **Polynomial ridge regression** — Features `[1, h, v, h², h·v, v²]` are fit via ridge regression (λ = 0.01) using Gaussian elimination. This captures nonlinear eye response at extreme angles.
-4. **Online adaptive learning** — During tracking, new (EOG, target) pairs are collected ~4 Hz and the model refits every 12 samples. Users can pause/resume learning.
-5. **Persistence** — The trained model + all samples save to `localStorage` and can be loaded on next session.
-6. **Algorithm editor** — Users can edit the gaze-estimation function live in a code panel.
-
-### Scientific basis
-
-With polynomial regression and continuous learning, the model adapts to individual electrode placement and improves over time.
+1. **EOG extraction** — Horizontal gaze ≈ Fp2 − Fp1 (differential), Vertical ≈ (Fp1 + Fp2) / 2 (common-mode). The corneal-retinal dipole (~0.4–1.0 mV) shifts with gaze angle.
+2. **5-point calibration** — Fixate center, up, down, left, right for 2.5 s each. Mean EOG features per target.
+3. **Polynomial ridge regression** — Features `[1, h, v, h², h·v, v²]` fit with λ = 0.01 (Gaussian elimination). Captures nonlinear response at extreme angles.
+4. **Online adaptive learning** — New (EOG, target) pairs ~4 Hz; model refits every 12 samples. Pause/resume learning.
+5. **Persistence** — Model + samples in `localStorage`; load on the next session.
+6. **Algorithm editor** — Edit the gaze function live in a code panel.
 
 ### Key code patterns
 
@@ -129,3 +291,15 @@ const feat = [1, h, v, h*h, h*v, v*v]; // 6 features
 let x = 0;
 for (let i = 0; i < feat.length; i++) x += feat[i] * model.weightsX[i];
 ```
+
+---
+
+## Related
+
+<Cards>
+  <Cards.Card title="BioPose Recorder" href="/software/features/biopose" />
+  <Cards.Card title="Detectors" href="/software/features/detectors" />
+  <Cards.Card title="Dashboard" href="/software/features/dashboard" />
+  <Cards.Card title="PiEEG Cloud" href="/cloud" />
+  <Cards.Card title="Local Bridge" href="/cloud/local-bridge" />
+</Cards>
