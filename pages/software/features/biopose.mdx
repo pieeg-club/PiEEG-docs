@@ -150,7 +150,7 @@ Import accepts that object only (`format` must be `biopose-take:v1`, lengths mus
 
 A new Record resets the writer. The previous take stays on screen until then.
 
-## Honest limits
+## Limits
 
 - Laptop / phone camera, one body, lite model, ~20 Hz.
 - Occlusion, clothing, tight framing, and a late rAF drop pose frames (`Dropped` meter).
@@ -158,14 +158,6 @@ A new Record resets the writer. The previous take stays on screen until then.
 - Clocks are independent; 150 ms hold is a viewer convenience, not alignment.
 - Score is a presence hint, not a quality metric you should threshold science on.
 
-## Code
-
-| File | Role |
-|---|---|
-| `cloud/src/experiences/biopose-recorder/BioPoseRecorder.tsx` | Split bench, live / review, HUD |
-| `cloud/src/experiences/biopose-recorder/pose.ts` | Landmarker, pack, stick draw |
-| `cloud/src/experiences/biopose-recorder/take.ts` | Writer, clocks, JSON blob |
-| `cloud/src/experiences/biopose-recorder/sampleTap.ts` | EEG per-sample multiplexer |
 
 ## Related
 
