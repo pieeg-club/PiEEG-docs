@@ -4,6 +4,7 @@
   "registers": "ADS1299 Registers",
   "experiences": "Experiences",
   "biopose": "BioPose Recorder",
+  "aura-dataset": "Aura Dataset Lab",
   "detectors": "Detectors",
   "recording": "Recording"
 }

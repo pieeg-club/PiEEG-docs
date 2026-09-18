@@ -132,7 +132,7 @@ These need **Aura VR**. Orientation comes from the IMU; EMG is for grip / pen-do
 |---|---|---|
 | **Hand Trainer** | BCI / ML / sEMG | Fist, open, pinch, point, thumb-up. Face Trainer v2 protocol on 8-ch palm EMG. Wrist flexion is not a class. |
 | **Aura IMU Lab** | IMU / Debug | LSM6DS3 debugger: still-hold cal, gravity-compensated accel, ZUPT, translating 3D hand. 6-axis, no magnetometer — position drifts. |
-| **Aura Dataset Lab** | sEMG / Dataset | Guided 3-2-1 EMG + IMU with rest/hold labels. Optional MediaPipe Hand Landmarker autolabel. Export JSON or 50 Hz CSV. |
+| **[Aura Dataset Lab](/software/features/aura-dataset)** | sEMG / Dataset | Guided 3-2-1 EMG + IMU with rest/hold labels. Optional MediaPipe Hand Landmarker autolabel. Export JSON or a ZIP of native-rate CSVs plus a 50 Hz label table. Optical is a vision estimate, not ground truth. |
 | **Aura Handwriting** | IMU / sEMG / Game | EMG gates pen-down; yaw/pitch rates draw a unistroke. 1-NN Sakoe-Chiba DTW. EMG does not identify the glyph. |
 | **Hand of God** | BCI / Game / sEMG | Optional Aura fist → punch. |
 
@@ -145,6 +145,7 @@ These need **Aura VR**. Orientation comes from the IMU; EMG is for grip / pen-do
 | **PiEEG Virtual Lab** | Lab / VR | In-world dashboard workstation. |
 | **Signal Lab** | Learn / Game | Interactive DSP curriculum on live EEG. |
 | **[BioPose Recorder](/software/features/biopose)** | Lab / Pose | Split bench: 33-point body stick + live bio traces on **independent clocks**. Review holds last pose ≤150 ms. Export `biopose-take:v1` JSON (points only — camera pixels are not stored). Pose is a vision estimate, not mocap. |
+| **[Aura Dataset Lab](/software/features/aura-dataset)** | sEMG / Dataset | Wrist Aura: guided 3-2-1 EMG + IMU labels, optional 21-point autolabel. Three independent clocks. Export `aura-dataset:v1` JSON or native-rate ZIP. Optical is a vision estimate, not ground truth. |
 
 ---
 
