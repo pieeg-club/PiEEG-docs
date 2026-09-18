@@ -144,7 +144,7 @@ These need **Aura VR**. Orientation comes from the IMU; EMG is for grip / pen-do
 |---|---|---|
 | **PiEEG Virtual Lab** | Lab / VR | In-world dashboard workstation. |
 | **Signal Lab** | Learn / Game | Interactive DSP curriculum on live EEG. |
-| **[BioPose Recorder](/software/features/biopose)** | Lab / Pose | Split bench: 33-point body stick + live bio traces on **independent clocks**. Review holds last pose ≤150 ms. Export `biopose-take:v1` JSON (points only — camera pixels are not stored). Pose is a vision estimate, not mocap. |
+| **[BioPose Recorder](/software/features/biopose)** | Lab / Pose | Split bench: 33-point body stick + live bio traces on **independent clocks**. Confirmed frontal blinks write a `blink` mark on the take clock ([`useBlink`](/software/features/detectors#useBlink), default Fp1/Fp2). Review holds last pose ≤150 ms. Export `biopose-take:v1` JSON (points only; camera pixels are not stored). Pose is a vision estimate, not mocap. Blink marks are EOG detections, not eyelid tracking. |
 | **[Aura Dataset Lab](/software/features/aura-dataset)** | sEMG / Dataset | Wrist Aura: guided 3-2-1 EMG + IMU labels, optional 21-point autolabel. Three independent clocks. Export `aura-dataset:v1` JSON or native-rate ZIP. Optical is a vision estimate, not ground truth. |
 
 ---

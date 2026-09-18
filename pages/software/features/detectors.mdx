@@ -24,7 +24,7 @@ Foundation layer. Single FFT instance, averaged spectral band powers.
 
 **Config:** `{ updateHz?, channels?, smoothing? }`
 
-## `useBlink(eegData, config?)`
+## `useBlink(eegData, config?)` {#useBlink}
 
 Trainless frontal EOG detector. Face-interface electrodes on Fp1/Fp2 (channels 0/1). A blink is a large common-mode corneal-retinal deflection (typically 100-500 µV p2p, 60-600 ms) against resting EEG (~20-80 µV). Peak-to-peak over 100 ms is DC-insensitive.
 
@@ -52,6 +52,8 @@ Jaw / forehead EMG / head motion also produce large frontal p2p. This is not a m
 | `warmed` | `boolean` | True once the rolling baseline has enough history |
 
 Prefer `state.current.count` over the one-shot `blinked` flag: miss one 25 ms poll and the flag is gone.
+
+[BioPose Recorder](/software/features/biopose) uses that count while Record is on: each increment writes `{ t, text: "blink" }` onto the take. Same detector, same default channels.
 
 **Config:** `{ channels?, threshold?, windowMs?, minDurationMs?, maxDurationMs?, refractoryMs?, pollHz? }`
 
