@@ -26,16 +26,36 @@ Foundation layer. Single FFT instance, averaged spectral band powers.
 
 ## `useBlink(eegData, config?)`
 
-Ocular artifact detector. Amplitude-threshold state machine on frontal channels (Fp1/Fp2).
+Trainless frontal EOG detector. Face-interface electrodes on Fp1/Fp2 (channels 0/1). A blink is a large common-mode corneal-retinal deflection (typically 100-500 µV p2p, 60-600 ms) against resting EEG (~20-80 µV). Peak-to-peak over 100 ms is DC-insensitive.
+
+No prompted calibration. The detector warms up silently (~0.8 s) while a rolling robust baseline accumulates.
+
+**Per tick (~40 Hz):**
+
+1. Average p2p across the frontal pair (one noisy channel cannot dominate).
+2. Rolling median + MAD baseline (~3 s). Blinks are outliers, so they do not raise the gate.
+3. Threshold = `max(25 µV, baseline + max(5σ, 8 µV))`.
+4. Onset above threshold, offset below a hysteresis level (0.6 of the margin), duration gate (60-600 ms), then 300 ms refractory.
+
+Jaw / forehead EMG / head motion also produce large frontal p2p. This is not a morphology classifier.
+
+**Returns:** `{ state, reset() }`
 
 | Field | Type | Description |
 |---|---|---|
-| `blinked` | `boolean` | `true` for exactly one poll cycle per blink |
+| `blinked` | `boolean` | `true` for exactly one poll cycle when a blink is confirmed |
 | `count` | `number` | Cumulative blink count |
 | `amplitude` | `number` | Current peak-to-peak µV |
 | `lastBlinkTime` | `number` | Epoch ms of last confirmed blink |
+| `baseline` | `number` | Rolling robust baseline (µV) |
+| `threshold` | `number` | Current detection threshold (µV) |
+| `warmed` | `boolean` | True once the rolling baseline has enough history |
+
+Prefer `state.current.count` over the one-shot `blinked` flag: miss one 25 ms poll and the flag is gone.
 
 **Config:** `{ channels?, threshold?, windowMs?, minDurationMs?, maxDurationMs?, refractoryMs?, pollHz? }`
+
+`threshold` is a fixed µV override. Omit it to keep the adaptive gate. Default channels are `[0, 1]` (Fp1/Fp2).
 
 ## `useFocus(eegData, config?)`
 

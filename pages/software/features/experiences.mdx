@@ -191,7 +191,7 @@ export default function MyGame({ eegData, onExit }: ExperienceProps) {
     function loop() {
       const f = focus.current.focus;       // 0–1
       const r = relax.current.relaxation;  // 0–1
-      const b = blink.current.blinked;     // true for one cycle per blink
+      const blinkCount = blink.current.count; // edge-detect vs last count
       // --- your game logic here ---
       raf = requestAnimationFrame(loop);
     }
