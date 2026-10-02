@@ -1,6 +1,6 @@
 ---
 title: PiEEG Agent
-description: Natural language EEG lab notebook — train classifiers, analyze connectivity, and chat with an AI copilot that reads your live brain signals.
+description: Natural language EEG lab notebook. Built-in copilot, or the same live tools served over MCP to an external host.
 ---
 
 import { Callout, Steps, Tabs } from 'nextra/components'
@@ -8,6 +8,8 @@ import { Callout, Steps, Tabs } from 'nextra/components'
 # PiEEG Agent
 
 Natural language EEG lab notebook. Train pattern classifiers, analyze connectivity, compare sessions — all by talking to an AI copilot that reads your live brain signals.
+
+The same toolset can be served to an external host with `pieeg-agent mcp`. That process does not load a model. See [MCP](#mcp).
 
 **Requires:** [PiEEG-server](/software/getting-started) running with `--lsl`
 
@@ -136,6 +138,7 @@ pieeg-agent monitor     # Live state monitor (no LLM)
 pieeg-agent ask "am I focused?"   # One-shot question
 pieeg-agent chat        # Interactive terminal chat
 pieeg-agent web         # Web interface (recommended)
+pieeg-agent mcp         # Same tools, for an external MCP host (no built-in LLM)
 ```
 
 ## Device Control
@@ -149,6 +152,110 @@ pieeg-agent web --allow-actions --execute
 ```
 
 All actions pass through a safety gate: allowlist → cooldown → dry-run → audit log.
+
+`pieeg-agent mcp` uses the same flags and the same gate. Device tools are not advertised unless `--allow-actions` is set.
+
+## MCP
+
+`pieeg-agent mcp` is the other door into the same tool collections `ask` and `chat` use (neural state, decode, docs, web, utility, and gated actuators when asked). The host is the agent. This process does not call an LLM provider and does not need an API key. A saved key in `~/.pieeg-agent/config.json` is not sent. Stream selection follows `PIEEG_LSL_NAME`, `PIEEG_LSL_TYPE`, and `PIEEG_RING_SECONDS` (defaults: `PiEEG`, `EEG`, 60 s).
+
+Neural tools are read-only. Pattern tools record and score the live signal. Device tools, if present, may preview an action instead of performing it.
+
+The server is the official MCP Python SDK v2 (`MCPServer`, `mcp>=2,<3`). It is the `mcp` extra, which also pulls `websockets` so `--allow-actions` can reach the PiEEG-server control plane.
+
+The one-line installer (`setup.sh`, `install.cmd`) installs `.[web,dev]`. The `dev` extra currently includes that SDK, so a machine installed that way already has it. A bare `pip install -e .` does not. If the extra is missing, the command prints the install line and exits 2:
+
+```bash
+pip install -e ".[mcp]"
+```
+
+```bash
+# Terminal 1 — LSL stream (hardware, or mock)
+pieeg-server --lsl
+# pieeg-server --mock --lsl
+
+# Terminal 2 — leave this running
+pieeg-agent mcp
+```
+
+Default endpoint: `http://127.0.0.1:8765/mcp`.
+
+Transport is streamable HTTP, stateless: each host call is its own session. The server does not push elicitation or sampling back to the client.
+
+| Flag | Effect |
+|------|--------|
+| `--transport sse` | Older HTTP transport. URL is `http://127.0.0.1:8765/sse`. |
+| `--transport stdio` | The host spawns this process. Do not also run `pieeg-agent mcp` yourself. Protocol bytes are stdin/stdout. Status goes to stderr. |
+| `--host` / `--port` | Bind address for HTTP transports. Default `127.0.0.1:8765`. |
+| `--allow-actions` | Advertise device tools. They preview only. |
+| `--allow-actions --execute` | Device tools perform the action. |
+
+A page on chatgpt.com or claude.ai cannot reach `127.0.0.1`. Use a desktop or CLI host on this machine.
+
+### Host config
+
+Start the LSL stream first in every case. Then either paste a URL (you already started the server) or let the host spawn stdio (do not start the server yourself).
+
+URL shape (`streamable-http`):
+
+```json
+{
+  "mcpServers": {
+    "pieeg": { "url": "http://127.0.0.1:8765/mcp" }
+  }
+}
+```
+
+VS Code Copilot uses a different file (`.vscode/mcp.json`):
+
+```json
+{
+  "servers": {
+    "pieeg": {
+      "type": "http",
+      "url": "http://127.0.0.1:8765/mcp"
+    }
+  }
+}
+```
+
+stdio shape. The host owns the process:
+
+```json
+{
+  "mcpServers": {
+    "pieeg": {
+      "command": "pieeg-agent",
+      "args": ["mcp", "--transport", "stdio"]
+    }
+  }
+}
+```
+
+If that app cannot find `pieeg-agent`, use the full path to the executable (the venv script, or `pieeg-agent.cmd` from the Windows installer).
+
+| Host | Connection |
+|------|------------|
+| Cursor | URL in `.cursor/mcp.json` (this project) or `~/.cursor/mcp.json` (every project). |
+| VS Code Copilot | URL in `.vscode/mcp.json`, shape above. Command Palette: **MCP: List Servers**, then start `pieeg`. |
+| Claude Code | `claude mcp add --transport http pieeg http://127.0.0.1:8765/mcp` |
+| Claude Desktop | stdio. macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`. Windows: `%APPDATA%\Claude\claude_desktop_config.json`. Quit the app fully after editing. |
+| Codex, ChatGPT desktop | Shared file `~/.codex/config.toml`. `codex mcp add pieeg --url http://127.0.0.1:8765/mcp` |
+| OpenClaw | `openclaw mcp add pieeg --url http://127.0.0.1:8765/mcp --transport streamable-http` |
+| Hermes | URL under `mcp_servers.pieeg` in `~/.hermes/config.yaml`. |
+
+Any other host: URL field `http://127.0.0.1:8765/mcp` after the server is up, or command `pieeg-agent` with args `mcp --transport stdio` if the host only accepts a local process. The app has to run on this computer.
+
+On connect, the server prints a host-config snippet to stderr, including the URL or the stdio command for the transport you actually started.
+
+A connected host should call a tool (`get_neural_state`, `get_channel_quality`, `list_patterns`, and the rest of the copilot toolset) and answer from that result. A numeric answer with no tool call means the server is not connected. Device tools stay hidden unless the server was started with `--allow-actions`.
+
+If it does not connect:
+
+- The `pieeg-agent mcp` terminal is still running (URL hosts only).
+- The URL ends in `/mcp`, not the bare port. SSE hosts need `/sse` and `--transport sse`.
+- stdio hosts: `pieeg-agent` is on that app's PATH, or the config uses the full path.
+- A website in the browser cannot reach `127.0.0.1`.
 
 ## LLM Providers
 
@@ -181,7 +288,7 @@ PiEEG Agent solves the rate mismatch between LLMs (~1 Hz) and EEG (250–500 Hz)
 | T3 Events | ~sparse | `"focus_high"` @ timestamp | Yes — main input |
 | T4 Reason | on query | NL questions + tools | — |
 
-The LLM pulls state via tools — it is never streamed raw data. The ingestion thread runs independently of the LLM so no samples are lost.
+The LLM pulls state via tools — it is never streamed raw data. An MCP host pulls the same tools. Raw samples stay in this process either way. The ingestion thread runs independently of the caller so no samples are lost.
 
 ## Honest Metrics
 
