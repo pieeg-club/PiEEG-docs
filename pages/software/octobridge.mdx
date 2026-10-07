@@ -1,0 +1,93 @@
+---
+title: octoBridge
+description: octobridge.pieeg.com — browser classroom lab for Octopus-16 and the octoBio Kit. Live sensors, block programs, and in-browser firmware flashing.
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# octoBridge
+
+**[octobridge.pieeg.com](https://octobridge.pieeg.com/)** is the PiEEG classroom lab in the browser. Wear **Octopus-16**, plug in the **octoBio Kit**, watch live readings, and run programs on the board. No Arduino IDE, no PiEEG Server, no account.
+
+Project name: **octobridge**. Product name in the app: **octoBridge**.
+
+<Callout type="warning">
+  Classroom tool. Not a medical device. Band power, focus, and relax are uncalibrated classroom indexes, not a diagnosis.
+</Callout>
+
+## Open it
+
+<Steps>
+### Use Chrome or Edge
+
+Desktop Chrome or Edge on HTTPS. Safari and phones cannot open USB serial. Bluetooth and USB stay in this tab.
+
+### Open the lab
+
+Go to **[octobridge.pieeg.com](https://octobridge.pieeg.com/)**.
+
+### Flash, then connect
+
+First time, open [Flash](https://octobridge.pieeg.com/flash). Then [Connect](https://octobridge.pieeg.com/connect). Skip a device you do not have. Numbers stay still until that device is live.
+
+</Steps>
+
+## Two devices
+
+| Device | Link | What it is |
+|--------|------|------------|
+| **Octopus-16** | Bluetooth | 16-channel biosignal sensor. The browser computes relative band power in the tab. Appears as `Octopus-16-XXXX` after flashing. |
+| **octoBio Kit** | USB serial, 115200 baud | Arduino Uno (ATmega328P) board: room sensors, lights, relay, buzzer, servo, and a 16×2 screen. |
+
+You can use one without the other.
+
+## Lab flow
+
+| Step | Page | What you do |
+|------|------|-------------|
+| — | [Home](https://octobridge.pieeg.com/) | What you can read, what you can move, and ready mixes. |
+| — | [Flash](https://octobridge.pieeg.com/flash) | Put firmware on the board from the browser. First time only. |
+| 1 | [Connect](https://octobridge.pieeg.com/connect) | Pair Octopus-16 and/or the octoBio Kit. |
+| 2 | [Board](https://octobridge.pieeg.com/board) | Live numbers, lights, motor, and screen. |
+| 3 | [Blocks](https://octobridge.pieeg.com/blocks) | Stack a program and run it. This does not flash a new sketch. |
+| 4 | [Learn](https://octobridge.pieeg.com/learn) | Lessons on what a reading is allowed to mean. Does not send commands. |
+| 5 | [Write](https://octobridge.pieeg.com/write) | The same program, written like a page. |
+| 6 | [Repeat](https://octobridge.pieeg.com/repeat) | Six ready machines. Same run as Blocks. Does not save over your stack. |
+
+## What you can read
+
+**octoBio Kit:** light (lux), distance (cm; needs a facing surface), temperature (°C), humidity (%), moisture (ADC 0–1023), sound (ADC), knob (ADC), button, PIR motion, IR remote codes, and 6-axis tilt (no heading).
+
+**Octopus-16:** relative delta, theta, alpha, beta, and gamma; uncalibrated focus and relax indexes; RMS (µV); strongest EEG band; and an “EEG ok” check (RMS between 2 and 200 µV). Blink and jaw raise RMS and gamma.
+
+## What you can move
+
+On the octoBio Kit: light D10 (on, off, flash), light D8 (on, off), relay, buzzer, servo (0–180°), and the 16×2 screen.
+
+Blocks can mix a reading into a move. Examples already in the lab: eyes closed → light on, walk-by → buzzer, knob → servo, focus → servo (focus meter), distance → light, alpha and no motion → a line on the screen.
+
+## Flash firmware
+
+From [octobridge.pieeg.com/flash](https://octobridge.pieeg.com/flash). Chrome or Edge, USB data cable. No Arduino IDE.
+
+| Target | Board | How |
+|--------|-------|-----|
+| **Octopus-16** | Seeed Studio XIAO ESP32-S3 | **Install Octopus-16**. If no port appears, hold **BOOT**, tap **RESET**, release BOOT, then install again. Unplug and replug. It shows up over Bluetooth as `Octopus-16-XXXX`. |
+| **Puck** | CrowPanel 2.1 rotary HMI | **Install Puck**. The panel links to an Octopus-16 over Bluetooth. No Wi-Fi. The image is 16 MB. |
+| **octoBio Kit** | Arduino Uno / ATmega328P (official 16U2 or CH340) | Close any other serial monitor. **Flash octoBio Kit**. About 20 seconds. The screen should say octoBio Kit Ready. Not Leonardo, Mega, ESP32, or a board with no bootloader. |
+
+When the octoBio Kit port opens, the board restarts. Wait until status is live. The kit speaks a line protocol at 115200 baud and answers `INF protocol=1 ready`.
+
+## Limits
+
+- Needs Chrome or Edge on HTTPS (the hosted site) or localhost.
+- USB serial and Bluetooth stay in this browser. Nothing is uploaded to a PiEEG server.
+- Distance needs a facing surface. A missed echo is a negative number, not “very far”.
+- Sound, moisture, and the knob are raw counts (0–1023), not calibrated units.
+- Focus and relax are uncalibrated indexes. Do not treat them as mood or a clinical score.
+
+## Related
+
+- [Octopus 16 hardware](/hardware/devices/Octopus_16)
+- [JavaScript SDK](/software/api/javascript-sdk) — same Web Bluetooth path used by other browser apps (`octopus-16`)
+- [PiEEG Cloud](/cloud) — research dashboard and experiences, not this classroom lab

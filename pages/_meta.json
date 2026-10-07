@@ -19,5 +19,9 @@
   "demo": {
     "title": "Live Demo",
     "href": "https://cloud.pieeg.com"
+  },
+  "octobridge": {
+    "title": "octoBridge",
+    "href": "https://octobridge.pieeg.com/"
   }
 }

@@ -4,5 +4,6 @@
   "features": "Features",
   "api": "API Reference",
   "integrations": "Integrations",
+  "octobridge": "octoBridge",
   "reference": "Reference"
 }
