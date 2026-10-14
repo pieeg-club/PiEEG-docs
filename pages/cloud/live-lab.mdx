@@ -12,7 +12,7 @@ import { Callout, Cards } from 'nextra/components'
 Opening `/lab` or any shared `/lab/:penId` link boots directly into the workbench. If no physical board is connected yet, the workbench automatically starts an 8-channel 250 Hz simulated stream (`demo:8`) so pipelines run immediately.
 
 <Callout type="info">
-  **Honest metrics:** Within-session Cohen's $d$ and Leave-One-Rep-Out cross-validation (`loroCV`) scores measure class separation within the current electrode placement and session. They are descriptive within-session diagnostics, not cross-subject or cross-day generalisation claims.
+  **Honest metrics:** Within-session Cohen's *d* and Leave-One-Rep-Out cross-validation (`loroCV`) scores measure class separation within the current electrode placement and session. They are descriptive within-session diagnostics, not cross-subject or cross-day generalisation claims.
 </Callout>
 
 ## Architecture & Live Loop
@@ -63,7 +63,7 @@ Every stage cell runs in strict mode with the following identifiers pre-bound in
 | `zscore` | `zscore(series)` | Standardize 1D series to zero mean and unit variance |
 | `mean` / `std` / `variance` | `mean(series)` | Basic sample statistics |
 | `rms` | `rms(series)` | Root-mean-square amplitude in µV |
-| `lineLength` | `lineLength(series)` | Mean absolute first difference $\frac{1}{N-1}\sum |x_t - x_{t-1}|$ |
+| `lineLength` | `lineLength(series)` | Mean absolute first difference (`mean(\|x[t] - x[t-1]\|)`) |
 | `slopeSignChanges` | `slopeSignChanges(series, deadband?)` | Rate of slope sign inversions exceeding `deadband` (default `0.5` µV) |
 | `fft` | `fft(series)` | Hann-windowed radix-2 Cooley-Tukey magnitude spectrum |
 | `psd` | `psd(series, fs?, maxHz?)` | Power spectral density `{ freqs, power, peakHz }` |
@@ -73,7 +73,7 @@ Every stage cell runs in strict mode with the following identifiers pre-bound in
 | `lda` | `lda(X, y, shrinkage?)` | Closed-form Shrinkage-LDA classifier (`predict(x)`, `predictProba(x)`) |
 | `logreg` | `logreg(X, y, opts?)` | L2-regularised multinomial logistic regression (`{ epochs, lr, l2 }`) |
 | `loroCV` | `loroCV(X, y, reps, kind?)` | Trial-grouped Leave-One-Rep-Out cross-validation (`{ accuracy, balancedAccuracy, folds, confusion }`) |
-| `crossValScore` | `crossValScore(X, y, k?, kind?)` | Stratified sample-level $k$-fold cross-validation |
+| `crossValScore` | `crossValScore(X, y, k?, kind?)` | Stratified sample-level *k*-fold cross-validation |
 | `check` | `check(condition, message)` | Pass/fail assertion displayed in the stage footer |
 
 ---
@@ -103,7 +103,7 @@ The **Session Dataset** bar at the top of `/lab` records 2-second labelled epoch
 3. Click **Arena** in the header to open the **Decoder Arena** benchmark table. It evaluates your pipeline's decoder output side-by-side against reference **Shrinkage-LDA** and **L2 Logistic Regression** models on:
    - **Honest LORO-CV (Balanced Accuracy)**: Holds out entire recording repetitions so temporally adjacent windows from the same trial never leak between train and test sets.
    - **Sample k-Fold (Leakage Check)**: Shows how naive random window splitting inflates accuracy on autocorrelated biosignals.
-   - **Within-Session Cohen's $d$**, inference latency (ms), and live class predictions.
+   - **Within-Session Cohen's *d***, inference latency (ms), and live class predictions.
 
 ---
 
