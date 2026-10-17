@@ -142,6 +142,7 @@ These need **Aura VR**. Orientation comes from the IMU; EMG is for grip / pen-do
 
 | Experience | Tag | Description |
 |---|---|---|
+| **[Optical Physiological Bench](/software/features/optical-bench)** | Lab / Optical | Quantitative webcam rPPG bench: runs `POS`, `CHROM`, and `GREEN` simultaneously on identical frames, maps the forehead as a $R\times C$ virtual optical sensor array (pulsatile amplitude, SNR, spatial coherence, pairwise correlation), tracks slow optical dynamics ($<0.15\text{ Hz}$ RGB/chromaticity drift with ambient/AE/AWB quality gates), and computes SNR-gated pulse-interval statistics (`instantBpm`, `sdnnOptMs`, `rmssdOptMs`, `pavCvPct`). Preserves raw ROI and grid RGB for offline reprocessing, CSV/JSON export (`optical-bench-take:v1`), and concurrent PiEEG bio recording. |
 | **PiEEG Virtual Lab** | Lab / VR | In-world dashboard workstation. |
 | **Signal Lab** | Learn / Game | Interactive DSP curriculum on live EEG. |
 | **[BioPose Recorder](/software/features/biopose)** | Lab / Pose | Split bench: 33-point body stick + live bio traces on **independent clocks**. Confirmed frontal blinks write a `blink` mark on the take clock ([`useBlink`](/software/features/detectors#useBlink), default Fp1/Fp2). Review holds last pose ≤150 ms. Export `biopose-take:v1` JSON (points only; camera pixels are not stored). Pose is a vision estimate, not mocap. Blink marks are EOG detections, not eyelid tracking. |
@@ -298,7 +299,9 @@ for (let i = 0; i < feat.length; i++) x += feat[i] * model.weightsX[i];
 ## Related
 
 <Cards>
+  <Cards.Card title="Optical Physiological Bench" href="/software/features/optical-bench" />
   <Cards.Card title="BioPose Recorder" href="/software/features/biopose" />
+  <Cards.Card title="Aura Dataset Lab" href="/software/features/aura-dataset" />
   <Cards.Card title="Detectors" href="/software/features/detectors" />
   <Cards.Card title="Dashboard" href="/software/features/dashboard" />
   <Cards.Card title="PiEEG Cloud" href="/cloud" />
