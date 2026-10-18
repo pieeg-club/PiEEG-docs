@@ -142,6 +142,7 @@ These need **Aura VR**. Orientation comes from the IMU; EMG is for grip / pen-do
 
 | Experience | Tag | Description |
 |---|---|---|
+| **[Oculomotor, Blink & Pupillometry Bench](/software/features/oculomotor-bench)** | Lab / Oculomotor | Dual-eye roll-stabilized video-oculography and pupillometry bench: renders only the two zoomed `96x56` periocular eye scopes (`OD` Right Eye and `OS` Left Eye; full face is never shown), exposes behind-the-scenes pixel segmentation (dark pupil, iris stroma, Purkinje glint gate, Sobel gradient) and 1D horizontal iris chord profiles `I(u)`, computes distance-invariant pupil-to-iris ratios (`D_pupil / D_iris`), ballistic blink velocity (`dA/dt`), Pupillary Light Reflex (PLR) step latency/constriction, 68% BCEA fixation stability, and online L2 Ridge Regression coupling optical eye kinematics to concurrent PiEEG bio channels (`oculomotor-bench-take:v1`). |
 | **[Optical Physiological Bench](/software/features/optical-bench)** | Lab / Optical | Quantitative webcam rPPG bench: runs `POS`, `CHROM`, and `GREEN` simultaneously on identical frames, maps the forehead as an R × C virtual optical sensor array (pulsatile amplitude, SNR, spatial coherence, pairwise correlation), tracks slow optical dynamics (&lt; 0.15 Hz RGB/chromaticity drift with ambient/AE/AWB quality gates), and computes SNR-gated pulse-interval statistics (`instantBpm`, `sdnnOptMs`, `rmssdOptMs`, `pavCvPct`). Preserves raw ROI and grid RGB for offline reprocessing, CSV/JSON export (`optical-bench-take:v1`), and concurrent PiEEG bio recording. |
 | **PiEEG Virtual Lab** | Lab / VR | In-world dashboard workstation. |
 | **Signal Lab** | Learn / Game | Interactive DSP curriculum on live EEG. |
@@ -299,6 +300,7 @@ for (let i = 0; i < feat.length; i++) x += feat[i] * model.weightsX[i];
 ## Related
 
 <Cards>
+  <Cards.Card title="Oculomotor & Pupillometry Bench" href="/software/features/oculomotor-bench" />
   <Cards.Card title="Optical Physiological Bench" href="/software/features/optical-bench" />
   <Cards.Card title="BioPose Recorder" href="/software/features/biopose" />
   <Cards.Card title="Aura Dataset Lab" href="/software/features/aura-dataset" />

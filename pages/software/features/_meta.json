@@ -6,6 +6,7 @@
   "biopose": "BioPose Recorder",
   "aura-dataset": "Aura Dataset Lab",
   "optical-bench": "Optical Physiological Bench",
+  "oculomotor-bench": "Oculomotor & Pupillometry Bench",
   "detectors": "Detectors",
   "recording": "Recording"
 }
