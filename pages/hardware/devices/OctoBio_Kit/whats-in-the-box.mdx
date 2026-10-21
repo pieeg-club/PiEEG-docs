@@ -1,0 +1,48 @@
+---
+title: "What's in the Box"
+description: "Contents of the OctoBio Kit and the extra items you need."
+---
+
+import { Callout } from 'nextra/components'
+
+# What's in the Box
+
+## Included
+
+| Item | Details |
+|---|---|
+| **1 × Octopus 16 EEG board** | 16 dry pogo-pin electrodes, 2 × ADS131M08, with Seeed Studio XIAO ESP32-S3 and BLE antenna |
+| **1 × All-in-One Starter Kit for Arduino** | Elecrow SEA0004T, Arduino Uno compatible, sensors and outputs mounted in one case |
+| **Software** | Access to the OctoBio web app ([octobridge.pieeg.com](https://octobridge.pieeg.com/)) and firmware |
+
+SKU **PIA24028P** · 570 g · Sold by PiEEG on Elecrow.
+
+![Octopus 16 EEG board, top and underside](/images/hardware/2026/10/octobio_octopus16_pins.jpg)
+
+## Not included
+
+| Item | Why you need it |
+|---|---|
+| **5 V power bank** | Powers the Octopus 16 while it is worn. Keep it small; output current no more than 2 A. See [Octopus 16 equipment](/hardware/devices/Octopus_16/required-equipment). |
+| **Computer with Bluetooth** | Runs **desktop Chrome or Edge** (Web Bluetooth + Web Serial). |
+| **USB data cables** | One for the XIAO (USB-C), one for the starter kit. Needed for flashing and for the kit's serial link. |
+
+{/* TODO: confirm the recommended power bank capacity before publishing */}
+
+<Callout type="warning">
+  **Charge-only cables can't flash or stream.** If no serial port appears, try a different cable before anything else.
+</Callout>
+
+<Callout type="info">
+  Safari, Firefox and phones are not supported. They don't offer Web Serial (and most don't offer Web Bluetooth).
+</Callout>
+
+## Checklist
+
+- [ ] Octopus 16 with XIAO ESP32-S3 mounted and BLE antenna connected
+- [ ] Starter kit in its case
+- [ ] USB data cables
+- [ ] Charged 5 V power bank
+- [ ] Computer with Bluetooth, desktop Chrome or Edge
+
+Next: [How to Start](/hardware/devices/OctoBio_Kit/setup)

@@ -1,0 +1,39 @@
+---
+title: "Safety"
+description: "Read before anyone puts on the OctoBio Kit."
+---
+
+import { Callout } from 'nextra/components'
+
+# Safety
+
+**Read this before anyone puts it on.**
+
+<Callout type="warning">
+  The OctoBio Kit is **not a medical device** and hasn't been certified by any regulator for use with the human body. It's a learning and experimentation tool.
+</Callout>
+
+## Rules
+
+1. **Battery only while worn.** Wear the Octopus 16 on battery power only, never while it's plugged into a computer or a wall charger. The board has no isolation from its power supply.
+2. **Never connect the relay to mains voltage.**
+3. **No diagnosis.** Focus and relax are uncalibrated learning indicators. Never use them for diagnosis, or as a measure of mood or ability.
+4. **Implanted devices.** Don't use it with a pacemaker or other implanted device without asking a physician.
+5. **Skin.** Stop if the skin becomes irritated.
+6. **Pin care.** Press the pogo pins straight down and keep them clean with isopropyl alcohol. Don't use oil or grease on them.
+
+## Power while worn
+
+| Power source | While worn | Why |
+|---|---|---|
+| **5 V power bank** | ✅ Safe | The worn board is on its own battery, with no path to the mains. |
+| **Laptop USB** | ❌ Not while worn | USB from a computer is only for flashing, with the board off the head. A plugged-in laptop links the electrodes to the mains. |
+| **Wall charger** | ❌ Never | A wall charger connects the person to the mains through the electrodes. |
+
+## In the classroom
+
+- An adult checks the power source before each session.
+- Flash and charge boards **before** the lesson, with the boards off the head.
+- Clean the pins between students.
+
+See also the general [PiEEG safety](/hardware/safety) and [liabilities](/hardware/safety/liabilities) pages.

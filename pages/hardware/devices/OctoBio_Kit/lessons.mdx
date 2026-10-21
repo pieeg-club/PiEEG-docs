@@ -1,0 +1,115 @@
+---
+title: "Lessons"
+description: "OctoBio Kit lessons: one condition, one action. Block levels from primary school to university."
+---
+
+import { Callout } from 'nextra/components'
+
+# Lessons
+
+**One condition. One action.**
+
+Every lesson is a single rule, so students see cause and effect straight away. Pick a lesson, press the controls and watch the program and the hardware react.
+
+<Callout type="info">
+  The demos on the product page use simulated signals to show the idea. Real recordings are noisier, and focus and relax are uncalibrated indicators.
+</Callout>
+
+## Lesson list
+
+| Lesson | Signal → Action | Headset | Concepts |
+|---|---|:---:|---|
+| **Eyes closed, light on** | alpha → LED D10 | ✅ | Alpha rhythm, if / else, threshold |
+| **Focus meter** | focus → servo | ✅ | Mapping a range, beta band, servo |
+| **Quiet room** | alpha + no motion → screen | ✅ | Combining two signals, PIR motion, 16×2 LCD |
+| **Follow the knob** | knob → servo | ❌ | Analog input, mapping a range |
+| **Plant care** | soil → buzzer | ❌ | Raw ADC counts, threshold, buzzer |
+| **Blink is not a thought** | artifacts → screen | ✅ | Artifacts, signal quality, OR logic |
+
+### Eyes closed, light on
+
+Close your eyes and the alpha rhythm (8 to 13 Hz) over the back of the head grows. One rule turns that into a light.
+
+```
+forever
+  if  alpha > 35%
+      light D10 on
+  else
+      light D10 off
+```
+
+### Focus meter
+
+The focus index is mapped onto the servo angle, so the arm becomes a needle. It is an uncalibrated indicator, so it means "higher than a moment ago", not a score.
+
+```
+forever
+  servo to  map(focus, 0–1 → 0–180°)
+```
+
+### Quiet room
+
+Two readings, one action. If alpha is high and the motion sensor sees nobody, the screen asks for quiet.
+
+```
+forever
+  if  alpha high  and  no motion
+      screen "shh"
+  else
+      screen "hello!"
+```
+
+### Follow the knob
+
+A warm-up with no headset. Turn the knob and the servo follows. The knob is a raw count from 0 to 1023, mapped onto 0 to 180 degrees.
+
+```
+forever
+  servo to  map(knob, 0–1023 → 0–180°)
+```
+
+### Plant care
+
+The soil sensor reads a raw count. When it falls below the line, the soil is dry and the buzzer sounds.
+
+```
+forever
+  if  soil < 300
+      buzzer on
+  else
+      buzzer off
+```
+
+### Blink is not a thought
+
+Blinks and jaw clenches are muscle, and they show up in the EEG as big swings in RMS and gamma. This rule flags them on the screen.
+
+```
+forever
+  if  RMS > 45 µV  or  gamma > 22%
+      screen "artifact!"
+  else
+      screen "EEG ok"
+```
+
+## Ready mixes (Repeat page)
+
+The **Repeat** page has six ready machines to run and remix, including eyes closed → light on, walk-by → buzzer, knob → servo, focus → servo, distance → light, and alpha + no motion → a line on the screen. Running one does not save over your own stack.
+
+## Five block levels
+
+Same kit, same lessons. Move up a level as the class does.
+
+| Level | Name | Focus | Audience |
+|:---:|---|---|---|
+| 1 | **Story** | | Primary school |
+| 2 | **Words** | | |
+| 3 | **Bands** | δ θ α β γ | |
+| 4 | **Measure** | Numbers and units | |
+| 5 | **Raw** | Raw values | University |
+
+## Teaching notes
+
+- Start every class with **Follow the knob**: it works without a headset and teaches mapping.
+- Use **Blink is not a thought** early, so students learn that a big signal is not always brain activity.
+- Never present focus or relax as a score of a student's ability or mood.
