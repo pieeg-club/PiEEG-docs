@@ -1,208 +1,183 @@
 ---
-title: Buddy — EEG AI Agent
-description: Buddy is a 100% browser-based EEG copilot and AI agent. Live brain panel, a tool-using LLM that reads your brain state, and guided pattern training over Web Bluetooth / Web Serial. No server, no login.
+title: Buddy AI — Live Neural Copilot
+description: Buddy AI is the unified neuroscience and BCI copilot embedded in PiEEG Cloud (cloud.pieeg.com). It combines a live browser neural cascade, turnkey and BYOK LLM tool-calling, trainable pattern classifiers, Lab Notebook sessions, PiEEG documentation RAG, Jupyter notebook generation, and safe dashboard actuators.
 ---
 
 import { Cards, Callout, Steps } from 'nextra/components'
 
-# Buddy — the EEG AI Agent
+# Buddy AI — Live Neural Copilot
 
-**Buddy is a 100% browser-based EEG copilot — and it *is* the AI agent.** It pairs a live brain panel with a tool-using LLM that reads your neural state client-side, plus guided pattern training — all powered by Web Bluetooth / Web Serial. There is no server to run, no account to create, and no data leaves the tab.
+**Buddy AI is the unified EEG and BCI copilot built directly into [PiEEG Cloud](https://cloud.pieeg.com).** It combines the browser-native neural cascade from Buddy, the turn-based pattern training, Lab Notebook sessions, Jupyter notebook export, and dashboard actuators from [PiEEG Agent](/software/integrations/pieeg-agent), and grounded documentation retrieval (`docs.pieeg.com`) into a single right-hand drawer inside the dashboard.
 
-Buddy is part of [PiEEG Cloud](/cloud). Where the [dashboard](https://cloud.pieeg.com) is for *watching* your signal, Buddy is for *talking to it* — asking questions in plain language, training custom mental-state detectors, and reading an honest, explained picture of your live brain state.
+Press **`C`** (or click **Buddy AI** in the dashboard header/sidebar) on any live hardware, Web Bluetooth, Web Serial, or simulated stream at [cloud.pieeg.com](https://cloud.pieeg.com) to open the copilot.
 
 <Cards>
-  <Cards.Card title="Open Buddy → buddy.pieeg.com" href="https://buddy.pieeg.com/" />
+  <Cards.Card title="Open PiEEG Cloud → cloud.pieeg.com" href="https://cloud.pieeg.com/" />
 </Cards>
 
 <Callout type="info">
-  Buddy runs entirely in a Chromium browser (Chrome, Edge, Brave, Opera). The signal pipeline, feature extraction, pattern training, and the AI agent's tool calls all execute client-side — no PiEEG server, no login.
+  Buddy AI works **out of the box with zero configuration** using **PiEEG Cloud AI (Turnkey)**, supports **Bring Your Own Key (BYOK)** for cloud and local LLMs (Ollama, LM Studio), and includes an offline **Built-in Neural Analyst** fallback that executes real tools on your live EEG and documentation without any network calls.
 </Callout>
 
 ## Getting started
 
 <Steps>
-### Open Buddy and pick a source
+### Connect a board or start a demo at `cloud.pieeg.com`
 
-Go to **[buddy.pieeg.com](https://buddy.pieeg.com/)**. The **Lobby** asks you to choose a signal source:
+Open **[cloud.pieeg.com](https://cloud.pieeg.com)** in a Chromium browser and pick any source in the Session Lobby:
 
-- **Demo signal (8 / 16 ch)** — synthetic EEG, no hardware needed.
-- **IronBCI-8 / IronBCI-16 / Octopus 16** — pair over Web Bluetooth.
-- **IronBCI-32** — connect over Web Serial (USB).
+- **PiEEG Devices**: IronBCI (8/16 ch BLE), PiEEG XR (8/16 ch BLE), Octopus 16 (BLE), Aura VR (8-ch EMG + IMU), IronBCI-32 (USB Serial), or Kraken-48 (USB Serial).
+- **[BrainFlow Devices](/cloud/brainflow)**: 19 third-party WebBLE and WebSerial boards.
+- **PiEEG Server WebSocket**: `ws://localhost:1616` or a remote relay.
+- **Simulated / Programmable Demo**: 8, 16, 32 channels, Aura, or `/mock` studio — no hardware required.
 
-### (Optional) Add an AI provider
+### Open the Buddy AI drawer
 
-Choose an [LLM provider](#providers) and paste an API key to enable the chat copilot. Skip it to use Buddy as a pure brain panel, or pick the built-in **Echo** provider for a no-key demo.
+Click **Buddy AI** in the dashboard or press **`C`**. The drawer has three tabs:
+- **💬 Copilot Chat** — natural-language Q&A, guided pattern training, one-click prompt suggestions, and inline Jupyter `.ipynb` downloads.
+- **🧠 Brain & Patterns** — live neural state meters, band powers, per-channel quality grid, trained pattern detectors, Lab Notebook sessions, connectivity, and recent artifacts.
+- **⚙ Model** — switch between Turnkey Cloud AI, BYOK providers, local Ollama / LM Studio, or the offline Built-in Neural Analyst, and toggle optional voice read-aloud (TTS) or webcam artifact tracking.
 
-### Connect
+### Ask, train, or control
 
-Click **Connect**. Buddy runs the device pairing gesture, starts the cascade, and drops you into the live panel.
+Click a suggestion chip (for example *"What is my brain doing right now?"* or *"Let's train a new pattern together"*) or type your own question. Buddy AI calls live tools against `CloudNeuralEngine`, shows each tool call inline, and streams its grounded answer.
 </Steps>
 
-<Callout type="warning">
-  Web Bluetooth and Web Serial are only available in Chromium browsers over HTTPS or `localhost`. Firefox and Safari cannot pair boards.
-</Callout>
+## Live Brain & Patterns tab
 
-## The brain panel
-
-Buddy reduces the raw stream into language-sized facts and renders them live:
+Buddy AI continuously distills the multichannel ring buffer inside your browser (`CloudNeuralEngine`) into structured, language-sized summaries:
 
 | Card | What it shows |
 |------|---------------|
-| **State** | Smoothed `focus` / `relax` / `engagement` indices (0–1, within-session), dominant band, and a `warming_up` flag while readings settle. |
-| **Band powers** | Relative δ / θ / α / β / γ power, with a per-channel breakdown. |
-| **Quality grid** | Per-channel signal status: `good` / `flat` / `rail` / `noisy` / `line`, with RMS and line ratio. |
-| **Artifacts** | Discrete transients: blinks, double-blinks, jaw clenches, motion. |
-| **Connectivity** | Cross-channel amplitude coupling (Pearson *r* over log band-power envelopes) for a chosen band. |
-| **Trends** | Rolling history of state and band power over the session. |
-| **Cascade monitor** | Live view of the perception tiers (features → quality → state → events). |
-| **Pattern ticker** | Which trained patterns are firing right now, with smoothed probabilities. |
+| **Live Neural State** | Smoothed `focus` / `relax` / `engagement` indices (0–1, within-session relative), dominant band, overall signal quality, `bad_channels`, and a `warming_up` badge while baseline variance settles. |
+| **Frequency Bands** | Relative Delta (δ), Theta (θ), Alpha (α), Beta (β), and Gamma (γ) power, plus a one-click **Deep Spectrum →** shortcut for IAF and 1/f slope analysis. |
+| **Trainable Pattern Detectors** | Live activation probabilities (`0–100%`) for your trained classifiers, with leave-one-rep-out cross-validated balanced accuracy (`CV`), **Explain**, and **+ Train Pattern** controls. |
+| **Lab Notebook Sessions** | Saved experimental windows (for example `eyes-closed-rest` vs. `mental-math`) with one-click **Analyze** and **Compare (Cohen's *d*)** actions. |
+| **Channel Signal Quality** | Per-channel status (`good`, `flat`, `rail`, `noisy`, `line`), RMS in µV, and 50/60 Hz mains line-noise ratio. |
+| **Functional Connectivity** | Cross-channel amplitude coupling (Pearson *r* over log band-power envelopes), strongest electrode pairs, and mean coupling. |
+| **Recent Artifacts** | Real-time time-domain transient log: single/double eye blinks, jaw clenches, and motion spikes, plus optional MediaPipe webcam face/blink context. |
 
-## The AI agent
+## Perception cascade
 
-The chat copilot is a tool-using LLM that runs a multi-turn loop over your live neural cascade — reading state, spectra, artifacts, connectivity, and your trained patterns through read-only tools — and answers in plain language.
+To bridge the rate mismatch between EEG (250–500 Hz) and LLM reasoning (~1 Hz), Buddy AI runs a 5-tier perception cascade in the browser. The model **pulls** compact summaries via tools on demand and is **never** sent raw EEG waveforms:
 
-It is **100% browser-based**. You bring your own API key, and the agent talks to your chosen provider directly from the tab. There is no PiEEG server hop, and no raw EEG is ever sent to the model.
+| Tier | Rate | Representation | LLM sees |
+|------|------|----------------|----------|
+| **T0 Raw** | 250–500 Hz | Float32 µV samples in browser ring buffer | **Never** |
+| **T1 Features** | ~4–8 Hz | Per-channel log band powers, RMS, line-length, quality | Via tools |
+| **T2 State** | ~1 Hz | Smoothed `focus` / `relax` / `engagement`, dominant band | Via tools |
+| **T3 Events** | Sparse | Debounced state transitions, blinks, clenches, pattern hits | Via tools |
+| **T4 Reason** | On query | Multi-turn tool-calling loop + docs RAG + actuators | Compact JSON tool outputs |
 
-<Callout type="info">
-  This is the browser-native sibling of the server-side [PiEEG Agent](/software/integrations/pieeg-agent). Same idea — talk to your brain signal — but with no Python, no LSL, and no server. See [Browser vs. server-side](#browser-vs-server-side).
-</Callout>
+## Complete toolset (22 tools)
 
-### How it works
+Buddy AI grounds every claim about your signal or hardware in a fresh tool call:
 
-The agent runs a bounded **tool-calling loop**:
+### 1. Live neural senses
 
-1. Your question is appended to the conversation.
-2. The model streams a response; if it requests tools, the agent runs them against the live `BuddyEngine`.
-3. Tool results are fed back and the model continues, up to a small iteration cap, until it answers.
+| Tool | Description |
+|------|-------------|
+| `get_neural_state` | Current smoothed `focus`, `relax`, and `engagement` indices (0–1, within-session), dominant band, relative band powers, signal quality, `bad_channels`, and `warming_up`. |
+| `get_band_powers` | Relative EEG band powers (Delta, Theta, Alpha, Beta, Gamma) averaged across channels, plus per-channel breakdown in µV²/Hz. |
+| `analyze_spectrum` | Deeper spectral analysis: individual alpha-peak frequency (IAF), aperiodic 1/f exponent & offset, theta/beta ratio, spectral entropy, and frontal alpha asymmetry (channel-average or single channel). |
+| `find_artifacts` | Recent discrete time-domain transients (`blink`, `blink_double`, `jaw_clench`, `motion`). |
+| `get_recent_events` | Recent debounced neural state transitions and signal-quality drops/recoveries. |
+| `get_channel_quality` | Per-channel verdicts (`good`, `flat`, `rail`, `noisy`, `line`) with RMS (µV), 50/60 Hz line-noise ratio, and 0–1 score. |
+| `connectivity` | Cross-channel functional connectivity (Pearson *r* over log band-power envelopes) for any band (`Delta`–`Gamma`) and window (`2–30 s`). |
+| `get_video_context` | Reads optional in-browser MediaPipe webcam face/artifact tracking (blinks, head motion, jaw movement) when enabled by the user. |
 
-The model **pulls** state through tools on demand — it is never streamed raw samples. This solves the rate mismatch between an LLM (~1 Hz of reasoning) and EEG (250–500 Hz of data).
+### 2. Trainable patterns & Lab Notebook sessions
 
-### Perception cascade (browser edition)
+| Tool | Description |
+|------|-------------|
+| `list_patterns` | Lists all trained pattern detectors saved in the browser with their leave-one-rep-out cross-validated balanced accuracy. |
+| `detect_patterns` | Checks which trained patterns are firing right now, with smoothed 0–1 probabilities. |
+| `explain_pattern` | Explains a pattern detector: threshold, LORO-CV balanced accuracy, per-channel importance, and top separating features (Cohen's *d*). |
+| `forget_pattern` | Deletes a trained pattern detector from live memory and `localStorage`. |
+| `start_pattern_training` | Starts teaching a new pattern detector by example (e.g. `eyes-closed`, `mental-math`, `jaw-clench`). |
+| `record_segment` | Records one labelled segment (`rest` or `active`, 1–15 s) from the live stream. Enforces at most one segment per turn so you have time to switch mental states. |
+| `finish_pattern_training` | Fits the L2 + group-lasso logistic classifier across recorded reps, cross-validates by rep (LORO-CV), saves to `localStorage`, and starts live scoring. |
+| `cancel_pattern_training` | Cancels an in-progress pattern training session without saving. |
+| `record_session` | Records a labelled Lab Notebook session window (`2–60 s`) and saves its spectral, state, quality, and connectivity summary. |
+| `list_sessions` | Lists all saved Lab Notebook session summaries in the browser. |
+| `analyze_session` | Loads the full statistical summary of a saved Lab Notebook session by label. |
+| `compare_sessions` | Contrasts two saved sessions (`a` vs `b`) using within-session Cohen's *d* effect sizes across bands, state indices, and quality. |
+| `forget_session` | Deletes a saved Lab Notebook session summary. |
 
-The agent reads a layered reduction of the signal — trimmed to the senses that exist in-browser (no server, no actuators, no notebook/session store):
+### 3. PiEEG documentation RAG, scientific literature & Jupyter notebooks
 
-| Tier | Rate | Representation | Agent sees |
-|------|------|----------------|------------|
-| T0 Raw | 250 Hz | µV samples | Never |
-| T1 Features | ~feature Hz | band powers, quality | Via tools |
-| T2 State | ~1 Hz | focus / relax / engagement | Via tools |
-| T3 Events | sparse | debounced transitions, artifacts | Via tools |
-| T4 Reason | on query | natural-language Q&A + tools | — |
+| Tool | Description |
+|------|-------------|
+| `search_docs` | Searches the indexed PiEEG documentation corpus (`/pieeg-docs-index.json`) for hardware specs, ADS1299 registers, 10-20 electrode placement, noise elimination, Web Bluetooth, Local Bridge, and LSL, returning grounded excerpts with `docs.pieeg.com` citations. |
+| `search_web` | Searches **Wikipedia** or **NCBI PubMed** directly from the browser for neuroscience, EEG rhythms, ERPs (P300, SSVEP), and BCI research literature. |
+| `create_notebook` | Generates a downloadable `.ipynb` Jupyter Notebook preloaded with the live EEG snapshot, channel metadata, and custom Markdown + Python analysis/plotting cells. |
 
-<Callout type="warning">
-  The agent **observes and explains — it does not control the device.** Every tool is read-only. If no data is available yet, it says the stream is still warming up rather than guessing.
-</Callout>
+### 4. Dashboard inspection & control (actuators)
 
-### Tools
+| Tool | Description |
+|------|-------------|
+| `get_dashboard_status` | Reads the active PiEEG Cloud dashboard state: bandpass and 50/60 Hz notch filter settings, spike rejection, CSV recording status, visible analysis panels, sample rate, and channel count. |
+| `control_dashboard` | Executes safe UI actions on the live dashboard: `set_bandpass`, `toggle_bandpass`, `set_notch`, `toggle_notch`, `start_recording`, `stop_recording`, `pause_stream`, `resume_stream`, `toggle_panel` (`fft`, `spectrogram`, `stats`, `mental_state`), or `navigate` (`dashboard`, `calibration`, `lab`, `wellness`, `experiences`, `library`). |
 
-The agent grounds every claim in a fresh tool call against the live engine:
+## Model providers (Turnkey, BYOK & Offline)
 
-| Tool | Returns |
-|------|---------|
-| `get_neural_state` | Smoothed focus / relax / engagement (0–1, within-session), dominant band, quality, `warming_up`. |
-| `get_band_powers` | Relative δ / θ / α / β / γ power and per-channel breakdown. |
-| `analyze_spectrum` | Individual alpha peak (IAF), aperiodic 1/f slope, theta/beta ratio, spectral entropy, frontal alpha asymmetry (optional single channel). |
-| `find_artifacts` | Recent blinks, double-blinks, jaw clenches, motion. |
-| `get_recent_events` | Debounced state transitions (focus/relax/engagement/quality high↔low). |
-| `get_channel_quality` | Per-channel status (`good`/`flat`/`rail`/`noisy`/`line`), RMS, line ratio. |
-| `connectivity` | Cross-channel amplitude coupling (Pearson *r* over log band-power envelopes) for one band. |
-| `list_patterns` | Trained pattern detectors with cross-validated balanced accuracy. |
-| `detect_patterns` | Which trained patterns are firing now, with smoothed probabilities. |
-| `explain_pattern` | Justifies one pattern: threshold, cross-validation, per-channel importance, top features. |
+Configure your preferred model in the **⚙ Model** tab of the Buddy AI drawer:
 
-### Providers
+| Provider | Mode | API Key Required | Default Model | How it connects |
+|----------|------|------------------|---------------|-----------------|
+| **PiEEG Cloud AI (Turnkey)** | Default | **No** | `claude-haiku-4-5` | Streams through the stateless `/api/agent/chat` Vercel Edge proxy (falls back automatically to the Built-in Neural Analyst if offline). |
+| **Anthropic (BYOK)** | Cloud BYOK | Yes | `claude-sonnet-4-6` | Direct browser SSE to `api.anthropic.com` |
+| **OpenAI (BYOK)** | Cloud BYOK | Yes | `gpt-4o-mini` | Direct browser SSE to `api.openai.com` |
+| **Groq (BYOK)** | Cloud BYOK | Yes | `llama-3.3-70b-versatile` | Direct browser SSE to `api.groq.com` |
+| **Together AI (BYOK)** | Cloud BYOK | Yes | `Llama-3.3-70B-Instruct-Turbo` | Direct browser SSE to `api.together.xyz` |
+| **OpenRouter (BYOK)** | Cloud BYOK | Yes | `anthropic/claude-3.5-haiku` | Direct browser SSE to `openrouter.ai` |
+| **Ollama (Local)** | Local | **No** | `llama3.1` | Direct to `http://localhost:11434/v1` |
+| **LM Studio (Local)** | Local | **No** | `local-model` | Direct to `http://localhost:1234/v1` |
+| **Custom OpenAI Endpoint** | Custom | Optional | `gpt-4o-mini` | Any OpenAI-compatible `/v1/chat/completions` URL |
+| **Built-in Neural Analyst** | 100% Offline | **No** | `pieeg-analyst-v1` | Runs locally in the browser; executes real tools on live EEG & docs and formats a grounded Markdown report with zero network traffic. |
 
-Pick a provider in the Lobby or in **Settings** and paste an API key. Cloud providers stream over their standard APIs; local providers run on your own machine; **Echo** needs no key and is handy for a no-cost demo.
+## Guided pattern training
 
-| Provider | Type | Key required |
-|----------|------|--------------|
-| Anthropic | Cloud | Yes |
-| OpenAI | Cloud | Yes |
-| Groq | Cloud | Yes |
-| Together AI | Cloud | Yes |
-| Ollama | Local | No |
-| LM Studio | Local | No |
-| Echo | Debug | No (built-in) |
+Buddy AI trains personalized classifiers for any mental, visual, or motor state you can reproduce (for example `eyes-closed`, `meditation`, `mental-math`, or `jaw-clench`):
 
-<Callout type="info">
-  One normalized message/tool shape drives all providers: the OpenAI-compatible Chat Completions API (OpenAI, Groq, Together, Ollama, LM Studio), the Anthropic Messages API, and the offline Echo provider.
-</Callout>
-
-### Example conversation
-
-```text
-you > how's my signal?
-buddy > All channels read "good", quality 0.97 — trustworthy.
-
-you > am I focused or relaxed right now?
-buddy > Relaxed, for you right now. Alpha is dominant and focus is low.
-        (Readings are within-session, not clinical.)
-
-you > which of my trained patterns is firing?
-buddy > "meditation" is active (p≈0.88). It's a strong detector —
-        leave-one-rep-out balanced accuracy 0.89, reading mostly O1/O2.
-```
-
-## Pattern training
-
-Buddy's most powerful sense is a **trained pattern detector** — a custom classifier for any mental state you can reproduce (meditation, focus, imagined movement, etc.).
-
-Training is **contrastive**: you record a `REST` baseline and an `ACTIVE` state across several reps. Buddy then fits a per-pattern detector and scores it honestly:
-
-- **Leave-one-rep-out cross-validation (LORO-CV)** splits by rep, not by sample, so temporal leakage cannot inflate the score.
-- **Balanced accuracy** is reported so class imbalance cannot flatter the result.
-- **Channel importance** is exposed via spatial (group-lasso) sparsity — you can see which electrodes the detector actually reads.
-
-A trained detector is far more meaningful than the generic `focus` / `relax` indices, and the AI agent can list, detect, and explain your patterns on demand.
+1. **Contrastive reps**: You record alternating `rest` (baseline) and `active` segments (4 seconds each across 3–5 reps), either via the **+ Train Pattern** modal in the **Brain & Patterns** tab or step-by-step in chat (where quick-action buttons appear automatically for each rep).
+2. **Spatial group-lasso + L2 logistic classifier**: Extracts per-channel log band powers (`logDelta`..`logGamma`), `logRMS`, and `logLineLength`, encouraging spatial sparsity across electrodes.
+3. **Honest cross-validation**: Evaluated with **Leave-One-Rep-Out Cross-Validation (LORO-CV)** and **balanced accuracy** so temporal autocorrelation and class imbalance cannot inflate scores.
+4. **Channel importance**: `explain_pattern` reports per-channel weights and top Cohen's *d* features so you can verify whether a detector reads occipital alpha (`O1/O2`) or frontal muscle artifacts (`Fp1/Fp2`).
 
 <Callout type="warning">
-  Buddy is designed for neurofeedback research and UX prototyping — **not clinical use**. All indices are within-session and descriptive, not diagnostic.
+  Buddy AI is a neuroscience research and engineering tool — **not a medical device**. All `focus`, `relax`, and `engagement` indices are normalized within the current session ("high or low for you right now"), never clinical or diagnostic measures.
 </Callout>
 
-## Honest metrics
+## Privacy & data handling
 
-Buddy is deliberate about what its numbers mean, and its system prompt keeps the agent candid:
+Buddy AI follows PiEEG Cloud's browser-first privacy model (see the full [Privacy Page](https://cloud.pieeg.com/privacy)):
 
-- `focus` / `relax` / `engagement` are **0–1 values relative to this session's own range** — described as "high/low for you right now", never absolute or clinical.
-- A `warming_up` flag marks the settling period before enough variance is established; the agent says so when a reading is still settling.
-- **Pattern scores** are leave-one-rep-out balanced accuracy — honest at the data scale you actually have.
-- Poor signal quality or flagged channels are surfaced **before** conclusions are drawn.
+- **Raw EEG never leaves your device**: Signal acquisition, DSP filtering, FFTs, artifact detection, connectivity, pattern training, and Lab Notebook session recording run 100% locally in your browser tab. Raw waveforms are never sent to any AI model.
+- **Compact numerical tool summaries only**: When you chat with an LLM, only your conversation messages and the compact JSON summaries returned by tools (such as band-power ratios, channel quality scores, or artifact counts) are included in the prompt context.
+- **Stateless Turnkey proxy**: When using **PiEEG Cloud AI (Turnkey)**, chat requests are forwarded through our stateless Vercel Edge proxy (`/api/agent/chat`) to Anthropic to stream the response. PiEEG does not log, store, or inspect your prompts, neural summaries, or responses.
+- **Direct BYOK**: When you provide your own API key, requests go directly from your browser to your selected provider. Your API key is stored only in your browser's `localStorage` (if you keep **Remember key in this browser** enabled) and is never transmitted to PiEEG servers.
+- **100% local & offline options**: Selecting **Ollama**, **LM Studio**, or the **Built-in Neural Analyst (Offline)** keeps all prompts and tool summaries entirely on your machine.
+- **Local webcam & local storage**: Optional webcam artifact tracking runs locally via in-browser MediaPipe WASM/WebGL (video frames never leave your device). Conversations, trained patterns, and Lab Notebook sessions persist only in your browser's `localStorage` and can be deleted at any time.
 
-## Privacy
+## Buddy AI (Cloud) vs. PiEEG Agent (Python CLI / MCP)
 
-Everything stays in your browser tab:
-
-- Raw EEG is decoded, filtered, and analyzed **client-side** — it is never uploaded to a PiEEG server.
-- Trained patterns persist locally in your browser.
-- Your API key and every agent request go **directly** from the tab to your chosen LLM provider — there is no PiEEG middleman. The model receives only the **reduced, language-sized facts** returned by tools, never raw EEG. You choose whether to persist the key.
-
-## Browser vs. server-side
-
-| | **Buddy (browser)** | **[PiEEG Agent](/software/integrations/pieeg-agent) (server-side)** |
+| | **Buddy AI in [PiEEG Cloud](https://cloud.pieeg.com)** | **[PiEEG Agent](/software/integrations/pieeg-agent) (Python CLI & MCP)** |
 |---|---|---|
-| Runtime | 100% browser | Python process + [PiEEG Server](/software) |
-| Requires | A Chromium browser + API key | `pieeg-server --lsl` running |
-| Data source | Web Bluetooth / Web Serial | Lab Streaming Layer |
-| Senses | State, spectra, artifacts, connectivity, patterns | + session recording, comparison, notebook generation |
-| Device control | Read-only (observe & explain) | Optional, behind a safety gate |
-| Best for | Instant, no-install copilot | Lab notebooks, recording, automation |
-
-## Supported devices
-
-| Source | Channels | Transport |
-|--------|----------|-----------|
-| Demo signal | 8 / 16 | Synthetic (in-browser) |
-| IronBCI-8 | 8 | Web Bluetooth (BLE) |
-| IronBCI-16 | 16 | Web Bluetooth (BLE) |
-| Octopus 16 | 16 | Web Bluetooth (BLE) |
-| IronBCI-32 | 32 | Web Serial (USB) |
+| **Runtime** | 100% in-browser at `cloud.pieeg.com` | Local Python process + `pieeg-server --lsl` |
+| **Install** | None (open in Chrome / Edge) | `pip` / one-line installer |
+| **Hardware sources** | Web Bluetooth, Web Serial, 19 BrainFlow boards, `pieeg-server` WS, Simulated | Lab Streaming Layer (`LSL`) streams |
+| **Default AI** | Turnkey Cloud AI (no key needed) + BYOK + Offline Built-in Analyst | BYOK (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, Ollama, etc.) |
+| **Senses & tools** | State, spectrum (IAF, 1/f), artifacts, webcam context, connectivity, patterns, Lab Notebook sessions, PiEEG docs RAG, PubMed/Wikipedia, `.ipynb` export, dashboard actuators | State, spectrum, artifacts, connectivity, patterns, sessions, `.ipynb` export, server actuators |
+| **External MCP host** | Built-in browser drawer | `pieeg-agent mcp` serves tools to Claude Desktop, Cursor, VS Code Copilot, Codex |
 
 ## Next steps
 
 <Cards>
-  <Cards.Card title="Open Buddy → buddy.pieeg.com" href="https://buddy.pieeg.com/" />
+  <Cards.Card title="Launch PiEEG Cloud → cloud.pieeg.com" href="https://cloud.pieeg.com/" />
   <Cards.Card title="Cloud overview" href="/cloud" />
-  <Cards.Card title="Dashboard" href="https://cloud.pieeg.com" />
-  <Cards.Card title="PiEEG Agent (server-side)" href="/software/integrations/pieeg-agent" />
+  <Cards.Card title="BrainFlow Devices" href="/cloud/brainflow" />
+  <Cards.Card title="Live Lab (Bio-Pen)" href="/cloud/live-lab" />
+  <Cards.Card title="PiEEG Agent (Python & MCP)" href="/software/integrations/pieeg-agent" />
 </Cards>
+

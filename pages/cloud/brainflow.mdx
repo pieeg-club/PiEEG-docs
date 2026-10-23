@@ -28,47 +28,65 @@ Browser-Side DspChain (src/lib/dsp.ts)
   - 5th-order Butterworth bandpass (1 Hz to min(40 Hz, 0.45 * fs))
   - IIR line-noise notch filter (50 / 60 Hz when < Nyquist)
   ↓
-Ring Buffer → Waveforms, 256-pt FFT, 3D Topomap, Live Lab, 35+ Experiences
+Ring Buffer → Waveforms, 256-pt FFT, 3D Topomap / 3D IMU Hand, Live Lab, 35+ Experiences
 ```
 
 When you select a board from the **BrainFlow Devices** tab:
 
 1. **User-gesture hardware pairing**: Clicking **Connect** invokes `navigator.bluetooth.requestDevice()` (filtered by the board's GATT service UUIDs and advertised name prefixes) or `navigator.serial.requestPort()`.
-2. **Protocol initialization**: The driver transmits the board's start sequence (for example, `v` / `d` / `b` on Cyton, preset `p21` + `d` on Muse, or `0x01 0x62` on AAVAA V3) and sends the matching stop sequence on disconnect.
+2. **Protocol initialization**: The driver transmits the board's start sequence (for example, `v` / `d` / `b` on Cyton, preset `p21` + `d` on Muse, `0x3F` / `0xA3 0x00` / `0x01` / `0x07` on Shimmer3, or `0x01 0x62` on AAVAA V3) and sends the matching stop sequence on disconnect.
 3. **Sample rate & Nyquist adaptation**: The session's live sample rate store (`sampleRateStore`) updates to the board's native ADC rate (`50 Hz` to `512 Hz`). The browser-side `DspChain` automatically clamps its upper bandpass cutoff to `min(40 Hz, floor(0.45 * sampleRate))` and disables the 50/60 Hz notch if the line frequency exceeds Nyquist.
+4. **IMU & 3D Hand Telemetry**: Boards that transmit 6-axis accelerometer and gyroscope data on the wire (`Shimmer3`, `Knight IMU`, `BrainAlive`, `Muse 2`, `Muse S`, `Muse S Athena`, `Muse 2016`) feed live IMU samples into the browser complementary filter (`auraVrImuStore`). In the dashboard FFT pane, you can switch between the **3D Topomap** and the **3D Hand · IMU** view (`AuraHandView`, showing 3D orientation, Roll/Pitch/Yaw, Accel/Gyro telemetry, and per-channel ExG RMS bars). `Shimmer3` and `Knight IMU` default to the **3D Hand · IMU** view; scalp + IMU headsets default to the **Topomap** view.
 
 ---
 
-## Supported Browser-Native Boards
+## Supported Browser-Native Boards (19 Profiles)
 
-Only boards from BrainFlow whose physical layer operates over open BLE GATT characteristics or serial COM ports are listed in the browser-native tab. Boards that require closed vendor C++ shared libraries (`.dll` / `.so` / `.dylib`) or raw UDP/TCP sockets cannot run inside the browser security sandbox.
+Only boards from BrainFlow whose physical layer operates over open BLE GATT characteristics or serial COM ports are listed in the browser-native tab. First-party boards (`PIEEG_BOARD` `56` and `IRONBCI_32_BOARD` `65`) are listed in the dedicated **PiEEG Devices** tab. Boards that require closed vendor C++ shared libraries (`.dll` / `.so` / `.dylib`) or raw OS UDP/TCP server sockets cannot run inside the browser security sandbox.
 
-### Web Bluetooth (GATT)
+### Web Bluetooth (GATT) - 7 Profiles
 
-| Board | BrainFlow Enum (`BoardIds`) | Ch | Rate | Default 10-20 Layout | Wire Protocol & Scale |
-|---|---|---|---|---|---|
-| **Ganglion** | `GANGLION_NATIVE_BOARD` (`46`) | 4 | 200 Hz | `Fp1, Fp2, C3, C4` | GATT `0xFE84` (notify `2d30c082`, write `2d30c083`), `b`/`s` control, FW v2/v3 18/19-bit decompression, `1.2 V` Vref / `51x` gain |
-| **Muse 2** | `MUSE_2_BOARD` (`38`) | 4 | 256 Hz | `TP9, AF7, AF8, TP10` | GATT `0xFE8D`, control `273e0001` (`v1`, `p21`, `d`/`h`), 4 EEG notify chars (`273e0003..06`), 12 x 12-bit samples/pkt, `0.48828 µV/LSB` |
-| **Muse S** | `MUSE_S_BOARD` (`39`) | 4 | 256 Hz | `TP9, AF7, AF8, TP10` | GATT `0xFE8D`, control `273e0001` (`v1`, `p21`, `d`/`h`), 4 EEG notify chars (`273e0003..06`), 12 x 12-bit samples/pkt, `0.48828 µV/LSB` |
-| **Muse S Athena** | `MUSE_S_ATHENA_BOARD` (`67`) | 4 | 256 Hz | `TP9, AF7, AF8, TP10` | GATT `0xFE8D`, preset `p1041` + `dc001`/`L1`, multiplexed notify `273e0013`/`14`, tags `0x11`/`0x12` 14-bit LSB bitfield, `1450/16383 µV/LSB` |
-| **Muse 2016** | `MUSE_2016_BOARD` (`41`) | 4 | 256 Hz | `TP9, AF7, AF8, TP10` | GATT `0xFE8D`, control `273e0001` (`v1`, `p21`, `d`/`h`), 4 EEG notify chars (`273e0003..06`), 12 x 12-bit samples/pkt |
-| **BrainAlive** | `BRAINALIVE_BOARD` (`40`) | 8 | 250 Hz | `F7, FT7, T7, CP5, Cz, C6, FC6, F4` | GATT `0xFE40` (`BA_FLEX`), write `0000fe41`, notify `0000fe42`, 8-byte gain/Vref handshake + 220-byte (5 x 44B) `int24` BE packets |
-| **AAVAA V3** | `AAVAA_V3_BOARD` (`53`) | 8 | 50 Hz | `F7, F3, T7, C3, F8, F4, T8, C4` | Nordic UART `6e400001`, start `0x0162` / stop `0x0139`, 47-byte `0xA0..0xC0` frames, 8 x `float32` LE x ADS1299 scale (`4.5 V`, gain 12) |
+| Board | BrainFlow Enum (`BoardIds`) | Ch | Rate | Default 10-20 Layout | IMU | Wire Protocol & Scale |
+|---|---|---|---|---|---|---|
+| **Ganglion** | `GANGLION_NATIVE_BOARD` (`46`) | 4 | 200 Hz | `Fp1, Fp2, C3, C4` | - | GATT `0xFE84` (notify `2d30c082`, write `2d30c083`), `b`/`s` control, FW v2/v3 18/19-bit decompression, `1.2 V` Vref / `51x` gain |
+| **Muse 2** | `MUSE_2_BOARD` (`38`) | 4 | 256 Hz | `TP9, AF7, AF8, TP10` | 6-axis | GATT `0xFE8D`, control `273e0001` (`v1`, `p21`, `d`/`h`), 4 EEG notify chars (`273e0003..06`) + IMU (`273e0009/0a`), 12 x 12-bit samples/pkt, `0.48828 µV/LSB` |
+| **Muse S** | `MUSE_S_BOARD` (`39`) | 4 | 256 Hz | `TP9, AF7, AF8, TP10` | 6-axis | GATT `0xFE8D`, control `273e0001` (`v1`, `p21`, `d`/`h`), 4 EEG notify chars (`273e0003..06`) + IMU (`273e0009/0a`), 12 x 12-bit samples/pkt, `0.48828 µV/LSB` |
+| **Muse S Athena** | `MUSE_S_ATHENA_BOARD` (`67`) | 4 | 256 Hz | `TP9, AF7, AF8, TP10` | 6-axis | GATT `0xFE8D`, preset `p1041` + `dc001`/`L1`, multiplexed notify `273e0013`/`14`, tags `0x11`/`0x12` 14-bit LSB EEG + tag `0x47` IMU, `1450/16383 µV/LSB` |
+| **Muse 2016** | `MUSE_2016_BOARD` (`41`) | 4 | 256 Hz | `TP9, AF7, AF8, TP10` | 6-axis | GATT `0xFE8D`, control `273e0001` (`v1`, `p21`, `d`/`h`), 4 EEG notify chars (`273e0003..06`) + IMU (`273e0009/0a`), 12 x 12-bit samples/pkt |
+| **BrainAlive** | `BRAINALIVE_BOARD` (`40`) | 8 | 250 Hz | `F7, FT7, T7, CP5, Cz, C6, FC6, F4` | 6-axis | GATT `0xFE40` (`BA_FLEX`), write `0000fe41`, notify `0000fe42`, 8-byte gain/Vref handshake + 220-byte (5 x 44B) `int24` BE EEG + `int16` BE IMU |
+| **AAVAA V3** | `AAVAA_V3_BOARD` (`53`) | 8 | 50 Hz | `F7, F3, T7, C3, F8, F4, T8, C4` | - | Nordic UART `6e400001`, start `0x0162` / stop `0x0139`, 47-byte `0xA0..0xC0` frames, 8 x `float32` LE x ADS1299 scale (`4.5 V`, gain 12) |
 
-### Web Serial (USB / Dongle / Virtual COM)
+### Web Serial (USB / Dongle / Virtual COM) - 12 Profiles
 
-| Board | BrainFlow Enum (`BoardIds`) | Ch | Rate | Default 10-20 Layout | Wire Protocol & Scale |
-|---|---|---|---|---|---|
-| **Cyton** | `CYTON_BOARD` (`0`) | 8 | 250 Hz | `Fp1, Fp2, C3, C4, P7, P8, O1, O2` | `115200` baud FTDI dongle, `v`/`d`/`b` start, `s` stop, 33-byte `0xA0..0xC0` frames, 8 x `int24` BE ADS1299 (`4.5 V`, gain 24, `0.02235 µV/LSB`) |
-| **Cyton + Daisy** | `CYTON_DAISY_BOARD` (`2`) | 16 | 125 Hz | 16-ch 10-20 (`Fp1..P4`) | `115200` baud FTDI dongle, pairs even (Daisy ch 9-16) and odd (Cyton ch 1-8) 33-byte `0xA0..0xC0` packets into 16 channels @ `125 Hz` |
-| **FreeEEG32** | `FREEEEG32_BOARD` (`17`) | 32 | 512 Hz | 32-ch 10-20 (`Fp1..Oz`) | `921600` baud USB CDC, auto-detected `0xA0..0xC0` frame length (`>= 99` bytes), 32 x `int24` BE AD7771 (`2.5 V` Vref, gain 8, `0.03725 µV/LSB`) |
-| **Knight** | `NEUROPAWN_KNIGHT_BOARD` (`57`) | 8 | 125 Hz | 8-ch 10-20 | `115200` baud USB serial, 21-byte `0xA0..0xC0` frames, 8 x `int16` BE + 2 LOFF status bytes (`4.0 V` Vref, gain 12, `10.1728 µV/LSB`) |
-| **Knight IMU** | `NEUROPAWN_KNIGHT_BOARD_IMU` (`66`) | 8 | 125 Hz | 8-ch 10-20 | `115200` baud USB serial, 57-byte `0xA0..0xC0` frames, 8 x `int16` LE EXG + 2 LOFF bytes + 9 x `float32` LE IMU |
-| **Enophone** | `ENOPHONE_BOARD` (`37`) | 4 | 250 Hz | `TP10, TP9, C4, C3` | Bluetooth SPP virtual COM port (`115200` baud), 20-byte `'bS'` header frames, 4 x `int32` BE (`/ 256` -> 24-bit, `5.0 V` Vref, gain 100) |
-| **Explore 4** | `EXPLORE_4_CHAN_BOARD` (`44`) | 4 | 250 Hz | `Fp1, Fp2, C3, C4` | Bluetooth SPP virtual COM port, 8-byte `ExploreHeader` + `0xAFBEADDE` Fletcher trailer, `int24` LE (`status + 4 ch`, `2.4 V`/`4.5 V` Vref, gain 6) |
-| **Explore 8** | `EXPLORE_8_CHAN_BOARD` (`45`) | 8 | 250 Hz | 8-ch 10-20 | Bluetooth SPP virtual COM port, 8-byte `ExploreHeader` + `0xAFBEADDE` Fletcher trailer, `int24` LE (`status + 8 ch`, `2.4 V`/`4.5 V` Vref, gain 6) |
-| **Explore+ 8** | `EXPLORE_PLUS_8_CHAN_BOARD` (`54`) | 8 | 250 Hz | 8-ch 10-20 | Bluetooth SPP virtual COM port, PID `0x96` framing + `0xAFBEADDE` Fletcher trailer, `int24` LE (`status + 8 ch`, `2.4 V` Vref, gain 6) |
-| **Explore+ 32** | `EXPLORE_PLUS_32_CHAN_BOARD` (`55`) | 32 | 250 Hz | 32-ch 10-20 | Bluetooth SPP virtual COM port, PID `0x94` framing + `0xAFBEADDE` Fletcher trailer, `int24` LE (`status + 32 ch`, `2.4 V` Vref, gain 6) |
+| Board | BrainFlow Enum (`BoardIds`) | Ch | Rate | Default Layout | IMU | Wire Protocol & Scale |
+|---|---|---|---|---|---|---|
+| **Cyton** | `CYTON_BOARD` (`0`) | 8 | 250 Hz | `Fp1, Fp2, C3, C4, P7, P8, O1, O2` | - | `115200` baud FTDI dongle, `v`/`d`/`b` start, `s` stop, 33-byte `0xA0..0xC0` frames, 8 x `int24` BE ADS1299 (`4.5 V`, gain 24, `0.02235 µV/LSB`) |
+| **Cyton + Daisy** | `CYTON_DAISY_BOARD` (`2`) | 16 | 125 Hz | 16-ch 10-20 (`Fp1..P4`) | - | `115200` baud FTDI dongle, pairs even (Daisy ch 9-16) and odd (Cyton ch 1-8) 33-byte `0xA0..0xC0` packets into 16 channels @ `125 Hz` |
+| **FreeEEG32** | `FREEEEG32_BOARD` (`17`) | 32 | 512 Hz | 32-ch 10-20 (`Fp1..Oz`) | - | `921600` baud USB CDC, auto-detected `0xA0..0xC0` frame length (`>= 99` bytes), 32 x `int24` BE AD7771 (`2.5 V` Vref, gain 8, `0.03725 µV/LSB`) |
+| **FreeEEG128** | `FREEEEG128_BOARD` (`52`) | 128 | 256 Hz | 128-ch (`Fp1..Ch128`) | - | `921600` baud USB CDC, auto-detected `0xA0..0xC0` frame length (`>= 387` bytes), 128 x `int24` BE AD7771 (`2.5 V` Vref, gain 8, `0.03725 µV/LSB`) |
+| **Knight** | `NEUROPAWN_KNIGHT_BOARD` (`57`) | 8 | 125 Hz | 8-ch 10-20 | - | `115200` baud USB serial, 21-byte `0xA0..0xC0` frames, 8 x `int16` BE + 2 LOFF status bytes (`4.0 V` Vref, gain 12, `10.1728 µV/LSB`) |
+| **Knight IMU** | `NEUROPAWN_KNIGHT_BOARD_IMU` (`66`) | 8 | 125 Hz | 8-ch 10-20 | 9-axis (Hand default) | `115200` baud USB serial, 57-byte `0xA0..0xC0` frames, 8 x `int16` LE EXG + 2 LOFF bytes + 9 x `float32` LE IMU |
+| **Enophone** | `ENOPHONE_BOARD` (`37`) | 4 | 250 Hz | `TP10, TP9, C4, C3` | - | Bluetooth SPP virtual COM port (`115200` baud), 20-byte `'bS'` header frames, 4 x `int32` BE (`/ 256` -> 24-bit, `5.0 V` Vref, gain 100) |
+| **Explore 4** | `EXPLORE_4_CHAN_BOARD` (`44`) | 4 | 250 Hz | `Fp1, Fp2, C3, C4` | - | Bluetooth SPP virtual COM port, 8-byte `ExploreHeader` + `0xAFBEADDE` Fletcher trailer, `int24` LE (`status + 4 ch`, `2.4 V`/`4.5 V` Vref, gain 6) |
+| **Explore 8** | `EXPLORE_8_CHAN_BOARD` (`45`) | 8 | 250 Hz | 8-ch 10-20 | - | Bluetooth SPP virtual COM port, 8-byte `ExploreHeader` + `0xAFBEADDE` Fletcher trailer, `int24` LE (`status + 8 ch`, `2.4 V`/`4.5 V` Vref, gain 6) |
+| **Explore+ 8** | `EXPLORE_PLUS_8_CHAN_BOARD` (`54`) | 8 | 250 Hz | 8-ch 10-20 | - | Bluetooth SPP virtual COM port, PID `0x96` framing + `0xAFBEADDE` Fletcher trailer, `int24` LE (`status + 8 ch`, `2.4 V` Vref, gain 6) |
+| **Explore+ 32** | `EXPLORE_PLUS_32_CHAN_BOARD` (`55`) | 32 | 250 Hz | 32-ch 10-20 | - | Bluetooth SPP virtual COM port, PID `0x94` framing + `0xAFBEADDE` Fletcher trailer, `int24` LE (`status + 32 ch`, `2.4 V` Vref, gain 6) |
+| **Shimmer3** | `SHIMMER3_BOARD` (`68`) | 4 | 512 Hz | `EXG1-Ch1..EXG2-Ch2` | 6/9-axis (Hand default) | Bluetooth SPP virtual COM port (`115200` baud), opcode `0x3F`/`0xA3`/`0x01` inquiry handshake + `0x07` start, `0x00` frames with 3B LE timestamp + dual ADS1292R 24/16-bit BE ExG + IMU |
+
+---
+
+## Automated Upstream Compatibility Check
+
+PiEEG Cloud tracks all 66 `BoardIds` defined in upstream [`brainflow-dev/brainflow`](https://github.com/brainflow-dev/brainflow):
+
+- **19 Browser-native boards** (`src/lib/brainflow/catalog.ts`): 7 WebBLE + 12 WebSerial profiles.
+- **2 First-party boards** (`PIEEG_BOARD` `56`, `IRONBCI_32_BOARD` `65`): handled directly in the first-party **PiEEG Devices** tab.
+- **3 Virtual boards** (`PLAYBACK_FILE_BOARD` `-3`, `STREAMING_BOARD` `-2`, `SYNTHETIC_BOARD` `-1`).
+- **5 Deprecated BLED112 dongle wrappers** (`GANGLION_BOARD` `1`, `BRAINBIT_BLED_BOARD` `18`, `MUSE_S_BLED_BOARD` `21`, `MUSE_2_BLED_BOARD` `22`, `MUSE_2016_BLED_BOARD` `42`): superseded by native WebBLE profiles.
+- **10 Raw TCP/UDP socket boards** (`GALEA_BOARD` `3`, `GANGLION_WIFI_BOARD` `4`, `CYTON_WIFI_BOARD` `5`, `CYTON_DAISY_WIFI_BOARD` `6`, `NOTION_1_BOARD` `13`, `NOTION_2_BOARD` `14`, `CROWN_BOARD` `23`, `EMOTIBIT_BOARD` `47`, `NTL_WIFI_BOARD` `50`, `BIOLISTENER_BOARD` `64`).
+- **27 Closed-source vendor SDK boards** (`BRAINBIT_BOARD` `7`, `UNICORN_BOARD` `8`, `CALLIBRI_*` `9-11`, `GFORCE_*` `16, 19`, `ANT_NEURO_EE_*` `24-36, 51`, `SYNCHRONI_*` / `OB5000` / `OB3000` `58-63`).
+
+A weekly GitHub Action (`.github/workflows/brainflow-upstream-check.yml`) runs `npm run check:brainflow` (`cloud/scripts/check-brainflow-upstream.mjs`) every Monday at `09:00 UTC`. The script fetches `brainflow_constants.h`, `brainflow_boards.cpp`, and `board_controller.cpp` from upstream `master` and opens a GitHub Issue only if a new `BoardIds` enum entry or ID change is detected.
 
 ---
 

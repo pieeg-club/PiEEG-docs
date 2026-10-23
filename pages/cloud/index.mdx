@@ -22,16 +22,16 @@ The cloud platform is built from the [PiEEG-server-cloud](https://github.com/pie
   <Cards.Card title="BrainFlow Devices" href="/cloud/brainflow" />
   <Cards.Card title="Live Lab (Bio-Pen)" href="/cloud/live-lab" />
   <Cards.Card title="Experiences gallery" href="/software/features/experiences" />
-  <Cards.Card title="Buddy - EEG AI agent" href="/cloud/buddy" />
+  <Cards.Card title="Buddy AI (Live Copilot)" href="/cloud/buddy" />
   <Cards.Card title="Local Bridge (WebRTC OSC)" href="/cloud/local-bridge" />
 </Cards>
 
 | App | What it is | Where it runs |
 |-----|-----------|---------------|
-| **Dashboard** | Live waveforms, spectral analysis, 3D topographic maps, session playback, WebXR view, and the [experiences gallery](/software/features/experiences). | Browser: [cloud.pieeg.com](https://cloud.pieeg.com) |
-| **[BrainFlow Devices](/cloud/brainflow)** | Browser-native WebBLE and WebSerial drivers for 17 BrainFlow-compatible third-party boards (`BoardIds`), with Nyquist-adaptive DSP conditioning. | Browser: [cloud.pieeg.com/lobby](https://cloud.pieeg.com/lobby) |
+| **Dashboard** | Live waveforms, spectral analysis, 3D topographic maps, 3D IMU hand view, session playback, WebXR view, and the [experiences gallery](/software/features/experiences). | Browser: [cloud.pieeg.com](https://cloud.pieeg.com) |
+| **[BrainFlow Devices](/cloud/brainflow)** | Browser-native WebBLE and WebSerial drivers for 19 BrainFlow-compatible third-party boards (`BoardIds`), with Nyquist-adaptive DSP conditioning and 6-axis IMU support. | Browser: [cloud.pieeg.com/lobby](https://cloud.pieeg.com/lobby) |
 | **[Live Lab (Bio-Pen)](/cloud/live-lab)** | Programmable 15 Hz JavaScript signal pipeline, graded curriculum briefs (`check()`), head-to-head Decoder Arena (`loroCV`), and one-click `/lab/:id` permalinks. | Browser: [cloud.pieeg.com/lab](https://cloud.pieeg.com/lab) |
-| **[Buddy](/cloud/buddy)** | Browser-native EEG copilot and AI agent: live brain panel, a tool-using LLM that reads your brain state (BYO API key), and guided pattern training. | Browser: [buddy.pieeg.com](https://buddy.pieeg.com/) |
+| **[Buddy AI](/cloud/buddy)** | Integrated EEG & BCI copilot inside the dashboard: live brain & patterns panel, Turnkey Cloud AI + BYOK + offline Built-in Neural Analyst, guided pattern training, Lab Notebook sessions, PiEEG docs RAG, `.ipynb` export, and dashboard actuators. | Browser: [cloud.pieeg.com](https://cloud.pieeg.com) |
 | **[Local Bridge](/cloud/local-bridge)** | Standalone 5 MB Rust gateway that receives frames from the browser over a P2P WebRTC data channel and forwards them locally as OSC packets. | Local binary (`127.0.0.1` / LAN) |
 
 <Callout type="info">
@@ -51,7 +51,7 @@ Connect any first-party PiEEG wireless or USB board:
 
 ### BrainFlow Devices (Free for Launch)
 
-Switch to the **[BrainFlow Devices](/cloud/brainflow)** tab to connect 17 third-party boards natively over Web Bluetooth or Web Serial (including Ganglion, Muse 2 / S / Athena / 2016, BrainAlive, AAVAA V3, Cyton, Cyton + Daisy, FreeEEG32, Knight, Knight IMU, Enophone, and Explore 4 / 8 / +8 / +32).
+Switch to the **[BrainFlow Devices](/cloud/brainflow)** tab to connect 19 third-party boards natively over Web Bluetooth or Web Serial (including Ganglion, Muse 2 / S / Athena / 2016, BrainAlive, AAVAA V3, Cyton, Cyton + Daisy, FreeEEG32, FreeEEG128, Knight, Knight IMU, Enophone, Explore 4 / 8 / +8 / +32, and Shimmer3).
 
 ### Simulated & Programmable Demos
 
@@ -81,7 +81,7 @@ For third-party boards, see the full [BrainFlow Devices compatibility matrix](/c
 | | **Cloud (cloud.pieeg.com)** | **Self-hosted [PiEEG Server](/software)** |
 |---|---|---|
 | Install | None | Python / Raspberry Pi setup |
-| Boards | PiEEG BLE/USB boards + 17 [BrainFlow WebBLE/WebSerial boards](/cloud/brainflow) | + Raspberry Pi SPI shields (PiEEG / PiEEG-16) |
+| Boards | PiEEG BLE/USB boards + 19 [BrainFlow WebBLE/WebSerial boards](/cloud/brainflow) | + Raspberry Pi SPI shields (PiEEG / PiEEG-16) |
 | DSP & FFT | In-browser (`DspChain` + Web Worker FFT) | On the server |
 | OSC output | Via [Local Bridge](/cloud/local-bridge) (WebRTC P2P) | Built-in |
 | LSL output | Self-hosted server | Built-in |
@@ -89,7 +89,7 @@ For third-party boards, see the full [BrainFlow Devices compatibility matrix](/c
 
 ## Privacy
 
-Acquisition, packet decoding, filtering, and spectral analysis on `cloud.pieeg.com` execute locally inside your browser tab. Data is only transmitted outside the tab when you explicitly start a Live Relay, upload a recording to the Cloud Library, or connect [Buddy](/cloud/buddy) to your chosen LLM provider.
+Acquisition, packet decoding, filtering, spectral analysis, and [Buddy AI's](/cloud/buddy) neural feature engine on `cloud.pieeg.com` execute locally inside your browser tab. Raw EEG waveforms never leave your machine unless you explicitly start a **Live Relay** or upload a recording to **Session Sharing**. When you chat with [Buddy AI](/cloud/buddy), only your chat prompt and compact numerical tool summaries (never raw waveforms) are sent — either through the stateless Turnkey Cloud AI proxy, directly from your browser to your chosen BYOK provider, or kept 100% local using Ollama, LM Studio, or the offline Built-in Neural Analyst. See the full [Privacy Page](https://cloud.pieeg.com/privacy) for details.
 
 ## Next steps
 
@@ -100,5 +100,5 @@ Acquisition, packet decoding, filtering, and spectral analysis on `cloud.pieeg.c
   <Cards.Card title="Local Bridge" href="/cloud/local-bridge" />
   <Cards.Card title="Self-host the server" href="/software/getting-started/installation" />
   <Cards.Card title="JavaScript SDK" href="/software/api/javascript-sdk" />
-  <Cards.Card title="Buddy — EEG AI agent" href="/cloud/buddy" />
+  <Cards.Card title="Buddy AI (Live Copilot)" href="/cloud/buddy" />
 </Cards>
