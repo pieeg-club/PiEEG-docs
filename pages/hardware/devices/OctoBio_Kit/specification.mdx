@@ -1,0 +1,93 @@
+---
+title: "Specification"
+description: "OctoBio Kit technical specification: Octopus 16 EEG board, Elecrow starter kit, web app, BLE protocol."
+---
+
+import { Callout } from 'nextra/components'
+
+# Specification
+
+Everything in the kit, plus the web app that ties it together.
+
+## Octopus 16 EEG board (included)
+
+![Octopus 16 EEG board](/images/hardware/2026/10/octobio_octopus16_top.jpg)
+
+| | |
+|---|---|
+| **Channels** | 16 EEG, dry spring-loaded pogo pins |
+| **ADC** | 2 × Texas Instruments ADS131M08, 24-bit |
+| **Gain** | 4 (all channels) |
+| **Controller** | Seeed Studio XIAO ESP32-S3 |
+| **Wireless** | Bluetooth LE, ~250 SPS |
+| **Bluetooth name** | `Octopus-16-XXXX` |
+| **Power** | 5 V power bank, battery only while worn |
+
+<Callout type="info">
+  **Sample rate:** the stream is labelled 250 SPS. With the current 8.000 MHz ADC clock the true rate is about **244 SPS** (4 MHz ÷ OSR 16384). That's fine for viewing and band power; correct for it if you need precise timing (ERP, P300).
+</Callout>
+
+## Starter Kit for Arduino (SEA0004T, included)
+
+| | |
+|---|---|
+| **Board** | Arduino Uno compatible (ATmega328P) |
+| **Connection** | USB serial, 115200 baud |
+| **Sensors** | Ultrasonic distance, light (BH1750), temperature & humidity (DHT20), motion (PIR), sound, soil moisture, potentiometer, accelerometer (MPU6050), button, IR receiver |
+| **Outputs** | LED, second LED, relay, buzzer, servo, 16×2 LCD |
+| **Firmware** | OctoBio firmware, flashed once from the browser |
+| **Ready line** | `INF protocol=1 ready` |
+
+## Software (web app)
+
+| | |
+|---|---|
+| **Platform** | Web app at [octobridge.pieeg.com](https://octobridge.pieeg.com/), Chrome or Edge (desktop) |
+| **Connection** | Web Bluetooth (Octopus 16) + Web Serial (starter kit), both live at once |
+| **Firmware** | Flashed by the user from the browser, one time only |
+| **Programming** | Blocks, 5 difficulty levels, runs live without compiling |
+| **EEG values** | Relative band power δ θ α β γ, focus, relax, signal quality |
+| **Privacy** | Bluetooth and USB stay in the browser tab. Nothing is uploaded to a PiEEG server. |
+
+## Octopus 16 BLE protocol
+
+For developers who want to read the Octopus 16 in their own software.
+
+| Item | Value |
+|---|---|
+| Service | `4fafc201-1fb5-459e-8fcc-c5c9c331914b` |
+| Data (NOTIFY) | `beb5483e-36e1-4688-b7f5-ea07361b26a8` |
+| Cmd (WRITE) | `c0de0001-36e1-4688-b7f5-ea07361b26a8` (register bridge) |
+
+**Packet: 51 bytes, one sample per notification**
+
+| Bytes | Meaning |
+|---|---|
+| `[0]` | `0xA0` start marker |
+| `[1]` | Sample counter (0–255, wraps) |
+| `[2..25]` | ADC1, channels 0–7 (8 × 3-byte big-endian signed 24-bit) |
+| `[26..49]` | ADC2, channels 8–15 |
+| `[50]` | `0xC0` end marker |
+
+```
+µV = raw × (1.2 / 4.0 / 8388607) × 1e6
+```
+
+(1.2 V reference, gain 4, 24-bit.)
+
+The easiest way to use it from a web page is the [JavaScript SDK](/software/api/javascript-sdk):
+
+```js
+const eeg = new PiEEG();
+await eeg.connectBLE({ device: 'octopus-16' }); // call from a click handler
+```
+
+## Package
+
+| | |
+|---|---|
+| **SKU** | PIA24028P |
+| **Weight** | 570 g |
+| **In the box** | 1 × Octopus 16 EEG board (with ESP32-S3), 1 × Elecrow All-in-One Starter Kit for Arduino (SEA0004T), access to the OctoBio web app and firmware |
+| **Not included** | 5 V power bank, a computer with Bluetooth running desktop Chrome or Edge |
+| **Sold by** | PiEEG on Elecrow |

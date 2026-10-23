@@ -1,0 +1,55 @@
+---
+title: "Troubleshooting"
+description: "Fix common OctoBio Kit problems: browser, flashing, Bluetooth, serial, signal quality and pogo pins."
+---
+
+import { Callout } from 'nextra/components'
+
+# Troubleshooting
+
+## Browser and connection
+
+| Problem | Fix |
+|---|---|
+| The lab won't connect at all | Use **desktop** Chrome or Edge, on the HTTPS site. Safari, Firefox and phones are not supported. |
+| No serial port appears | Use a USB **data** cable, not a charge-only one. Close the Arduino IDE and any other serial monitor. |
+| Starter kit numbers don't move | When the port opens the kit restarts. Wait until its status says **live**. |
+| `Octopus-16-XXXX` not in the Bluetooth list | Check the power bank is on and the LED blinks slowly (advertising). Move closer to the computer. |
+| Octopus connects, then drops | Retry the connection. Keep the board close to the computer for the first run. |
+
+## Flashing
+
+| Problem | Fix |
+|---|---|
+| XIAO port not found | Hold **BOOT**, tap **RESET**, release BOOT, then install again. |
+| Octopus silent after flashing | Unplug and replug the USB once. |
+| Starter kit flash fails | Close other serial monitors. Only Uno / ATmega328P boards (16U2 or CH340) are supported. |
+| Kit screen doesn't say "octoBio Kit Ready" | Flash again from the Flash page. |
+
+## Signal
+
+| Problem | Fix |
+|---|---|
+| Octopus on Bluetooth but no EEG data, or LED fast double-blinks | The XIAO is seated the wrong way round (180°). Reseat it so the `5V / GND / 3V3` labels line up. A board that flashes and shows up on Bluetooth does not prove the ADC is connected. |
+| **EEG ok** stays red | Press the board straight down so every pin touches the scalp. Part the hair under the pins. Sit still. |
+| Huge swings in the signal | Blinks, jaw clenches and movement. Relax the face and keep still. |
+| Alpha doesn't rise with eyes closed | Place the board over the back of the head (visual cortex). Keep the eyes closed for a full 10 seconds. |
+| Distance shows a negative number | The echo was missed. Point the sensor at a facing surface. |
+
+## Pogo pin care
+
+The Octopus 16 uses spring-loaded pogo pins. Dirt, liquid or sideways force can make a pin stick.
+
+- Clean the pin tips with isopropyl alcohol (IPA above 90%) and blow out dust with compressed air.
+- Press the board **straight down** (90°). Never push or tilt the pins sideways under pressure.
+- **To free a stuck pin:** put a drop of IPA into the pin barrel, gently work the plunger with a non-metal tool, and let it dry fully before powering on.
+
+<Callout type="error">
+  **Do not use oil or grease** on the pins. It attracts dirt and damages conductivity.
+</Callout>
+
+See also [Octopus 16 pogo pin care](/hardware/devices/Octopus_16).
+
+## Still stuck?
+
+Ask on [Discord](https://discord.gg/5Ps24p47), open an issue on [GitHub](https://github.com/pieeg-club), or email [pieeg@pieeg.com](mailto:pieeg@pieeg.com).

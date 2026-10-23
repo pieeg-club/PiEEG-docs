@@ -1,0 +1,74 @@
+---
+title: "Sensors & Outputs"
+description: "Everything the OctoBio Kit can read and move: EEG values from the Octopus 16 and the starter kit's sensors and outputs."
+---
+
+import { Callout } from 'nextra/components'
+
+# Sensors & Outputs
+
+## Brain side: Octopus 16 (Web Bluetooth)
+
+A round 16-channel board whose spring-loaded pogo pins are the electrodes, so there's no gel, no cap and no cables. A Seeed Studio XIAO ESP32-S3 on top streams the signal over Bluetooth, and the browser turns it into band power.
+
+| Reading | Meaning |
+|---|---|
+| **Band power** | δ θ α β γ, relative (share of total power) |
+| **Focus** | Uncalibrated index, Beta / (Beta + Theta) |
+| **Relax** | Uncalibrated index, Alpha / (Alpha + Beta) |
+| **RMS** | Signal size in µV |
+| **Strongest band** | The band with the most power right now |
+| **EEG ok** | Green when RMS is between 2 and 200 µV |
+
+| Band | Range |
+|---|---|
+| δ delta | 0.5–4 Hz |
+| θ theta | 4–8 Hz |
+| α alpha | 8–13 Hz |
+| β beta | 13–30 Hz |
+| γ gamma | 30–100 Hz |
+
+<Callout type="info">
+  Blinks and jaw clenches raise RMS and gamma. That's muscle, not brain activity.
+</Callout>
+
+## Room side: starter kit (Web Serial, 115200 baud)
+
+Elecrow's All-in-One Starter Kit for Arduino (SEA0004T): an Arduino Uno-compatible board with sensors and outputs already mounted in one case. It runs the OctoBio firmware, which you flash once from the browser.
+
+### Sensors
+
+| Sensor | Part | Value |
+|---|---|---|
+| Light | BH1750 | lux |
+| Distance | Ultrasonic | cm |
+| Temperature & humidity | DHT20 | °C, % |
+| Motion | PIR | motion / no motion |
+| Tilt | MPU6050 | 6-axis, no heading |
+| Sound | Analog | raw 0 to 1023 |
+| Soil moisture | Analog | raw 0 to 1023 |
+| Knob | Potentiometer | raw 0 to 1023 |
+| Button | Digital | pressed / released |
+| IR remote | IR receiver | remote codes |
+
+### Outputs
+
+| Output | Commands |
+|---|---|
+| Light D10 | on, off, flash |
+| Light D8 | on, off |
+| Servo | 0 to 180° |
+| Relay | on, off |
+| Buzzer | on, off |
+| Screen | 16×2 LCD, two lines of text |
+
+<Callout type="warning">
+  **Never connect the relay to mains voltage.**
+</Callout>
+
+## Limits to know
+
+- **Distance** needs a facing surface. A missed echo is a negative number, not "very far".
+- **Sound, soil and knob** are raw counts (0–1023), not calibrated units.
+- **Tilt** has no compass heading.
+- **Focus and relax** are uncalibrated indexes. Do not treat them as mood or a clinical score.

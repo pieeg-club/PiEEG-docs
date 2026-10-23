@@ -1,0 +1,63 @@
+---
+title: "Firmware Flashing"
+description: "Flash the Octopus 16 and the OctoBio starter kit from the browser. First time only, no Arduino IDE."
+---
+
+import { Tabs, Callout } from 'nextra/components'
+
+# Firmware Flashing
+
+Both boards are flashed once, from the browser, at **[octobridge.pieeg.com/flash](https://octobridge.pieeg.com/flash)**. You need desktop Chrome or Edge and a USB **data** cable. No Arduino IDE.
+
+<Tabs items={['Octopus 16', 'Starter kit']}>
+<Tabs.Tab>
+
+**Board:** Seeed Studio XIAO ESP32-S3 on the Octopus 16
+
+1. On **Flash**, plug the XIAO ESP32-S3 into the computer with a USB data cable.
+2. Click **Install Octopus-16** and choose its port.
+3. No port? Hold **BOOT**, tap **RESET**, release BOOT and install again.
+4. Unplug and replug when it finishes.
+
+**Result:** it now shows up over Bluetooth as `Octopus-16-XXXX`.
+
+![Octopus 16 with the XIAO controller mounted](/images/hardware/2026/10/octobio_octopus16_xiao.jpg)
+
+<Callout type="warning">
+  Flash with the board **off the head**. USB from a computer is only for flashing.
+</Callout>
+
+**LED states after flashing**
+
+| Pattern | State |
+|---|---|
+| Solid (brief) | Booting |
+| Slow 1 Hz blink | Advertising, waiting for the app |
+| Solid | Connected / streaming |
+| Fast double-blink | ADC not detected (check the XIAO seating) |
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+**Board:** Elecrow All-in-One Starter Kit for Arduino (SEA0004T), Arduino Uno / ATmega328P
+
+1. Close any other serial monitor (Arduino IDE, terminal) first.
+2. On **Flash**, plug in the starter kit and click **Flash octoBio Kit**.
+3. Choose its port. Flashing takes about 20 seconds.
+
+**Result:** the screen should say **octoBio Kit Ready**.
+
+**Supported:** Arduino Uno / ATmega328P boards (official 16U2 or CH340).
+
+**Not supported:** Leonardo, Mega, ESP32 boards, or a board with no bootloader.
+
+</Tabs.Tab>
+</Tabs>
+
+## Other targets
+
+The Flash page can also install firmware for the **Puck** (CrowPanel 2.1 rotary HMI), a small panel that links to an Octopus 16 over Bluetooth. See [octoBridge](/software/octobridge#flash-firmware).
+
+## After flashing
+
+Go to [How to Start → Connect both devices](/hardware/devices/OctoBio_Kit/setup).

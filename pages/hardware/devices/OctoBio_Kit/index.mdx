@@ -1,0 +1,86 @@
+---
+title: "OctoBio Kit Intro"
+description: "OctoBio Kit — a brain-to-hardware learning kit. A wireless 16-channel EEG board plus an Arduino starter kit, programmed with blocks in the browser."
+---
+
+import { Cards, Callout } from 'nextra/components'
+
+# OctoBio Kit
+
+**Brain rhythms in. Real-world actions out.**
+
+The OctoBio Kit is a brain-to-hardware learning kit. It combines a wireless 16-channel EEG board (**Octopus 16**) with an Arduino starter kit, so students can explore biosignals, build programs with blocks, and bring lights, motors and screens to life. Everything runs in one browser tab at **[octobridge.pieeg.com](https://octobridge.pieeg.com/)**.
+
+![OctoBio Kit: Elecrow starter kit and Octopus 16 EEG board](/images/hardware/2026/10/octobio_kit.jpg)
+
+<Callout type="warning">
+  The OctoBio Kit is **not a medical device**. It is a learning and experimentation tool. Focus and relax are uncalibrated classroom indicators. Read [Safety](/hardware/devices/OctoBio_Kit/safety) before anyone puts it on.
+</Callout>
+
+## At a glance
+
+| | |
+|---|---|
+| **EEG channels** | 16, dry spring-loaded pogo pins |
+| **Converters** | 2 × TI ADS131M08, 24-bit |
+| **EEG link** | Bluetooth LE, ~250 SPS |
+| **Hardware kit** | Arduino Uno compatible, USB serial |
+| **Programming** | Drag-and-drop blocks, 5 levels |
+| **Runs in** | Desktop Chrome or Edge |
+
+## How it works
+
+Two devices, one browser tab.
+
+| | Brain side | Room side |
+|---|---|---|
+| **Device** | [Octopus 16](/hardware/devices/Octopus_16) EEG board | Elecrow All-in-One Starter Kit for Arduino (SEA0004T) |
+| **Link** | Web Bluetooth | Web Serial (USB), 115200 baud |
+| **Role** | Reads the EEG signal. The browser turns it into band power. | Senses the room and acts on it: lights, servo, buzzer, relay, screen. |
+
+```
+ Octopus 16 ──Bluetooth──►┐
+                          │   octobridge.pieeg.com    ┌──► LEDs, servo, buzzer,
+                          ├──►  (Chrome / Edge tab)   ┤    relay, 16×2 LCD
+ Starter kit ────USB─────►┘   blocks:  if → then      └──◄ light, distance, PIR,
+                                                           temp, soil, knob …
+```
+
+The web app reads both devices at the same time and links them with your blocks. You can also use either device on its own.
+
+1. **Connect:** Bluetooth and USB, both live at once.
+2. **Build:** drag-and-drop blocks.
+3. **Run:** watch the hardware respond. Nothing to compile.
+
+![How to start with the OctoBio Kit](/images/hardware/2026/10/octobio_how_to_start.gif)
+
+## What students learn
+
+Biology, electronics and programming in one experiment, with the same setup from primary school to university.
+
+- **Biology:** brain rhythms (delta, theta, alpha, beta, gamma), why alpha rises when the eyes close, and the artifacts that blinks and jaw clenches leave in the signal.
+- **Electronics:** sensors and actuators, analog vs digital, I²C, serial communication, units and ranges.
+- **Programming:** if / else, loops, thresholds, mapping one range onto another, and combining two signals into one decision.
+
+## Get started
+
+<Cards>
+  <Cards.Card title="What's in the Box" href="/hardware/devices/OctoBio_Kit/whats-in-the-box" />
+  <Cards.Card title="How to Start" href="/hardware/devices/OctoBio_Kit/setup" />
+  <Cards.Card title="Lessons" href="/hardware/devices/OctoBio_Kit/lessons" />
+  <Cards.Card title="Open the lab" href="https://octobridge.pieeg.com/" />
+</Cards>
+
+## Related
+
+- [octoBridge](/software/octobridge): the browser lab that runs the kit
+- [Octopus 16](/hardware/devices/Octopus_16): hardware details of the EEG board
+- [JavaScript SDK](/software/api/javascript-sdk): use the Octopus 16 in your own web app (`octopus-16`)
+
+## Support
+
+Support for the OctoBio software, firmware and the Octopus 16 comes from the PiEEG team:
+
+- **Discord:** [discord.gg/5Ps24p47](https://discord.gg/5Ps24p47)
+- **GitHub:** [github.com/pieeg-club](https://github.com/pieeg-club)
+- **Email:** [pieeg@pieeg.com](mailto:pieeg@pieeg.com)
