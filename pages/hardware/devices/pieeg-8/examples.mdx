@@ -1,0 +1,69 @@
+---
+title: "Signals & Datasets"
+description: "Real EEG, EMG and ECG recordings made with PiEEG-8, open datasets, and a step-by-step machine-learning example."
+---
+
+import { Callout } from 'nextra/components'
+
+# Signals & Datasets
+
+What real PiEEG-8 recordings look like, open data to practise with, and a first machine-learning project.
+
+## Example signals
+
+### EEG: alpha rhythm
+
+Eyes closed, the alpha rhythm (8–13 Hz) over the back of the head grows. Each "Closed" period below shows a clear rise in amplitude.
+
+![Alpha rhythm in PiEEG-8 EEG when the eyes are closed](/images/hardware/2026/10/pieeg8_alpha.png)
+
+### EEG: artifacts
+
+Chewing and blinking leave large, sharp signals in the EEG. These come from muscles and eye movement, not the brain. The wavelet view (bottom) shows how they spread across frequencies.
+
+![Chewing and blinking artifacts in PiEEG-8 EEG with wavelet transform](/images/hardware/2026/10/pieeg8_artifacts.png)
+
+<Callout type="info">
+  Learn to recognise artifacts before you analyse anything. Remove or mark them before computing band power or training a model.
+</Callout>
+
+### EMG: muscle activity
+
+Bursts of activity as the muscle contracts and relaxes.
+
+![EMG recorded with PiEEG-8](/images/hardware/2026/10/pieeg8_emg.jpg)
+
+### ECG: heart activity
+
+Each sharp peak is one heartbeat (the QRS complex).
+
+![ECG recorded with PiEEG-8](/images/hardware/2026/10/pieeg8_ecg.png)
+
+## Datasets
+
+All datasets are in the [PiEEG-8 repository](https://github.com/pieeg-club/PiEEG-8).
+
+| Dataset | Content | Format |
+|---|---|---|
+| [`Datasets/dataset.xlsx`](https://github.com/pieeg-club/PiEEG-8/tree/main/Datasets) | Raw EEG, dry Ag/AgCl electrodes without gel, 10-20 positions, 250 SPS | Excel, µV |
+| [`1.GUI/dataset/`](https://github.com/pieeg-club/PiEEG-8/tree/main/1.GUI/dataset) | Raw EEG with chewing (4-3-2-1 times) and blinking (4-3-2-1 times), 250 SPS | Excel, µV |
+| [`2.Software/Dataset/eeg_data_3.txt`](https://github.com/pieeg-club/PiEEG-8/tree/main/2.Software/Dataset) | Raw 27-byte frames from the PiEEG app | Text |
+
+Each dataset folder has a plotting script, for example `1.data_graph_visualization.py` and `2.Alpha_plot.py`.
+
+## Machine learning: stress detection
+
+A complete beginner pipeline in [`ML_application`](https://github.com/pieeg-club/PiEEG-8/tree/main/ML_application): record, turn raw EEG into alpha power, then train a classifier.
+
+| Step | Script | What it does |
+|---|---|---|
+| 1. **Collect** | `1.save_data_short_Pi5.py` | Record raw EEG to Excel. Aim for about 50 recordings of 1 minute or more for each condition (for example, *stress* and *no stress*). |
+| 2. **Extract features** | `2.Convert_to_Power_Alpha.py` | Convert raw EEG to alpha-band power, which is more informative for stress than raw voltage. Remove recordings with strong artifacts first. |
+| 3. **Prepare** | | Combine the recordings into one file per condition, and add a column with the recording (or subject) number. |
+| 4. **Train** | `3.ML.py` | Train and test a classifier on the two conditions. |
+
+Full walkthrough: [How to use machine learning for stress control via EEG](https://pieeg.com/news/instruction-how-to-use-machine-learning-to-stress-or-emoinal-control-via-eeg/).
+
+<Callout type="warning">
+  This is a learning example. A classifier trained on a few recordings is not a validated measure of stress, emotion or health.
+</Callout>
