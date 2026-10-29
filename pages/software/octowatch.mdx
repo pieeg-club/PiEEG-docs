@@ -1,0 +1,116 @@
+---
+title: octoWatch (Garmin Connect IQ)
+description: Stream, decode, and visualize 16-channel 250 SPS EEG from PiEEG Octopus-16 directly on Garmin smartwatches over Bluetooth Low Energy.
+---
+
+import { Callout, Steps, Cards } from 'nextra/components'
+
+# octoWatch — Garmin Connect IQ App for Octopus-16
+
+**[octoWatch on Garmin Connect IQ Store](https://apps.garmin.com/apps/8e994535-c853-45ca-abe3-ccef61119c8b)** is the official Garmin smartwatch application for **[PiEEG Octopus-16](/hardware/devices/Octopus_16)**. It connects directly from your wrist to the Octopus-16 (Seeed Studio XIAO ESP32-S3 + dual Texas Instruments `ADS131M08` 24-bit ADCs) over Bluetooth Low Energy (`Toybox.BluetoothLowEnergy`) — streaming, filtering, and visualizing live 16-channel 250 SPS EEG with zero phone or laptop required in the middle.
+
+<Callout type="info">
+  **Install from Garmin Connect IQ Store:**  
+  [**https://apps.garmin.com/apps/8e994535-c853-45ca-abe3-ccef61119c8b**](https://apps.garmin.com/apps/8e994535-c853-45ca-abe3-ccef61119c8b)
+</Callout>
+
+<Callout type="warning">
+  Research, education, and athletic neuro-feedback tool only. **Not a medical device.** Band power, readiness, focus, and calm metrics are uncalibrated educational indices and must not be used for clinical diagnosis.
+</Callout>
+
+---
+
+## Key Features
+
+- **Direct Wrist-to-Headset BLE GATT Link**
+  - Automatically scans for, pairs with, and subscribes to Octopus-16 (`4fafc201-1fb5-459e-8fcc-c5c9c331914b`) without needing a smartphone or PC bridge.
+  - Built-in connection watchdog and automatic reconnection if the link drops.
+  - **250 SPS Built-In Simulator Mode**: Automatically starts after 6 seconds when no physical Octopus-16 is nearby so you can explore all 5 screens, synthetic 10 Hz Alpha / 22 Hz Beta / 5 Hz Theta waves, and frontal eye-blink artifacts (`Fp1`/`Fp2`) right on your watch.
+- **Dual BLE Packet Framing (`0xA0` & `0xA1`)**
+  - **Compact 20-Byte Batched Frame (`0xA1`)**: Default Garmin-optimized framing carrying 8 × 16-bit signed samples (`0.1 µV` resolution) per 20-byte GATT notification to fit standard Garmin BLE MTU limits at 250 SPS.
+  - **Standard 51-Byte Frame (`0xA0 ... 0xC0`)**: Full 16-channel × 24-bit signed big-endian samples from ADC1 (`CH01–CH08`) and ADC2 (`CH09–CH16`).
+- **On-Watch DSP & Signal Quality**
+  - Zero-allocation 16-channel × 128-sample circular ring buffer (`~0.51 s` window at 250 SPS).
+  - Online IIR high-pass DC blocker ($\alpha = 0.992$) per channel to eliminate electrode drift and keep waveforms centered.
+  - Live 64-sample RMS amplitude ($\mu\text{V}$), measured sampling rate (`SPS`), packet drop counter, relative spectral band estimators ($\alpha$ Calm, $\beta$ Focus, $\theta$ Rest), and composite Signal Quality Index (`SQI%`).
+
+---
+
+## 5 Interactive Watch Screens (20 FPS UI)
+
+Tap the touch screen (or press the **Select / Start** button) to cycle through the 5 pages:
+
+| Page | Screen Name | What It Shows |
+| :---: | :--- | :--- |
+| **1** | **`1CH SCOPE`** | High-precision 250 SPS single-channel oscilloscope with dual-pass neon glow trace, 10–20 electrode label (`Fp1`–`P8`), brain region (`PREFRONTAL`, `MOTOR`, `PARIETAL`, `OCCIPITAL`, `TEMPORAL`), `SQI%`, live $\mu\text{V}$, and RMS readout. |
+| **2** | **`GARMIN HUD`** | Athlete Neuro-Readiness Dashboard showing **Readiness (`RDY`)**, live **$\alpha$ CALM**, **$\beta$ FOCUS**, and **$\theta$ REST** band bars, training guidance (`READY FOR ZONE 2 / NEURO-TRAIN`), watch battery %, and local time. |
+| **3** | **`FIT GUIDE`** | Interactive **How to Wear & 10–20 Scalp Fit Guide** with a top-down head diagram, live green/amber/red electrode contact nodes, ear reference (`A1`) / BIAS (`A2`) indicators, and 4 step-by-step instructions (swipe **Up/Down** to step `1/4` $\rightarrow$ `4/4`). |
+| **4** | **`4CH BANK`** | Simultaneous 4-channel stacked montage (`BANK 01–04`, `05–08`, `09–12`, `13–16`) around the active channel. |
+| **5** | **`16CH GRID`** | Full 4×4 16-electrode impedance & activity matrix color-coded by `SQI%` and RMS activity, plus live packet (`PKT`) and drop (`DROP`) counters. |
+
+---
+
+## Quick Start: Connect Octopus-16 to Your Garmin Watch
+
+<Steps>
+
+### Install octoWatch on your Garmin watch
+
+Open the **[Garmin Connect IQ Store page for octoWatch](https://apps.garmin.com/apps/8e994535-c853-45ca-abe3-ccef61119c8b)** in the **Garmin Connect IQ** mobile app or Garmin Express and click **Install**.
+
+*(For developer USB sideloading, copy `octoWatch.prg` directly into your watch's `GARMIN/APPS/` folder over USB.)*
+
+### Flash the Garmin-compatible firmware on Octopus-16
+
+Flash the Octopus-16 ESP32-S3 with the Garmin-optimized BLE firmware (supports both 20-byte `0xA1` batched notifications and remote channel switching `[0xC0, ch]`), or install from **[firmware.pieeg.com](https://firmware.pieeg.com/)**.
+
+### Put on the Octopus-16 headset (Fit Guide)
+
+1. **Power & Wrist:** Wear your Garmin watch on your **left wrist** for the cleanest line-of-sight BLE path and power on the Octopus-16 (`5 V` USB power bank).
+2. **Ear Reference & BIAS:** Clip **REF** to your left earlobe (`A1`) and **BIAS** to your right earlobe (`A2`).
+3. **10–20 Scalp Placement:** Seat `Fp1`/`Fp2` ~2 cm above your eyebrows and `O1`/`O2` over the occipital inion at the back of your head, parting hair under the spring-loaded pogo pins.
+4. **Verify Contact (`SQI >= 80%`):** Switch to **`FIT GUIDE`** (Page 3) or **`16CH GRID`** (Page 5) on your watch and confirm the electrode nodes glow **green**.
+
+### Stream & Navigate on Your Wrist
+
+Launch **octoWatch** from your watch's Activities/Apps list. Within seconds it pairs with `Octopus-16` and switches to **`LIVE 250Hz`**.
+
+</Steps>
+
+---
+
+## Watch Controls
+
+| Input / Gesture | Action |
+| :--- | :--- |
+| **Tap Screen / Select Button** | Cycle through the 5 views: `1CH SCOPE` $\rightarrow$ `GARMIN HUD` $\rightarrow$ `FIT GUIDE` $\rightarrow$ `4CH BANK` $\rightarrow$ `16CH GRID` |
+| **Swipe Up / Up Button** | Next EEG channel (`CH01 Fp1` $\rightarrow$ `CH16 P8`), or next step (`1/4` $\rightarrow$ `4/4`) on the `FIT GUIDE` screen |
+| **Swipe Down / Down Button** | Previous EEG channel (`CH16 P8` $\rightarrow$ `CH01 Fp1`), or previous step on the `FIT GUIDE` screen |
+| **Menu / Long-Press Up** | Toggle between **Live BLE Scan** and **250 SPS Simulator Mode** |
+| **Back Button** | Exit application |
+
+---
+
+## Supported Garmin Watches (46 Models)
+
+- **Venu Series:** Venu, Venu 2, Venu 2s, Venu 2 Plus, Venu 3, Venu 3s, Venu Sq, Venu Sq Music, Venu Sq 2, Venu Sq 2 Music
+- **vívoactive Series:** vívoactive 4, vívoactive 4s, vívoactive 5
+- **fēnix Series:** fēnix 6 / 6s / 6 Pro / 6s Pro / 6X Pro, fēnix 7 / 7s / 7X / Pro variants, fēnix 8 (43 mm / 47 mm / Solar 47 mm / Solar 51 mm)
+- **epix Series:** epix (Gen 2), epix Pro (42 mm / 47 mm / 51 mm)
+- **Forerunner Series:** Forerunner 165 / 165 Music, 245 / 245 Music, 255 / 255s / Music, 265 / 265s, 745, 945, 955, 965
+
+---
+
+## BLE GATT Protocol Summary
+
+| Characteristic | UUID | Direction | Payload |
+| :--- | :--- | :--- | :--- |
+| **Octopus Service** | `4fafc201-1fb5-459e-8fcc-c5c9c331914b` | Primary Service | Advertised as `Octopus-16` / `PiEEG` |
+| **EEG Data (`NOTIFY`)** | `beb5483e-36e1-4688-b7f5-ea07361b26a8` | Octopus-16 $\rightarrow$ Watch | `0xA1` 20-byte compact batch (8 × `int16` in `0.1 µV` units) or `0xA0..0xC0` 51-byte 16-ch frame |
+| **Command (`WRITE`)** | `c0de0001-36e1-4688-b7f5-ea07361b26a8` | Watch $\rightarrow$ Octopus-16 | `[0xC0, channelId]` selects active channel (`0..15`) for 20-byte batch streaming |
+
+<Cards>
+  <Cards.Card title="Download on Garmin Connect IQ" href="https://apps.garmin.com/apps/8e994535-c853-45ca-abe3-ccef61119c8b" />
+  <Cards.Card title="Octopus 16 Hardware" href="/hardware/devices/Octopus_16" />
+  <Cards.Card title="octoBridge Classroom Lab" href="/software/octobridge" />
+</Cards>
