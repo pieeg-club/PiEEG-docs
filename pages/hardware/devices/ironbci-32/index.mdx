@@ -1,0 +1,97 @@
+---
+title: "IronBCI-32 Intro"
+description: "IronBCI-32 — a low-cost 32-channel, 24-bit EEG acquisition board with four AD7771 converters and an STM32H7, streaming over USB to BrainFlow and PiEEG Server."
+---
+
+import { Cards, Callout } from 'nextra/components'
+
+# IronBCI-32
+
+**32 channels of EEG over a single USB cable.**
+
+IronBCI-32 is a low-cost, open-source 32-channel, 24-bit biosignal acquisition board. Four 8-channel **AD7771** converters measure EEG, EMG, ECG and EOG across the whole head, and an **STM32H7** microcontroller streams all 32 channels to your laptop over USB. It works out of the box with **BrainFlow**, **PiEEG Server** and **PiEEG Cloud**.
+
+![IronBCI-32 board](/images/hardware/2026/10/ironbci32_board.jpg)
+
+<Callout type="warning">
+  IronBCI-32 is **not a medical device**. Power it **from a 5 V battery only**, and run the laptop on battery too, unplugged from the wall. Read [Safety](/hardware/devices/ironbci-32/safety) before the first recording.
+</Callout>
+
+## At a glance
+
+| | |
+|---|---|
+| **Channels** | 32 biosignal inputs, plus reference and bias |
+| **Converters** | 4 × AD7771, 8 channels each, 24-bit |
+| **Microcontroller** | STM32H743 (Arm Cortex-M7) |
+| **Sample rate** | About 500 SPS (BrainFlow reports 512 Hz) |
+| **Signals** | EEG, EMG, ECG, EOG |
+| **Link to the computer** | USB serial (virtual COM port), 921,600 baud |
+| **Electrodes** | Dry or wet Ag/AgCl, 2.54 mm headers |
+| **Power** | 5 V USB battery only, on its own USB port |
+| **Board** | 70 × 70 mm, 4 layers |
+| **Software** | BrainFlow (`IRONBCI_32_BOARD`), PiEEG Server, PiEEG Cloud |
+
+## How it works
+
+Two USB ports: one for power from a battery, one for data to a laptop.
+
+```
+ 32 electrodes ──► 4 × AD7771 ──► STM32H7 ──USB──► Laptop (on battery)
+ Ref + bias (ears)  (8 ch each)      ▲                ├ BrainFlow
+                                     │                ├ PiEEG Server
+           5 V USB battery ──USB─────┘                └ cloud.pieeg.com
+```
+
+1. **Measure:** four AD7771 chips digitise 8 channels each, all 32 at the same moment.
+2. **Send:** the STM32H7 packs every sample into one frame and streams it over USB as a serial port. Streaming starts as soon as the board is powered.
+3. **Use:** read it in BrainFlow, PiEEG Server or the browser, in any language.
+
+![Power and data USB ports on IronBCI-32](/images/hardware/2026/10/ironbci32_power_data.jpg)
+
+## Which board?
+
+| | PiEEG-16 | IronBCI-8 | IronBCI-32 |
+|---|---|---|---|
+| **Channels** | 16 | 8 | **32** |
+| **Host** | Raspberry Pi | None (Bluetooth) | Laptop or desktop (USB) |
+| **Converters** | 2 × ADS1299 | 1 × ADS1299 | 4 × AD7771 |
+| **Sample rate** | 250 SPS | 250 SPS | **~500 SPS** |
+| **BrainFlow** | No | No | **Yes** |
+| **Best for** | Pi-based research | Wearable, mobile | Full-head, high-density EEG |
+
+## What you can measure
+
+| Signal | What it shows | Typical first test |
+|---|---|---|
+| **EEG** | Brain rhythms across the whole scalp | Close your eyes and watch alpha (8–13 Hz) rise at the back of the head |
+| **EMG** | Muscle activity | Clench the jaw or a fist |
+| **ECG** | Heart activity | Electrodes on the chest or wrists |
+| **EOG** | Eye movement and blinks | Look left and right, blink |
+
+See real recordings in [Signals & Datasets](/hardware/devices/ironbci-32/examples).
+
+## Get started
+
+<Cards>
+  <Cards.Card title="What's in the Box" href="/hardware/devices/ironbci-32/required-equipment" />
+  <Cards.Card title="How to Start" href="/hardware/devices/ironbci-32/setup" />
+  <Cards.Card title="Electrodes & Pinout" href="/hardware/devices/ironbci-32/connections" />
+  <Cards.Card title="Software" href="/hardware/devices/ironbci-32/software" />
+</Cards>
+
+## Related
+
+- [BrainFlow: IronBCI32](https://brainflow.readthedocs.io/en/stable/SupportedBoards.html#ironbci32): official board documentation
+- [PiEEG Server](/software/getting-started/quick-start#ironbci-32-usb-serial): `pip install "pieeg-server[ironbci32]"`
+- [PiEEG Cloud](/cloud): stream IronBCI-32 in Chrome or Edge over Web Serial
+- [GitHub: ironbci-32](https://github.com/pieeg-club/ironbci-32): SDK, firmware, schematic, Gerber files, dataset
+- [3D-printable boxes](https://www.thingiverse.com/PiEEG/designs) on Thingiverse
+- [Video demo](https://youtu.be/HehUNOKghSM)
+- [Buy on Elecrow](https://www.elecrow.com/ironbci-32.html)
+
+## Support
+
+- **Discord:** [discord.gg/5Ps24p47](https://discord.gg/5Ps24p47)
+- **GitHub:** [github.com/pieeg-club](https://github.com/pieeg-club)
+- **Email:** [pieeg@pieeg.com](mailto:pieeg@pieeg.com)

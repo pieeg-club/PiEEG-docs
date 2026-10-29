@@ -1,0 +1,47 @@
+---
+title: "What's in the Box"
+description: "Contents of the IronBCI-32 package and the extra items you need to start recording."
+---
+
+import { Callout } from 'nextra/components'
+
+# What's in the Box
+
+## Included
+
+| Item | Details |
+|---|---|
+| **1 × IronBCI-32** | 70 × 70 mm board with 4 × AD7771, STM32H743, two Micro USB ports (power and data) and four 2.54 mm electrode headers |
+
+![IronBCI-32 board, top view](/images/hardware/2026/10/ironbci32_top.jpg)
+
+## Not included
+
+| Item | Requirements | More |
+|---|---|---|
+| **5 V USB battery** | A USB power bank. Powers the board through its **Power** port. | [Power bank](/hardware/accessories/power-bank) |
+| **2 × Micro USB cables** | One for power, one for data. The data cable must be a **full data cable**, not charge-only. | [How to Start](/hardware/devices/ironbci-32/setup) |
+| **Laptop or desktop** | Windows, macOS or Linux, with Python 3.10+ or Chrome / Edge. **Must run on battery** while recording. | [Safety](/hardware/devices/ironbci-32/safety) |
+| **Electrodes** | Up to 32 EEG electrodes (dry or wet Ag/AgCl) with 2.54 mm connectors, plus **2 ear-clip electrodes** for reference and bias | [Electrodes](/hardware/accessories/electrodes) |
+| **EEG cap** | A 32-channel cap. The [PiEEG 32-channel wet cap](https://www.pieeg.com/hardware/32ch-wet-cap) matches the layout in [Electrodes & Pinout](/hardware/devices/ironbci-32/connections#electrode-layout). | [Cap](/hardware/accessories/cap) |
+| **Conductive gel** | For wet electrodes | [Electrodes](/hardware/accessories/electrodes) |
+| **Box (optional)** | 3D-printable enclosure | [Thingiverse](https://www.thingiverse.com/PiEEG/designs) |
+
+<Callout type="warning">
+  **Charge-only cables can't carry data.** A charge-only cable has 2 wires; a data cable has 4. If the laptop doesn't see a new serial port, try a different cable before anything else.
+</Callout>
+
+<Callout type="warning">
+  **Battery only.** The board runs from the USB battery, and the laptop connected to the data port must run on its own battery, unplugged from the wall charger.
+</Callout>
+
+## Checklist
+
+- [ ] IronBCI-32
+- [ ] Charged 5 V USB battery
+- [ ] 2 Micro USB cables (at least one full data cable)
+- [ ] Laptop on battery, with BrainFlow, PiEEG Server or Chrome / Edge
+- [ ] 32 electrodes and 2 ear clips
+- [ ] 32-channel cap and conductive gel
+
+Next: [How to Start](/hardware/devices/ironbci-32/setup)

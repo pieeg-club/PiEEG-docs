@@ -1,0 +1,46 @@
+---
+title: "Signals & Datasets"
+description: "Real recordings made with IronBCI-32 and an open 32-channel EEG dataset."
+---
+
+import { Callout } from 'nextra/components'
+
+# Signals & Datasets
+
+What real IronBCI-32 recordings look like, and open data to practise with.
+
+## Example signals
+
+### 32 channels in real time
+
+All 32 channels streaming in BrainFlow's real-time plot.
+
+![32 channels of EEG from IronBCI-32 in BrainFlow](/images/hardware/2026/10/ironbci32_brainflow.png)
+
+### EEG: alpha test
+
+Eyes closed and open in turn, recorded with dry Ag/AgCl electrodes without gel. The bottom plot is the signal; the top is its wavelet power. The alpha power rises in the "closed" periods.
+
+![Alpha test with IronBCI-32: eyes closed and open, with wavelet power spectrum](/images/hardware/2026/10/ironbci32_alpha.png)
+
+<Callout type="info">
+  Learn to recognise artifacts (blinks, jaw clenches, movement) before you analyse anything. Remove or mark them before computing band power or training a model.
+</Callout>
+
+## Dataset
+
+In the [`dataset`](https://github.com/pieeg-club/ironbci-32/tree/main/dataset) folder of the IronBCI-32 repository. Recorded with the [PiEEG 32-channel wet cap](https://www.pieeg.com/hardware/32ch-wet-cap).
+
+| File | Content | Size |
+|---|---|---|
+| `eeg_32ch_20s.xlsx` | Raw EEG, 32 channels (`Ch1`–`Ch32`), in µV | 10,241 samples, about 20 seconds |
+
+Channel numbers follow the [electrode layout](/hardware/devices/ironbci-32/connections#electrode-layout).
+
+<Callout type="info">
+  Raw values carry a large DC offset (tens of thousands of µV). That is normal for raw data. Apply a high-pass or band-pass filter (for example 1–40 Hz) before looking at EEG. [`Plot_data.py`](https://github.com/pieeg-club/ironbci-32/tree/main/SDK/Not_real_time) shows how, with an 8–12 Hz alpha filter and a wavelet view.
+</Callout>
+
+## Video
+
+[IronBCI-32 demo on YouTube](https://youtu.be/HehUNOKghSM)

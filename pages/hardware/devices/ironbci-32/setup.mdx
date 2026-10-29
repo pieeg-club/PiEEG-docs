@@ -1,0 +1,109 @@
+---
+title: "How to Start"
+description: "Set up IronBCI-32: connect electrodes, power from a USB battery, connect the data cable, find the serial port, stream and check the signal."
+---
+
+import { Steps, Tabs, Callout } from 'nextra/components'
+
+# How to Start
+
+From the box to 32 live channels on your laptop, in seven steps.
+
+<Steps>
+
+### Gather the parts
+
+You need the IronBCI-32, a 5 V USB battery, two Micro USB cables (one a full data cable), a laptop running on battery, 32 electrodes with two ear clips, and a cap. See [What's in the Box](/hardware/devices/ironbci-32/required-equipment).
+
+### Unplug the laptop
+
+Disconnect the laptop from its wall charger and run it **on battery** for the whole session. Close other programs that may use serial ports.
+
+<Callout type="error">
+  The data cable connects the laptop to the board and the electrodes. If the laptop is plugged into the wall, the person is connected to the mains. **Laptop on battery only.**
+</Callout>
+
+### Connect the electrodes
+
+Fit the cap and plug the electrodes into the four headers. The reference and bias ear clips go on the **channel 1–8 connector**.
+
+![IronBCI-32 electrode wiring: four connectors, reference and bias on the channel 1–8 connector](/images/hardware/2026/10/ironbci32_wiring.jpg)
+
+<Callout type="warning">
+  Each header has **two rows**. Electrodes go on the **bottom row** (closest to the board). The top row is the reference row: an electrode there is shorted to REF and shows a flat, dead channel. Full pinout: [Electrodes & Pinout](/hardware/devices/ironbci-32/connections).
+</Callout>
+
+### Connect the power cable
+
+Plug the first Micro USB cable from the **5 V USB battery** into the port marked **Power**. The board starts and begins streaming straight away. There is no on/off command.
+
+![Power and data ports on IronBCI-32](/images/hardware/2026/10/ironbci32_power_data.jpg)
+
+### Connect the data cable
+
+Plug the second Micro USB cable from the port marked **Data Stream** into a USB port on the laptop. The laptop sees IronBCI-32 as a serial port:
+
+| System | How to find the port | Looks like |
+|---|---|---|
+| **Windows** | Device Manager → **Ports (COM & LPT)** | `COM3`, `COM6`… |
+| **Linux** | `ls /dev/ttyACM*` | `/dev/ttyACM0` |
+| **macOS** | `ls /dev/tty.usbmodem*` | `/dev/tty.usbmodem…` |
+
+Note the port name. You need it in the next step.
+
+### Start streaming
+
+<Tabs items={['PiEEG Server', 'BrainFlow', 'Browser']}>
+<Tabs.Tab>
+
+```bash
+pip install "pieeg-server[ironbci32]"
+pieeg-server --device ironbci32 --serial-port COM3            # Windows
+pieeg-server --device ironbci32 --serial-port /dev/ttyACM0    # Linux / macOS
+```
+
+Then open **http://localhost:1617**. You should see 32 channels.
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+```bash
+pip install brainflow pyqtgraph PyQt5
+git clone https://github.com/pieeg-club/ironbci-32.git
+cd ironbci-32/SDK/Real_time_visualisation
+python 2.All_channels.py --serial-port COM3       # or /dev/ttyACM0
+```
+
+A window opens with all 32 channels in real time.
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+1. Open **[cloud.pieeg.com](https://cloud.pieeg.com)** in **Chrome or Edge**.
+2. In the Session Lobby, open the **PiEEG Devices** tab and choose **IronBCI-32**.
+3. Pick the serial port in the browser's window.
+
+No install needed.
+
+</Tabs.Tab>
+</Tabs>
+
+![32 channels streaming in BrainFlow](/images/hardware/2026/10/ironbci32_brainflow.png)
+
+### Check the signal
+
+Sit still, relax the face and run these quick tests. If they behave as described, you are recording real biosignals.
+
+| Test | What you should see |
+|---|---|
+| **Sit still for 30 seconds** | All channels settle. Flat lines mean an electrode on the wrong row or not touching the skin. |
+| **Close your eyes for 10 seconds** | Alpha (8–13 Hz) rises on the back-of-head channels (O1, Oz, O2, P3, Pz, P4), then drops when the eyes open |
+| **Blink a few times** | Large slow spikes on the front channels (Fp1, Fpz, Fp2) |
+| **Clench the jaw** | Bursts of high-frequency noise, strongest on the side channels (T7, T8). That is muscle (EMG), not brain activity. |
+
+</Steps>
+
+## Next steps
+
+- **Record:** `pieeg-server record session.csv --device ironbci32 --serial-port COM3`, or the BrainFlow save scripts. See [Software](/hardware/devices/ironbci-32/software).
+- **Noisy signal?** Work through [Troubleshooting](/hardware/devices/ironbci-32/troubleshooting) and [Noise elimination](/hardware/signal-quality/noise-elimination).
