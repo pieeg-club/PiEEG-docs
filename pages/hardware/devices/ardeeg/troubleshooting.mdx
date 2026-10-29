@@ -1,0 +1,46 @@
+---
+title: "Troubleshooting"
+description: "Fix common ardEEG problems: uploading the sketch, Wi-Fi and UDP, no data in Python, and signal quality."
+---
+
+import { Callout } from 'nextra/components'
+
+# Troubleshooting
+
+## Uploading the sketch
+
+| Problem | Fix |
+|---|---|
+| Board not listed in the Arduino IDE | Install **Arduino UNO R4 Boards** in Tools → Board → Boards Manager. Use a USB-C **data** cable. |
+| `WiFi.h` errors | Choose the board **Arduino UNO R4 WiFi**, not the Minima. |
+| Upload fails | Unplug the power bank, use only the computer's USB while uploading. Try another USB-C cable. |
+
+## Wi-Fi and data
+
+| Problem | Fix |
+|---|---|
+| Python shows nothing | Check the **IP address** is the same in the sketch (`udp.beginPacket`) and in Python (`UDP_IP`), and that it's **your computer's** current IP. Computers can get a new IP after a restart. |
+| Arduino doesn't join the network | Check the Wi-Fi name and password in the sketch. Use a **2.4 GHz** network. |
+| Computer and Arduino on different networks | Both must be on the **same** Wi-Fi network. Guest networks often block devices from talking to each other. |
+| Firewall blocks the data | Allow Python through the firewall for **UDP port 13900**, or test with the firewall off briefly. |
+| `Address already in use` in Python | Another program uses port 13900. Close it, or check with `netstat -ano \| findstr :13900` on Windows. |
+| Data slow or with gaps | Run `speed_test_250_samples.py`. Move the Arduino closer to the router and away from other 2.4 GHz devices. |
+
+## Signal
+
+| Problem | Fix |
+|---|---|
+| All channels noisy at once | Check the **reference and bias ear clips** first. Clean the earlobes and clip them firmly. |
+| One channel flat or very large | That electrode isn't touching the skin. Part the hair, press it in, or add gel. |
+| Strong 50/60 Hz hum | The Arduino must run from the **power bank**, not the computer's USB. Move away from chargers and power strips. |
+| Can't see blinks or chewing | The default view is the 8–12 Hz alpha band. Change the filter to 1–40 Hz (see [Software](/hardware/devices/ardeeg/software#change-the-filter)). |
+| Big swings when moving | Movement of the electrodes or cables. Sit still, keep cables short. |
+| Alpha doesn't rise with eyes closed | Check an electrode is on the back of the head (Pz, O1, O2), keep the eyes closed for 10 seconds in a quiet room. |
+
+<Callout type="info">
+  **Is it the board or the setup?** Set all channels to input-shorted (`CHnSET = 0x01`) in the sketch. If the signal stays within a few µV, the hardware is fine. See [Noise elimination](/hardware/signal-quality/noise-elimination).
+</Callout>
+
+## Still stuck?
+
+Ask on [Discord](https://discord.gg/5Ps24p47), open an issue on [GitHub](https://github.com/Ildaron/ardEEG/issues), or email [pieeg@pieeg.com](mailto:pieeg@pieeg.com).

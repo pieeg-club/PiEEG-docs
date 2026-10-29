@@ -1,0 +1,45 @@
+---
+title: "What's in the Box"
+description: "Contents of the ardEEG package and the extra items you need: Arduino UNO R4 WiFi, a small power bank, electrodes and a cap."
+---
+
+import { Callout } from 'nextra/components'
+
+# What's in the Box
+
+## Included
+
+| Item | Details |
+|---|---|
+| **1 × ardEEG shield** | 8-channel ADS1299 board with Arduino UNO headers and a 2.54 mm electrode header |
+
+![ardEEG shield](/images/hardware/2026/10/ardeeg_shield.jpg)
+
+## Not included
+
+| Item | Requirements | More |
+|---|---|---|
+| **Arduino UNO R4 WiFi** | The **WiFi** version is needed: the data goes over Wi-Fi | [How to Start](/hardware/devices/ardeeg/setup) |
+| **5 V power bank** | Small: 5 V, **up to 1 A**, capacity **up to 1,000 mAh** | [Power bank](/hardware/accessories/power-bank) |
+| **USB-C cable** | To upload the sketch once, then to connect the power bank | [Software](/hardware/devices/ardeeg/software) |
+| **Electrodes** | 8 EEG electrodes (dry or wet Ag/AgCl) with 2.54 mm connectors, plus **2 ear-clip electrodes** for reference and bias | [Electrodes](/hardware/accessories/electrodes) |
+| **EEG cap** | Holds the electrodes on the scalp (10-20 system) | [Cap](/hardware/accessories/cap) |
+| **Computer** | With Python 3, on the **same Wi-Fi network** as the Arduino. Runs the Arduino IDE once. | [Software](/hardware/devices/ardeeg/software) |
+| **Wi-Fi network** | 2.4 GHz network the Arduino can join | [Software](/hardware/devices/ardeeg/software) |
+| **Conductive gel** | Only for wet electrodes | [Electrodes](/hardware/accessories/electrodes) |
+
+<Callout type="warning">
+  **Battery only.** After uploading the sketch, unplug the computer and power the Arduino from the power bank. Never record while the Arduino is plugged into a computer or a wall charger.
+</Callout>
+
+## Checklist
+
+- [ ] ardEEG shield
+- [ ] Arduino UNO R4 WiFi
+- [ ] Small 5 V power bank (≤ 1 A, ≤ 1,000 mAh), charged
+- [ ] USB-C cable
+- [ ] 8 electrodes and 2 ear clips
+- [ ] EEG cap (and gel if you use wet electrodes)
+- [ ] Computer with Python and the Arduino IDE, on a 2.4 GHz Wi-Fi network
+
+Next: [How to Start](/hardware/devices/ardeeg/setup)

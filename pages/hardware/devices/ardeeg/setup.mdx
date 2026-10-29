@@ -1,0 +1,102 @@
+---
+title: "How to Start"
+description: "Set up ardEEG: upload the Arduino sketch with your Wi-Fi details, mount the shield, connect electrodes, power from a battery, run the Python script and check the signal."
+---
+
+import { Steps, Callout } from 'nextra/components'
+
+# How to Start
+
+From the box to live EEG on your computer, in seven steps.
+
+<Steps>
+
+### Gather the parts
+
+You need the ardEEG, an Arduino UNO R4 WiFi, a small 5 V power bank, a USB-C cable, 8 electrodes with two ear clips, a cap, and a computer on Wi-Fi. See [What's in the Box](/hardware/devices/ardeeg/required-equipment).
+
+### Find your computer's IP address
+
+The Arduino sends data to your computer's address on the Wi-Fi network.
+
+| System | How |
+|---|---|
+| **Windows** | `ipconfig` in a terminal → **IPv4 Address** of the Wi-Fi adapter |
+| **macOS** | **System Settings → Wi-Fi → Details** → IP address |
+| **Linux** | `ip addr` → the address of the Wi-Fi interface |
+
+It looks like `192.168.1.241`. Note it down.
+
+### Upload the Arduino sketch
+
+1. Install the [Arduino IDE](https://www.arduino.cc/en/software) and the **Arduino UNO R4 Boards** package (Tools → Board → Boards Manager).
+2. Open [`1.Send_data_via_wifi.ino`](https://github.com/Ildaron/ardEEG/blob/main/software/arduino/1.Send_data_via_wifi.ino).
+3. Enter your Wi-Fi name and password:
+   ```cpp
+   char ssid[] = "Wifi Name";
+   char pass[] = "password";
+   ```
+4. Enter your computer's IP address in this line:
+   ```cpp
+   udp.beginPacket("192.168.1.241", 13900);
+   ```
+5. Plug the Arduino into the computer with USB-C, choose **Arduino UNO R4 WiFi** and its port, and click **Upload**.
+6. Unplug the USB cable.
+
+### Mount the shield
+
+Line up the ardEEG with the Arduino's headers and press it down evenly until all pins are seated. Do this with the Arduino unpowered.
+
+### Connect the electrodes
+
+| Connector | Electrode | Where it goes |
+|---|---|---|
+| **Channels 1–8** | 8 EEG electrodes in the cap | Scalp positions of the 10-20 system |
+| **Reference** | Ear-clip electrode | One earlobe |
+| **Bias** | Ear-clip electrode | The other earlobe |
+
+![Wiring of channels 1–8, reference and bias](/images/hardware/2026/10/ardeeg_connection.png)
+
+Details and a suggested montage: [Electrodes & Pinout](/hardware/devices/ardeeg/connections).
+
+### Power on from the battery and run Python
+
+1. Plug the **power bank** into the Arduino. It joins your Wi-Fi and starts sending.
+2. On the computer, install the libraries and run the receiver:
+
+```bash
+pip install matplotlib scipy
+git clone https://github.com/Ildaron/ardEEG.git
+cd ardEEG/software/python
+```
+
+3. Open `1.Alpha_real_time.py`, set `UDP_IP` to **your computer's IP** (the same address as in the sketch), then run it:
+
+```bash
+python 1.Alpha_real_time.py
+```
+
+A window opens with 8 live graphs.
+
+<Callout type="error">
+  The ardEEG has **no isolation**. While electrodes are on a person, the Arduino must run **from the power bank only**, never plugged into the computer.
+</Callout>
+
+### Check the signal
+
+The receiver script shows the **8–12 Hz (alpha) band**. Sit still and relax the face, then:
+
+| Test | What you should see |
+|---|---|
+| **Sit still for 30 seconds** | All 8 channels settle to a small, steady signal |
+| **Close your eyes for 10 seconds** | The alpha signal grows, then shrinks when the eyes open |
+| **Chew or blink** | Large bursts (best seen with a 1–40 Hz filter) |
+
+![Alpha with eyes closed and open, recorded with ardEEG](/images/hardware/2026/10/ardeeg_alpha.png)
+
+</Steps>
+
+## Next steps
+
+- **Change the filter, save data, check the speed:** see [Software](/hardware/devices/ardeeg/software).
+- **No data or noisy?** See [Troubleshooting](/hardware/devices/ardeeg/troubleshooting) and [Noise elimination](/hardware/signal-quality/noise-elimination).

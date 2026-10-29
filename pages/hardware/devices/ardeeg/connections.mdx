@@ -1,0 +1,62 @@
+---
+title: "Electrodes & Pinout"
+description: "How to connect electrodes to ardEEG, a suggested 8-channel montage, and the Arduino pins the shield uses."
+---
+
+import { Callout } from 'nextra/components'
+
+# Electrodes & Pinout
+
+## Electrode connections
+
+ardEEG has three kinds of electrode inputs.
+
+| Input | Count | Electrode | Purpose |
+|---|---|---|---|
+| **Channels 1–8** | 8 | Dry or wet Ag/AgCl, in the cap | Each channel measures the voltage between its electrode and the reference |
+| **Reference** | 1 | Ear clip on one earlobe | The common 0 µV point that all 8 channels are measured against |
+| **Bias** | 1 | Ear clip on the other earlobe | Actively drives the body to cancel common-mode noise such as 50/60 Hz mains hum |
+
+![ardEEG wiring: channels 1–8, reference and bias](/images/hardware/2026/10/ardeeg_connection.png)
+
+The electrode header is a standard **2.54 mm** pin header, so most EEG cables with 2.54 mm (0.1") female connectors fit. See [Cap](/hardware/accessories/cap).
+
+<Callout type="info">
+  The **reference and bias clips matter most**. A loose ear clip makes every channel noisy at once. Clean the earlobes and make sure both clips sit firmly.
+</Callout>
+
+## Suggested montage
+
+These 8 positions spread across the front, centre, sides and back of the head:
+
+| Position | Area | Good for |
+|---|---|---|
+| **F7**, **F8** | Front left and right, side | Eye movement, frontal activity |
+| **Fz** | Front centre | Blinks, attention; used for the example recordings |
+| **C3**, **C4** | Centre left and right | Motor activity (hands) |
+| **T5**, **T6** | Back left and right, side | Temporal activity |
+| **Pz** | Back centre, top | Alpha rhythm |
+
+![8-electrode arrangement on the 10-20 system, and the assembled kit](/images/hardware/2026/10/ardeeg_montage.jpg)
+
+Assign them to channels 1–8 in any order, and keep a note of which channel went where.
+
+## Arduino pinout
+
+The shield uses only these Arduino pins, plus power and ground:
+
+| Arduino pin | Signal |
+|---|---|
+| **D13** | SPI clock (SCK) |
+| **D12** | SPI MISO (data from the ADS1299) |
+| **D11** | SPI MOSI (data to the ADS1299) |
+| **D10** | Chip select |
+| **D7** | DRDY: *data ready* from the ADS1299 |
+
+![ardEEG pins on the Arduino headers](/images/hardware/2026/10/ardeeg_pinout.png)
+
+All other pins are free for your own sensors, buttons or outputs.
+
+<Callout type="info">
+  **DRDY** goes low each time a new sample is ready (250 times per second). The sketch waits for that edge, then reads 27 bytes over SPI. Details in [Specification](/hardware/devices/ardeeg/specification#data-format).
+</Callout>
