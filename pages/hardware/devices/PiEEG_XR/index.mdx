@@ -1,0 +1,95 @@
+---
+title: "PiEEG XR Intro"
+description: "PiEEG XR — a brain-computer interface for VR headsets: a silicone face mask with 10 dry Ag/AgCl electrodes and a Bluetooth BCI box, for bringing brain and face signals into XR."
+---
+
+import { Cards, Callout } from 'nextra/components'
+
+# PiEEG XR
+
+**Bring your brain and face signals into virtual reality.**
+
+PiEEG XR is a brain-computer interface for VR headsets. A **silicone face mask** with **10 dry Ag/AgCl electrodes** replaces the headset's facial interface, and a small **BCI box** on the head strap streams the signals over **Bluetooth LE**. Attention, relaxation, blinks and facial expressions reach VR apps, social VR (VRChat via OSC) and the browser, with no proprietary SDK.
+
+![PiEEG XR on a Meta Quest 3: face mask and BCI box](/images/hardware/2026/10/pieegxr_render.jpg)
+
+<Callout type="warning">
+  PiEEG XR is a **research device, not a medical device**. Power it from a **5 V power bank or the headset's battery**, never from a wall charger. Read [Safety](/hardware/devices/PiEEG_XR/safety) before the first use.
+</Callout>
+
+## At a glance
+
+| | |
+|---|---|
+| **Channels** | 8 (PiEEG XR) or 16 (PiEEG XR-16), plus reference and bias |
+| **Electrodes** | 10 flat dry Ag/AgCl electrodes in a silicone mask (8 channels, reference, bias) |
+| **Converters** | TI ADS1299, 24-bit (two chips on 16-channel versions) |
+| **Sample rate** | 250 SPS |
+| **Noise** | 1.0 µV peak-to-peak |
+| **Microcontroller** | STM32WB (Arm Cortex-M4 + M0+ radio core) |
+| **Wireless** | Bluetooth LE 5, appears as `PiEEG XR` |
+| **Power** | 5 V over USB-C, from a power bank or the headset's battery strap |
+| **Headsets** | Meta Quest 3, Meta Quest, PICO and others. Each unit is made for one headset model. |
+| **Software** | BodyPress (Quest and Android), PiEEG Cloud, PiEEG Server, VRChat OSC |
+
+## How it works
+
+```
+ Face mask ──cable──► BCI box ──BLE──► Quest (BodyPress app)
+ 10 dry electrodes    ADS1299 +        ├ cloud.pieeg.com
+ (8 ch, ref, bias)    STM32WB          ├ PiEEG Server ─OSC─► VRChat
+                         ▲             └ Android (BodyPress)
+     5 V power bank ─────┘
+```
+
+1. **Touch:** the mask's electrodes rest on the forehead and temples, under the headset.
+2. **Measure:** the ADS1299 in the BCI box digitises all channels, 250 times per second.
+3. **Send:** the STM32WB streams the data over Bluetooth LE to the headset, a phone, a browser or a PC.
+4. **Use:** apps turn it into attention and relaxation levels, blink and expression events, or avatar parameters.
+
+## What you can measure
+
+| Signal | What it shows |
+|---|---|
+| **EEG** | Brain rhythms from the forehead and temples: attention, relaxation, focus |
+| **EOG** | Blinks and eye movements, very clear on the front electrodes |
+| **EMG** | Facial expressions: jaw clench, smile, frown (used by the Face Trainer game) |
+
+See real recordings in [Signals & Projects](/hardware/devices/PiEEG_XR/examples).
+
+## Get started
+
+<Cards>
+  <Cards.Card title="What's in the Box" href="/hardware/devices/PiEEG_XR/required-equipment" />
+  <Cards.Card title="How to Start" href="/hardware/devices/PiEEG_XR/setup" />
+  <Cards.Card title="Mask & Electrodes" href="/hardware/devices/PiEEG_XR/connections" />
+  <Cards.Card title="Software" href="/hardware/devices/PiEEG_XR/software" />
+</Cards>
+
+## Videos
+
+- [Software quick test and data quality](https://www.youtube.com/watch?v=khi54mGcJUk)
+- [Face Trainer mini-game](https://www.youtube.com/watch?v=g-XgVWwQzwE)
+- [Running PiEEG XR on Meta Quest](https://www.youtube.com/watch?v=ycL2kZpIdvM)
+- [Brain-reactive VRChat avatar](https://www.youtube.com/watch?v=uKa9QgcLvSA)
+- [Playing tennis with PiEEG XR and BodyPress](https://www.youtube.com/watch?v=vkuwRFJJNxQ)
+- More on the [PiEEG YouTube channel](https://www.youtube.com/@pieeg/videos)
+
+## Related
+
+- [PiEEG Cloud](/cloud): stream PiEEG XR in Chrome or Edge, no install
+- [VRChat OSC](/software/integrations/vrchat-osc): send brain signals to your avatar
+- [GitHub: PiEEG_XR_Hardware](https://github.com/pieeg-club/PiEEG_XR_Hardware): firmware, datasets, manuals
+- [IronBCI-8](/hardware/devices/ironbci): the same Bluetooth protocol in a wearable board
+
+## Citation
+
+If you use PiEEG XR in research, please cite:
+
+> Y. El Abbassi, I. Rakhmatulin. *PiEEG XR: A WebXR Brain-Computer Interface Platform for Neural-Adaptive Avatar Control in Mixed Reality.* Preprints 2026, 2026060016. DOI: [10.20944/preprints202606.0016.v1](https://doi.org/10.20944/preprints202606.0016.v1)
+
+## Support
+
+- **Discord:** [discord.gg/5Ps24p47](https://discord.gg/5Ps24p47)
+- **GitHub:** [github.com/pieeg-club](https://github.com/pieeg-club)
+- **Email:** [pieeg@pieeg.com](mailto:pieeg@pieeg.com)

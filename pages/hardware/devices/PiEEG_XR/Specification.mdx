@@ -1,0 +1,70 @@
+---
+title: "Specification"
+description: "PiEEG XR technical specification: ADS1299 front end, STM32WB with Bluetooth LE 5, silicone mask with 10 dry Ag/AgCl electrodes, power and data format."
+---
+
+import { Callout } from 'nextra/components'
+
+# Specification
+
+![PiEEG XR mask and BCI box](/images/hardware/2026/10/pieegxr_back.jpg)
+
+## Hardware
+
+| | |
+|---|---|
+| **Channels** | 8 (PiEEG XR) or 16 (PiEEG XR-16, depending on version) |
+| **Extra inputs** | Reference and bias |
+| **Analog front end** | Texas Instruments ADS1299, 24-bit (dual ADS1299 on 16-channel versions) |
+| **Sample rate** | 250 SPS |
+| **Noise** | 1.0 µV peak-to-peak |
+| **Microcontroller** | STM32WB series: dual-core Arm Cortex-M4 (application) and Cortex-M0+ (radio stack) |
+| **Wireless** | Bluetooth Low Energy 5 |
+| **Power** | 5 V over USB-C, from a power bank or a battery head strap |
+| **Programming** | SWD header (GND, RST, SWDIO, SWCLK) inside the box, for an ST-Link |
+
+## Mask and electrodes
+
+| | |
+|---|---|
+| **Electrodes** | 10 flat dry Ag/AgCl: 8 channels, reference, bias |
+| **Electrode type** | Dry; also works with gel or saline |
+| **Positions** | Forehead and temples (see [Mask & Electrodes](/hardware/devices/PiEEG_XR/connections#electrode-layout)) |
+| **Mask material** | Silicone |
+| **Fit** | Made for one headset model (Meta Quest 3, Meta Quest, PICO and others). Clips in with four buckles, or use the silicone insert alone. |
+
+![Flat dry Ag/AgCl electrodes](/images/hardware/2026/10/pieegxr_electrodes.jpg)
+
+## Software support
+
+| Software | Setting |
+|---|---|
+| BodyPress | [Meta Quest](https://www.meta.com/en-gb/experiences/bodypress/1271355469389420/) and [Android](https://play.google.com/store/apps/details?id=com.bodypress.governorhq) |
+| [PiEEG Cloud](/cloud) | PiEEG Devices → PiEEG XR / PiEEG XR-16 |
+| [PiEEG Server](/software/getting-started/installation#ironbci--eareeg-support) | `--device ironbci8` (8 channels) |
+| [VRChat OSC](/software/integrations/vrchat-osc) | `pieeg-server --device ironbci8 --osc` |
+
+## Bluetooth data format
+
+PiEEG XR uses the same Bluetooth protocol as IronBCI:
+
+| | |
+|---|---|
+| **Advertised name** | `PiEEG XR` |
+| **Data characteristic** (notify) | `0000fe42-8e22-4541-9d4c-21edae82ed19` |
+| **Sample** | 8 channels × 3 bytes, 24-bit big-endian two's complement. A notification can carry one or more samples. |
+
+Converting to microvolts, as PiEEG Server does:
+
+```python
+raw = (b[0] << 16) | (b[1] << 8) | b[2]
+if raw & 0x800000:
+    raw -= 1 << 24
+uV = raw * 4.5 / 16777215 * 1e6
+```
+
+Full details and example code: [IronBCI specification](/hardware/devices/ironbci/specification#ble-data-format).
+
+<Callout type="info">
+  Raw values carry a large DC offset (thousands of µV) from the electrode contact. That is normal. Apply a band-pass filter (for example 1–40 Hz) before looking at the signal.
+</Callout>

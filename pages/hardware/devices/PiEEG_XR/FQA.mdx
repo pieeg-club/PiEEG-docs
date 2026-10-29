@@ -1,0 +1,60 @@
+---
+title: "Troubleshooting & FAQ"
+description: "Fix common PiEEG XR problems — device not visible, can't connect, noisy data, mask falling off — and answers to common questions."
+---
+
+import { Cards, Callout } from 'nextra/components'
+
+# Troubleshooting & FAQ
+
+## Power and Bluetooth
+
+| Problem | Fix |
+|---|---|
+| **Device not visible** | Usually a power problem. Use a **USB-A to USB-C** cable: some USB-C supplies don't power the box over a USB-C to USB-C cable. Open the box and check an **LED lights up inside** when power is connected. No LED: try another cable or power bank. |
+| Visible, but can't connect or no data | Usually fixed by **updating the firmware**. See [Firmware & Service](/hardware/devices/PiEEG_XR/Service). |
+| Browser has no Bluetooth option | Use **Chrome or Edge**. Safari, Firefox and iPhone / iPad browsers don't support Web Bluetooth. |
+| PiEEG Server doesn't find it | Run `pieeg-server --device ironbci8 --ble-name "PiEEG XR"`, or pass `--ble-address`. Install the extra first: `pip install "pieeg-server[ironbci]"`. |
+| Connection drops | Move the receiving device closer. Close other Bluetooth apps that might grab the device. |
+
+## Signal
+
+| Problem | Fix |
+|---|---|
+| A channel is a perfectly flat line | That electrode isn't touching. Reseat the mask, tighten the strap, add a little gel. |
+| Everything stuck at the top or bottom | The **reference** (centre of the forehead) has lost contact. Reseat the mask. |
+| All channels identical | Reference or bias problem. Check the centre-forehead contacts. |
+| Thick fuzzy band on every channel | 50/60 Hz mains hum. Use battery power only and move away from chargers. Turn on the notch filter. |
+| Very noisy while moving | See [Recording During Activity](/hardware/devices/PiEEG_XR/Application). |
+| Blinks don't show up | The forehead electrodes aren't touching. Clean the skin and fit the mask firmly. |
+
+## Mask
+
+| Problem | Fix |
+|---|---|
+| Silicone mask fell off or shifted | Push the soft part back so it sits evenly. Or use your headset's original mask with the PiEEG XR silicone insert, adjusted until it sits firmly with no gaps or bending. |
+| Mask doesn't fit my headset | Each unit is made for **one headset model**. Check the model you ordered. A DIY kit for other headsets is coming soon. |
+
+## FAQ
+
+**Do I need a VR headset to try it?**
+No. Test it in the browser at [cloud.pieeg.com](https://cloud.pieeg.com), or on an Android phone with BodyPress.
+
+**Does it work with VRChat on Meta Quest?**
+Yes, through a PC: VRChat's OSC runs on the PC, so play via Air Link or Steam Link. See [Software → VRChat avatar](/hardware/devices/PiEEG_XR/software#brain-reactive-vrchat-avatar).
+
+**Can it measure alpha with eyes closed?**
+Alpha is strongest at the back of the head. The standard mask has electrodes on the forehead and temples only, so the eyes-closed alpha test needs the academic version.
+
+**Is it a medical or consumer device?**
+**No.** PiEEG XR is a **research setup for research purposes only**. It is not a medical device and is not for diagnosis, treatment or any clinical use.
+
+**Can I contribute?**
+Yes. Get in touch on Discord or by email, and see the [hardware repository](https://github.com/pieeg-club/PiEEG_XR_Hardware).
+
+## Still stuck?
+
+<Cards>
+  <Cards.Card title="Ask on Discord" href="https://discord.gg/5Ps24p47" />
+  <Cards.Card title="Email us" href="mailto:pieeg@pieeg.com" />
+</Cards>

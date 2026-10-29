@@ -1,0 +1,136 @@
+---
+title: "Recording During Activity"
+description: "Why the PiEEG XR signal gets noisy during movement, how to set up the mask, and how to confirm the signal is real before you record."
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# Recording During Activity
+
+The PiEEG XR mask is made to be worn under a headset while you move. Movement is also the hardest condition for EEG: the brain signal is only tens of microvolts, while movement artifacts can be hundreds of times larger. This page explains **why the signal gets noisy**, **how to set up the mask**, and **how to confirm the signal is real before you record**.
+
+<Callout type="info">
+  This guide is for the **XR mask** (dry electrodes, under a headset, while moving). For a lab setup with clip electrodes and a wired board, see [Noise elimination](/hardware/signal-quality/noise-elimination).
+</Callout>
+
+## Why the signal gets noisy
+
+EEG is roughly **10–100 µV**. Almost every movement noise source is bigger, so the goal is to control them, not to filter them out afterwards.
+
+| Source | What happens | What it looks like |
+|---|---|---|
+| **Electrode movement** | Each electrode forms a small voltage with the skin. When it slides or lifts, that voltage jumps. Dry electrodes are more prone to this than gel. | Swings from tens of µV to millivolts |
+| **Muscle activity (EMG)** | Jaw, forehead, neck and scalp muscles fire as you move. | Broadband fuzz, about 20 Hz and up |
+| **Cable movement** | A swinging cable generates charge and picks up mains and Wi-Fi interference. | Spikes and hum |
+| **Sweat** | Skin resistance changes as you sweat; sweat can bridge two electrodes. | Slow drift below 1 Hz, sudden steps |
+| **Footsteps and pulse** | Each step and heartbeat moves the head slightly. | Rhythmic low-frequency wave |
+
+<Callout type="warning">
+  Most "too noisy during activity" cases are **motion + cable + sweat**, not a hardware fault. Check the board first with Test 1 in [Noise elimination](/hardware/signal-quality/noise-elimination), then follow the steps below.
+</Callout>
+
+## How to keep the signal clean
+
+Do this every session.
+
+<Steps>
+
+### Clean the skin
+
+Wipe the forehead and temples with an alcohol pad to remove oil, sweat and make-up, then let the skin dry. Clean skin lowers resistance and helps dry electrodes stay steady.
+
+### Fit the mask firmly and evenly
+
+Use the PiEEG XR mask, or your headset's original mask with the PiEEG XR **silicone insert**, and adjust it until it sits firmly with no gaps or bending. Every electrode needs steady, even pressure. A mask that shifts under the headset is the fastest way to lose the signal.
+
+### Add a little gel (optional)
+
+The electrodes work dry, but a small amount of conductive gel or saline steadies the contact and is the **most effective way to cut motion artifacts** during activity.
+
+### Stay wireless
+
+PiEEG XR streams over Bluetooth LE, so there is no data cable to swing. Keep the power cable short and fixed to the strap.
+
+### Check reference and bias
+
+Make sure the reference and bias electrodes (centre of the forehead) are firmly in contact. A loose reference makes the whole trace drift or rail: it looks like huge noise but is really one bad contact.
+
+</Steps>
+
+## Before you record: confirm the signal is real
+
+**Don't start recording until you've confirmed live data.** These checks take under a minute.
+
+<Steps>
+
+### Confirm data is streaming
+
+- The device is **connected** and the app shows a **live, scrolling** signal.
+- **Every channel is moving.** A perfectly flat line means that electrode has no skin contact.
+- The **sample counter advances** with no big gaps. Many dropped packets mean a weak Bluetooth link: move the receiver closer.
+- **Let the filter settle.** For the first few seconds the trace swings widely. Wait until it calms down.
+
+### Read the baseline
+
+Sitting still with the mask on, each channel should be a fairly flat line that wanders within a few µV to a few tens of µV.
+
+| What you see | What it means | Fix |
+|---|---|---|
+| Gentle line, small wander, reacts to blinks | **Good**, real signal | Go on to the tests below |
+| Perfectly flat line | No contact on that electrode | Reseat the mask, add a little gel |
+| Stuck at the top or bottom (railed) | Saturated, usually a bad **reference** | Check the reference and bias contact |
+| Thick, constant fuzzy band | **50/60 Hz mains hum** | Battery power only, move away from chargers, use a notch filter |
+| Large, slow rolling wander | Drift (sweat, movement, filter settling) | Wait, dry the skin, steady the mask |
+| All channels identical | Reference or common-mode problem | Fix the reference contact |
+
+### Run the functional tests
+
+These prove the signal comes **from you**, not from the room.
+
+| Test | What to do | What you should see | Confirms |
+|---|---|---|---|
+| **Blink** | Blink hard 3–5 times | Large, sharp spikes, strongest on the forehead channels | Good contact and real biosignal |
+| **Eye movement** | Look left, then right | Slower swings, opposite directions on the left and right channels | Contact and correct channel order |
+| **Jaw clench** | Clench your teeth briefly | A burst of high-frequency fuzz that stops when you relax | Responsive electrodes; shows what muscle noise looks like |
+| **Alpha** (academic version only) | Sit still, close your eyes for 10 s, then open | Smooth 8–12 Hz waves on the back-of-head channels while the eyes are closed | Real brain activity |
+
+<Callout type="warning">
+  **Always do the blink test.** If blinking shows nothing on the forehead channels, those electrodes aren't touching. Stop and fix the fit before going further.
+</Callout>
+
+### Record a still baseline
+
+Once blinks show clearly, record **20–30 seconds standing still**. This gives you a clean stretch to compare the moving data against later.
+
+</Steps>
+
+## During the session
+
+- Warm up before recording the real data, so sweat and contact have settled.
+- Keep the jaw and forehead relaxed where the activity allows. Clenching adds strong EMG.
+- Note the times of big movements, so you can match them to spikes later.
+- If the trace suddenly rails, reseat the mask. It's usually a shifted electrode or a loose reference.
+
+## Cleaning the signal in software
+
+- **Band-pass filter** of about **1–40 Hz** removes slow drift and most muscle noise.
+- **Notch filter** at **50 or 60 Hz** (your region's mains frequency) removes hum.
+- **Reject** the time windows around big movements instead of trying to rescue them.
+- **ICA** can separate and remove muscle and cable components when you need the higher bands.
+
+<Callout type="info">
+  Filtering can't recover a channel that was fully saturated by movement. Getting the fit and contact right is always worth more than processing afterwards.
+</Callout>
+
+## Quick checklist
+
+- [ ] Board noise checked (Test 1 in [Noise elimination](/hardware/signal-quality/noise-elimination))
+- [ ] Skin wiped with alcohol and dry
+- [ ] Mask firm and even, not shifting
+- [ ] A little gel or saline on the electrodes (optional)
+- [ ] Streaming over Bluetooth, power cable fixed to the strap
+- [ ] Reference and bias in firm contact
+- [ ] **Every channel moving, none flat or railed**
+- [ ] **Blinks visible on the forehead channels**
+- [ ] Still baseline recorded
+- [ ] Band-pass and notch filters on, big-movement windows rejected

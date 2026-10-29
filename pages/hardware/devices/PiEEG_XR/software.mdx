@@ -1,0 +1,102 @@
+---
+title: "Software"
+description: "Software for PiEEG XR: BodyPress on Meta Quest and Android, PiEEG Cloud in the browser, PiEEG Server, and a brain-reactive VRChat avatar over OSC."
+---
+
+import { Callout } from 'nextra/components'
+
+# Software
+
+PiEEG XR streams over Bluetooth LE. Pick the option that fits what you want to do.
+
+| | Best for | Runs on |
+|---|---|---|
+| **[BodyPress for Quest](#bodypress-on-meta-quest)** | Seeing your signals inside VR, VR games | Meta Quest |
+| **[BodyPress for Android](#bodypress-on-android)** | Quick tests and recording on a phone | Android |
+| **[PiEEG Cloud](#pieeg-cloud)** | Testing without a headset, dashboards, Face Trainer | Chrome or Edge |
+| **[PiEEG Server](#pieeg-server)** | Recording, LSL, OSC, WebSocket stream to any language | Windows, macOS, Linux |
+| **[VRChat avatar](#brain-reactive-vrchat-avatar)** | An avatar that reacts to your brain | PC + VRChat |
+
+The device advertises as **`PiEEG XR`**. It uses the same Bluetooth protocol as [IronBCI](/hardware/devices/ironbci/specification#ble-data-format).
+
+## BodyPress on Meta Quest
+
+Install the native VR app and see your bio-signals inside the headset.
+
+- **Install:** [BodyPress on the Meta Quest Store](https://www.meta.com/en-gb/experiences/bodypress/1271355469389420/)
+- **How to launch:** [short video](https://youtube.com/shorts/Bs9vT9CmJcE)
+- **Example:** [VR data overlay](https://www.youtube.com/watch?v=KBcBU8NnY2E) · [Playing tennis with PiEEG XR](https://www.youtube.com/watch?v=vkuwRFJJNxQ)
+- **Full tutorial:** [Run PiEEG XR on Meta Quest](https://www.pieeg.com/tutorials/run-pieeg-xr-meta-quest) · [video](https://www.youtube.com/watch?v=ycL2kZpIdvM)
+
+## BodyPress on Android
+
+Test and stream on an Android phone: [BodyPress on Google Play](https://play.google.com/store/apps/details?id=com.bodypress.governorhq).
+
+## PiEEG Cloud
+
+You don't need a headset to try PiEEG XR.
+
+1. Open **[cloud.pieeg.com](https://cloud.pieeg.com)** in **Chrome or Edge**, with Bluetooth on.
+2. In the Session Lobby, open the **PiEEG Devices** tab and choose **PiEEG XR** (8 channels) or **PiEEG XR-16**.
+3. Pick `PiEEG XR` in the browser's Bluetooth window.
+
+Then:
+
+- Watch the live data and run the blink and jaw tests.
+- Try the **band-pass filter** and other settings.
+- **Save** your data.
+- Test facial expressions in **Mini-Games → Face Trainer**.
+
+Videos: [quick test and data quality](https://www.youtube.com/watch?v=khi54mGcJUk) · [Face Trainer](https://www.youtube.com/watch?v=g-XgVWwQzwE)
+
+## PiEEG Server
+
+PiEEG Server connects to PiEEG XR over Bluetooth on a PC and adds recording, LSL, OSC and a WebSocket stream. Use the IronBCI driver, which also finds PiEEG XR units:
+
+```bash
+pip install "pieeg-server[ironbci]"
+
+pieeg-server --device ironbci8                                   # scan and connect
+pieeg-server --device ironbci8 --ble-name "PiEEG XR"             # pick it by name
+pieeg-server --device ironbci8 --ble-address AA:BB:CC:DD:EE:FF   # skip the scan
+```
+
+Dashboard: **http://localhost:1617**. More: [IronBCI software](/hardware/devices/ironbci/software#pieeg-server) · [Configuration](/software/getting-started/configuration#ble-options-ironbci).
+
+<Callout type="info">
+  PiEEG Server's IronBCI driver reads **8 channels**. For a 16-channel PiEEG XR-16, use PiEEG Cloud.
+</Callout>
+
+## Brain-reactive VRChat avatar
+
+Send your EEG band powers to VRChat over OSC and let them move your avatar (ears, tail, effects).
+
+```
+ PiEEG XR ─BLE─► PiEEG Server (PC) ─OSC, UDP 9000─► VRChat ─► avatar animator
+```
+
+**1. Start PiEEG Server with OSC**
+
+```bash
+pieeg-server --device ironbci8 --osc
+```
+
+It sends five float parameters (0–1, normalised) to VRChat on UDP port 9000:
+
+| OSC address | Band |
+|---|---|
+| `/avatar/parameters/EEG_Delta` | 0.5–4 Hz |
+| `/avatar/parameters/EEG_Theta` | 4–8 Hz |
+| `/avatar/parameters/EEG_Alpha` | 8–13 Hz (relaxed, the easiest to control) |
+| `/avatar/parameters/EEG_Beta` | 13–30 Hz |
+| `/avatar/parameters/EEG_Gamma` | 30–100 Hz |
+
+**2. Enable OSC in VRChat:** Action Menu → **OSC** → **Enabled**. **OSC Debug** shows the incoming values.
+
+**3. Add the parameters to your avatar** in Unity: add the five `EEG_*` floats to the avatar's Expression Parameters and Animator, then drive an animation (for example a blend tree on `EEG_Alpha`). For ears or a tail, set a PhysBone's **Parameter** field to `EEG_Alpha`.
+
+<Callout type="info">
+  OSC is a PC feature. On a Meta Quest, run VRChat on the PC through **Air Link** or **Steam Link**.
+</Callout>
+
+Full guides: [Brain-reactive VRChat avatar](https://www.pieeg.com/tutorials/brain-reactive-vrchat-avatar) · [video](https://www.youtube.com/watch?v=uKa9QgcLvSA) · [step-by-step manual (Word)](https://github.com/pieeg-club/PiEEG_XR_Hardware/tree/main/Docs) · [VRChat OSC reference](/software/integrations/vrchat-osc)

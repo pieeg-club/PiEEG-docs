@@ -1,0 +1,67 @@
+---
+title: "Mask & Electrodes"
+description: "The PiEEG XR silicone mask, the position of its 10 dry Ag/AgCl electrodes, how the mask and BCI box attach to the headset, and how to get good contact."
+---
+
+import { Callout } from 'nextra/components'
+
+# Mask & Electrodes
+
+PiEEG XR has two parts that attach to your headset:
+
+1. A **silicone face mask** with built-in electrodes. It replaces (or sits inside) the headset's facial interface and touches your forehead and temples.
+2. A **BCI box**, connected to the mask by a cable and held by the head strap. It holds the amplifier and the Bluetooth controller.
+
+![PiEEG XR: mask and BCI box](/images/hardware/2026/10/pieegxr_back.jpg)
+
+## Electrodes
+
+The mask has **10 flat dry silver / silver-chloride (Ag/AgCl) electrodes**. They pick up biosignals without gel, and also work with a little gel when you need a steadier signal.
+
+![Flat dry Ag/AgCl electrodes](/images/hardware/2026/10/pieegxr_electrodes.jpg)
+
+| Electrode | Count | Purpose |
+|---|---|---|
+| **Channels 1–8** | 8 | Signal electrodes on the forehead and temples |
+| **Reference** | 1 | The common 0 µV point for all channels, centre-left of the forehead |
+| **Bias** | 1 | Cancels common-mode noise such as mains hum, centre-right of the forehead |
+
+## Electrode layout
+
+The electrodes sit in 10 holes (1 mm) around the top of the mask:
+
+![PiEEG XR electrode positions on the mask](/images/hardware/2026/10/pieegxr_electrode_map.png)
+
+| Position on the mask (as drawn) | Electrodes | Picks up |
+|---|---|---|
+| **Left side**, lower and upper | Ch1, Ch2 | Temple: eye movement, jaw and temple muscles |
+| **Left forehead** | Ch3, Ch4 | Frontal EEG, blinks |
+| **Centre forehead** | Ref, Bias | Reference and bias |
+| **Right forehead** | Ch5, Ch6 | Frontal EEG, blinks |
+| **Right side**, upper and lower | Ch7, Ch8 | Temple: eye movement, jaw and temple muscles |
+
+Because all electrodes are on the front of the head, PiEEG XR is strongest at **frontal EEG, blinks, eye movements and facial expressions**. The classic eyes-closed alpha test needs electrodes at the back of the head, which only the academic version has.
+
+## Attaching to the headset
+
+**The mask** clips into the headset with four buckles, two at the back and two at the front. See [How to Start](/hardware/devices/PiEEG_XR/setup#replace-the-face-mask).
+
+**Or keep your own mask:** take out only the **silicone insert** and fit it into the headset's original facial interface.
+
+**The BCI box** sits against the back of the headset, held in place by the head strap.
+
+![Mounting the BCI box](/images/hardware/2026/10/pieegxr_mount_steps.jpg)
+
+## Getting good contact
+
+<Callout type="info">
+  A stable, well-positioned mask is the **single biggest factor** in clean signal quality.
+</Callout>
+
+- **Clean the skin** with an alcohol pad and let it dry. Oil, sweat and make-up raise the contact resistance.
+- **Tighten the strap** so the mask presses evenly. No gaps, no bending.
+- **Check the silicone insert** is seated all the way round. If the soft part has shifted or fallen out, push it back into place.
+- **Add a little gel or saline** to the electrodes if the signal is unsteady, especially when you move.
+- **Clean the electrodes** with an alcohol pad after each use.
+
+![Inside of the mask](/images/hardware/2026/10/pieegxr_mask_inside.jpg)

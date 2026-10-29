@@ -1,0 +1,89 @@
+---
+title: "Firmware & Service"
+description: "Update the PiEEG XR firmware with an ST-Link and STM32CubeProgrammer, update the STM32WB Bluetooth stack, and fix a mask that doesn't sit right."
+---
+
+import { Steps, Cards, Callout } from 'nextra/components'
+
+# Firmware & Service
+
+## Update the firmware
+
+If the device doesn't connect over Bluetooth, the fix is usually to **update the microcontroller firmware** by uploading a new hex file.
+
+### What you need
+
+| Item | Details |
+|---|---|
+| **ST-Link V2** programmer | With its jumper wires. Both ship in the PiEEG XR package. |
+| **STM32CubeProgrammer** | Free tool from STMicroelectronics: [st.com/stm32cubeprog](https://www.st.com/en/development-tools/stm32cubeprog.html) |
+| **Firmware file** | Latest `.hex` from [Firmware / hex](https://github.com/pieeg-club/PiEEG_XR_Hardware/tree/main/Firmware/hex) |
+
+![ST-Link V2 programmer](/images/hardware/2026/10/pieegxr_stlink.jpg)
+
+<Steps>
+
+### Connect the ST-Link
+
+Plug the ST-Link into the computer. It should appear in Device Manager. If it doesn't, update the ST-Link **driver** and plug it in again.
+
+### Install STM32CubeProgrammer
+
+Download and install it from [st.com](https://www.st.com/en/development-tools/stm32cubeprog.html).
+
+### Wire the board (SWD)
+
+Open the BCI box and connect the ST-Link to the 4-pin header on the board:
+
+| ST-Link | PiEEG XR board | Signal |
+|---|---|---|
+| GND | GND | Ground |
+| RST | RST | Reset (NRST) |
+| SWDIO | SWDIO | Data |
+| SWCLK | SWCLK | Clock |
+
+![SWD header on the PiEEG XR board](/images/hardware/2026/10/pieegxr_swd_wiring.jpg)
+
+![ST-Link connected to the PiEEG XR board](/images/hardware/2026/10/pieegxr_swd_photo.jpg)
+
+### Flash the firmware
+
+1. In STM32CubeProgrammer, choose **ST-LINK** and click **Connect**.
+2. Open the new `.hex` file.
+3. Click **Download** to write it to the board.
+4. **Disconnect** the ST-Link and **reset** the device (unplug the power for a few seconds).
+
+</Steps>
+
+<Cards>
+  <Cards.Card title="Video: update the firmware step by step" href="https://youtu.be/zU82j_DZxko" />
+</Cards>
+
+<Callout type="warning">
+  Flash with the mask **off your face**.
+</Callout>
+
+## Update the Bluetooth stack (advanced)
+
+The STM32WB runs its Bluetooth radio stack on a separate core. Normally you never need to touch it. If support asks you to update it:
+
+1. In STM32CubeProgrammer, open the **Firmware Upgrade Services** (FUS) panel.
+2. Select [`stm32wb5x_BLE_Stack_full_fw.bin`](https://github.com/pieeg-club/PiEEG_XR_Hardware/tree/main/Firmware).
+3. Set the start address to **`0x080CE000`** and click **Firmware Upgrade**.
+4. Then flash the application `.hex` again, as above.
+
+<Callout type="error">
+  A wrong address or file in the FUS panel can leave the radio unusable. Only do this step if PiEEG support asks you to.
+</Callout>
+
+## Mask doesn't sit right
+
+If the silicone part has shifted or fallen out, push it back so it sits evenly all the way round. Or use your headset's original mask with the PiEEG XR silicone insert, adjusted until it sits firmly with no gaps or bending.
+
+<Callout type="info">
+  A stable, well-positioned mask is the single biggest factor in clean signal quality.
+</Callout>
+
+## Noise
+
+Check that the electrodes press firmly and evenly on the skin, then follow [Recording During Activity](/hardware/devices/PiEEG_XR/Application) and the general [Noise elimination](/hardware/signal-quality/noise-elimination) guide.
