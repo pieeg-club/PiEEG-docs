@@ -1,0 +1,99 @@
+---
+title: "Specification"
+description: "IronBCI-8 technical specification: ADS1299 front end, STM32 with Bluetooth LE, battery and power, BLE data format and µV conversion."
+---
+
+import { Callout } from 'nextra/components'
+
+# Specification
+
+Everything you need to know about the hardware, plus the BLE data format for writing your own software.
+
+![IronBCI-8 boards: ADC, BLE and power](/images/hardware/2026/10/ironbci8_boards.jpg)
+
+## Hardware
+
+| | |
+|---|---|
+| **Channels** | 8 biosignal inputs |
+| **Extra inputs** | Reference and bias |
+| **Analog front end** | Texas Instruments ADS1299 |
+| **Resolution** | 24-bit, delta-sigma, all channels sampled at the same moment |
+| **Sample rate** | 250 SPS |
+| **Internal noise** | Below 1 µV (from the IronBCI paper) |
+| **Signals** | EEG, EMG, ECG, EOG |
+| **Electrodes** | Dry or wet Ag/AgCl |
+| **Electrode connector** | 2.54 mm pin header |
+| **Microcontroller** | STM32 |
+| **Wireless** | Bluetooth Low Energy |
+| **Construction** | Three stacked round boards: ADC board, BLE board, power board |
+
+## Power
+
+| | |
+|---|---|
+| **Battery** | Single-cell LiPo, 200 mAh recommended |
+| **Battery connector** | 2.0 mm JST, underside of the stack. Check polarity. |
+| **Charging** | Micro USB, 5 V |
+| **Switch 1** | Battery on / off |
+| **Switch 2** | Data flow on / off (OFF while charging) |
+| **LEDs** | LED 1: charging · LED 2: charged · BLE LED: connected |
+| **Isolation** | Battery powered. Never connected to a person while charging. |
+
+## Software support
+
+| Software | Setting |
+|---|---|
+| [PiEEG Cloud](/cloud) | PiEEG Devices → IronBCI |
+| [PiEEG Server](/software/getting-started/installation#ironbci--eareeg-support) | `--device ironbci8` (needs `pieeg-server[ironbci]`) |
+| [JavaScript SDK](/software/api/javascript-sdk) | `device: 'ironbci-8'` (default) |
+| [Python SDK](https://github.com/pieeg-club/ironbci/tree/master/SDK/BLE_General) | `bleak`, device name `EAREEG` |
+| [Android app](https://github.com/pieeg-club/ironbci/tree/master/mobile_app) | Settings → 8 ch |
+
+## BLE data format
+
+| | |
+|---|---|
+| **Advertised name** | `EAREEG` (some units: `IronBCI` or `IRONBCI`) |
+| **Service UUID** | `0000fe42-8e22-4541-9d4c-21edae82ed19` |
+| **Data characteristic** | `0000fe42-8e22-4541-9d4c-21edae82ed19` (notify) |
+| **Pairing** | Not needed. Connect directly and subscribe to notifications. |
+
+Each sample is **24 bytes**: 8 channels × 3 bytes.
+
+| Bytes | Content |
+|---|---|
+| 1–3 | Channel 1 |
+| 4–6 | Channel 2 |
+| … | … |
+| 22–24 | Channel 8 |
+
+Each channel is a 24-bit, big-endian, two's-complement value. A notification can carry one or more samples back to back, so read it in 24-byte steps.
+
+## Converting to microvolts
+
+This is the conversion used by the IronBCI SDK and PiEEG Server:
+
+```python
+raw = (b[0] << 16) | (b[1] << 8) | b[2]   # 3 bytes of one channel
+if raw & 0x800000:                       # negative value
+    raw -= 16777214
+uV = raw * 4.5 / 16777215 * 1_000_000    # about 0.268 µV per count
+```
+
+## Reading notifications
+
+```python
+def on_data(sender, data):
+    for s in range(len(data) // 24):              # one or more samples
+        sample = data[s*24:(s+1)*24]
+        uv = [to_uv(*sample[3*i:3*i+3]) for i in range(8)]
+        print(uv)
+```
+
+Full scripts: [SDK/BLE_General](https://github.com/pieeg-club/ironbci/tree/master/SDK/BLE_General).
+
+<Callout type="info">
+  Raw values carry a large DC offset (thousands of µV) from the electrode contact. That is normal. Apply a high-pass or band-pass filter (for example 1–40 Hz) before looking at EEG.
+</Callout>
+

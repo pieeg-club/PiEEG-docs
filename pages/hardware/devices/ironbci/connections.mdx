@@ -1,0 +1,88 @@
+---
+title: "Electrodes & Battery"
+description: "How to connect electrodes and the LiPo battery to IronBCI-8, a suggested montage, and what the switches and LEDs do."
+---
+
+import { Callout } from 'nextra/components'
+
+# Electrodes & Battery
+
+## Electrode connections
+
+IronBCI-8 has three kinds of electrode inputs.
+
+| Input | Count | Electrode | Purpose |
+|---|---|---|---|
+| **Channels 1–8** | 8 | Dry or wet Ag/AgCl, in the cap | Each channel measures the voltage between its electrode and the reference |
+| **Reference** | 1 | Ear clip on one earlobe | The common 0 µV point that all 8 channels are measured against |
+| **Bias** | 1 | Ear clip on the other earlobe | Actively drives the body to cancel common-mode noise such as 50/60 Hz mains hum |
+
+![IronBCI-8 electrode, reference and bias connections](/images/hardware/2026/10/ironbci8_connection.png)
+
+The electrode header is a standard **2.54 mm** pin header, so most EEG cables with 2.54 mm (0.1") female connectors fit. Check the pitch before using a third-party cap. See [Cap](/hardware/accessories/cap).
+
+<Callout type="info">
+  The **reference and bias clips matter most**. A loose ear clip makes every channel noisy at once. Clean the earlobes and make sure both clips sit firmly before you look at anything else.
+</Callout>
+
+## Suggested montage
+
+These are the 8 positions used for the dry-electrode tests in the IronBCI paper. They spread across the front, centre, sides and back of the head.
+
+| Position | Area | Good for |
+|---|---|---|
+| **F7**, **F8** | Front left and right, side | Eye movement, frontal activity |
+| **Fz** | Front centre | Blinks, attention |
+| **C3**, **C4** | Centre left and right | Motor activity (hands) |
+| **T5**, **T6** | Back left and right, side | Temporal activity |
+| **Pz** | Back centre, top | Alpha rhythm |
+
+![International 10-20 electrode positions](/images/hardware/2024/08/New-Bitmap-Image-264x300.jpg)
+
+Assign them to channels 1–8 in any order, and keep a note of which channel went where, because the software only knows channel numbers.
+
+## Fitting the cap
+
+1. Measure the head and pick the right cap size, or adjust the 3D-printed headset.
+2. Find **Cz** (halfway between nose and the back of the head, halfway between the ears) and align the cap with it.
+3. **Dry electrodes:** part the hair under each electrode so it touches the scalp.
+4. **Wet electrodes:** inject a small amount of conductive gel under each electrode and work it through the hair with the blunt syringe tip.
+5. Attach the ear clips to clean earlobes.
+6. Keep the IronBCI-8 close to the head, with short electrode leads.
+
+## Battery
+
+| | |
+|---|---|
+| **Type** | Single-cell LiPo |
+| **Capacity** | 200 mAh recommended |
+| **Connector** | 2.0 mm JST, on the underside of the board stack |
+| **Charging** | Micro USB, 5 V, on the power board |
+
+![Battery connector on the underside of IronBCI-8](/images/hardware/2026/10/ironbci8_battery.jpg)
+
+<Callout type="error">
+  **Check the polarity every time you use a new battery.** JST batteries are not all wired the same way. Match the black wire to **GND** on the board. Reversed polarity **will damage the device**.
+</Callout>
+
+![GND marking for the battery connector](/images/hardware/2026/10/ironbci8_polarity.jpg)
+
+## Switches
+
+| Mode | Switch 1 (battery) | Switch 2 (data) |
+|---|---|---|
+| **Recording** | ON | ON |
+| **Charging** | ON | OFF |
+| **Off / storage** | OFF | OFF |
+
+![Switch 1 turns on the battery, Switch 2 starts the data flow](/images/hardware/2026/10/ironbci8_switches.jpg)
+
+## LEDs
+
+| LED | Meaning |
+|---|---|
+| **LED 1** (power board) | Charging |
+| **LED 2** (power board) | Battery fully charged |
+| **BLE LED** | On when a Bluetooth connection is active |
+
+![BLE LED](/images/hardware/2026/10/ironbci8_ble_led.jpg)

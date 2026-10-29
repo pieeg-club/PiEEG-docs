@@ -1,0 +1,131 @@
+---
+title: "How to Start"
+description: "Set up IronBCI-8: connect and charge the battery, attach electrodes, switch on, connect over Bluetooth and check the signal."
+---
+
+import { Steps, Tabs, Callout } from 'nextra/components'
+
+# How to Start
+
+From the box to live EEG over Bluetooth, in seven steps.
+
+<Steps>
+
+### Gather the parts
+
+You need the IronBCI-8, a 200 mAh LiPo battery with a 2.0 mm JST connector, 8 electrodes with two ear clips, a cap, and a Bluetooth device to receive the data. See [What's in the Box](/hardware/devices/ironbci/required-equipment).
+
+### Connect the battery
+
+The battery connector is on the **underside** of the board stack. Check the polarity, then plug the battery in.
+
+![Battery connected to the bottom of IronBCI-8](/images/hardware/2026/10/ironbci8_battery.jpg)
+
+<Callout type="error">
+  Some JST batteries have reversed polarity. Match the battery's black wire to **GND** on the board. A reversed battery **will damage the device**.
+</Callout>
+
+![GND marking on the battery connector](/images/hardware/2026/10/ironbci8_polarity.jpg)
+
+### Charge the battery
+
+1. Set **Switch 1 ON** and **Switch 2 OFF**.
+2. Plug a Micro USB cable (5 V) into the charging port.
+3. **LED 1** lights while charging. **LED 2** lights when the battery is full.
+4. Unplug the USB cable before you go on.
+
+![Charging LEDs: LED 1 charging, LED 2 charged](/images/hardware/2026/10/ironbci8_charge_leds.jpg)
+
+<Callout type="warning">
+  Never wear IronBCI-8 or record from a person while it is charging.
+</Callout>
+
+### Connect the electrodes
+
+| Connector | Electrode | Where it goes |
+|---|---|---|
+| **Channels 1–8** | 8 EEG electrodes in the cap | Scalp positions of the 10-20 system |
+| **Reference** | Ear-clip electrode | One earlobe |
+| **Bias** | Ear-clip electrode | The other earlobe |
+
+![Electrode, reference and bias connections](/images/hardware/2026/10/ironbci8_connection.png)
+
+Full details and a suggested montage: [Electrodes & Battery](/hardware/devices/ironbci/connections).
+
+### Switch on
+
+Unplug the USB cable and set **both switches ON**. IronBCI-8 starts advertising over Bluetooth Low Energy and is ready to connect.
+
+![Switch 1 turns on the battery, Switch 2 starts the data flow](/images/hardware/2026/10/ironbci8_switches.jpg)
+
+| Mode | Switch 1 | Switch 2 |
+|---|---|---|
+| **Recording** | ON | ON |
+| **Charging** | ON | OFF |
+
+### Connect over Bluetooth
+
+You don't need to pair it in your system's Bluetooth settings. The software finds and connects to it directly. It usually appears as **`EAREEG`** (some units show **`IronBCI`**).
+
+<Tabs items={['Browser (fastest)', 'Android app', 'PiEEG Server', 'Python']}>
+<Tabs.Tab>
+
+1. Open **[cloud.pieeg.com](https://cloud.pieeg.com)** in **Chrome or Edge**.
+2. In the Session Lobby, open the **PiEEG Devices** tab and choose **IronBCI**.
+3. Pick the device in the browser's Bluetooth window.
+
+No install, and the data stays in your browser.
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+1. Install [`mobile_sdk.apk`](https://github.com/pieeg-club/ironbci/tree/master/mobile_app) on an Android phone.
+2. In the app's settings, choose **8 ch**.
+3. Connect, and watch the signal live. Press **Save** to record, **Stop** to finish, then share the file.
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+```bash
+pip install "pieeg-server[ironbci]"
+pieeg-server --device ironbci8
+```
+
+Then open **http://localhost:1617**. Works on Windows, macOS and Linux with Bluetooth LE.
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+```bash
+pip install bleak matplotlib numpy
+git clone https://github.com/pieeg-club/ironbci.git
+cd ironbci/SDK/BLE_General
+python 3.Read_data_graph.py
+```
+
+</Tabs.Tab>
+</Tabs>
+
+When the connection is made, the **BLE LED** turns on and 8 channels stream at 250 samples per second.
+
+![BLE LED on when connected](/images/hardware/2026/10/ironbci8_ble_led.jpg)
+
+### Check the signal
+
+Sit still, relax the face and run these quick tests. If they behave as described, you are recording real biosignals.
+
+| Test | What you should see |
+|---|---|
+| **Sit still for 30 seconds** | All 8 channels settle. Flat lines or huge values mean a loose electrode. |
+| **Close your eyes for 10 seconds** | Alpha (8–13 Hz) rises on the back-of-head channels, then drops when the eyes open |
+| **Blink a few times** | Large slow spikes on the front channels |
+| **Clench the jaw** | Bursts of high-frequency noise on all channels. That is muscle (EMG), not brain activity. |
+
+![Alpha rhythm with eyes closed, recorded with IronBCI-8](/images/hardware/2026/10/ironbci8_alpha.png)
+
+</Steps>
+
+## Next steps
+
+- **Stream to your code:** WebSocket, LSL, OSC, Python and JavaScript. See [Software](/hardware/devices/ironbci/software).
+- **Noisy signal?** Work through [Troubleshooting](/hardware/devices/ironbci/troubleshooting) and [Noise elimination](/hardware/signal-quality/noise-elimination).

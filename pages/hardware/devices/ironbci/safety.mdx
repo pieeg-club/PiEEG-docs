@@ -1,0 +1,42 @@
+---
+title: "Safety"
+description: "Read before using IronBCI-8 on a person: battery-only operation, charging and LiPo battery care."
+---
+
+import { Callout } from 'nextra/components'
+
+# Safety
+
+**Read this before putting electrodes on anyone.**
+
+<Callout type="warning">
+  IronBCI-8 is **not a medical device** and has not been certified by any regulator for use with the human body. It is an engineering development and evaluation board for research and education. You use it at your own risk.
+</Callout>
+
+## Rules
+
+1. **Battery only while worn.** IronBCI-8 runs from its own LiPo battery and sends data wirelessly. Nothing is cabled between the person and a computer.
+2. **Never wear it while charging.** Unplug the USB cable before electrodes go on. While charging, set Switch 2 OFF.
+3. **No mains connection of any kind** while electrodes are on a person.
+4. **No diagnosis.** Don't use IronBCI-8 to diagnose, monitor or treat any medical condition.
+5. **Implanted devices.** Don't use it on a person with a pacemaker or other implanted electronic device without a physician's approval.
+6. **Skin.** Use clean, intact skin. Stop if the skin becomes irritated, and clean off gel after each session.
+7. **Exposed electronics.** The boards have no case. Handle them by the edges and keep liquids away.
+
+## Power while recording
+
+| Setup | While electrodes are on | Why |
+|---|---|---|
+| **LiPo battery, both switches ON, USB unplugged** | ✅ Safe | No path to the mains. |
+| **Data received over Bluetooth by a laptop, phone or browser** | ✅ Safe | No cable to the person. |
+| **USB cable plugged in for charging** | ❌ Never | Connects the person to the mains through the charger. |
+
+## LiPo battery care
+
+- **Check the polarity** of every new battery before connecting it.
+- Charge only with the board's Micro USB port and a 5 V supply, and don't leave it charging unattended.
+- Don't use a battery that is swollen, punctured, hot or damaged. Dispose of it at a battery recycling point.
+- Don't short the battery wires, and keep it away from heat and water.
+- For storage, switch both switches OFF.
+
+See also the general [PiEEG safety](/hardware/safety) and [liabilities](/hardware/safety/liabilities) pages.
