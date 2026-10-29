@@ -1,0 +1,75 @@
+---
+title: "Troubleshooting"
+description: "Fix common PiEEG-16 problems: power, SPI, GPIO, Python libraries, PiEEG Server and signal quality."
+---
+
+import { Callout } from 'nextra/components'
+
+# Troubleshooting
+
+Start with `pieeg-server doctor`. It checks SPI, GPIO, Python packages and your settings in one go.
+
+## Power and hardware
+
+| Problem | Fix |
+|---|---|
+| LEDs on the shield are off | Check the power bank is on and charged, and the shield is fully seated on all 40 pins. |
+| Pi restarts or shows a lightning bolt | The power bank can't supply enough current. Use a 5 V / 3 A bank and a short, thick USB cable. See [Power bank](/hardware/accessories/power-bank). |
+| Shield is off by one pin | Shut down, remove and re-seat it. Pin 1 of the shield must match pin 1 of the Pi. |
+
+## SPI and GPIO
+
+| Problem | Fix |
+|---|---|
+| `/dev/spidev0.0` or `/dev/spidev0.1` not found | SPI is off. Run `sudo raspi-config` → **Interface Options** → **SPI** → **Enable**, then reboot. |
+| `Permission denied` on SPI or GPIO | Add your user to the groups and log in again: `sudo usermod -aG spi,gpio $USER`. |
+| GPIO chip not found, or the script opens the wrong one | Run `gpiodetect`. On a Pi 5 use the chip labelled `pinctrl-rp1`. Change the `gpiod.chip(...)` line in the script, or pass `--gpio-chip /dev/gpiochipN` to PiEEG Server. |
+| `Device or resource busy` on GPIO 19, 26 or 13 | Another program (often PiEEG Server) is using the pins. Stop it with `sudo systemctl stop pieeg-server`. |
+| `AttributeError` in a `gpiod` call | The script expects `gpiod==1.5.4`. Install it in your environment: `pip install gpiod==1.5.4`. The command-line recorder is the exception, see [Software](/hardware/devices/pieeg-16/software#command-line-recorder). |
+| `pip install` says *externally-managed-environment* | Use a virtual environment, as in [Software](/hardware/devices/pieeg-16/software#install-the-libraries). |
+
+## Data
+
+| Problem | Fix |
+|---|---|
+| Channels 1–8 work, 9–16 are zero or random | Chip 2 isn't being read. Check DRDY 2 (GPIO 13) and the chip select on GPIO 19, and that `/dev/spidev0.1` exists. |
+| Occasional huge single-sample spikes | SPI glitches. Lower the SPI clock in the script (for example `max_speed_hz = 1000000`), and clean saved files with [`Remove_Spikes.py`](https://github.com/pieeg-club/PiEEG-16/blob/main/Dataset/Remove_Spikes.py). |
+| Save script never writes a file | It only writes after a fixed number of samples (10,000 or 20,000). Wait 40–80 seconds, or lower the number. |
+
+## PiEEG Server
+
+| Problem | Fix |
+|---|---|
+| Dashboard shows 8 channels | The server was started with `--device pieeg8`. Start it with `--device pieeg16`, or without `--device`. |
+| `Address already in use` | The service is already running. Stop it with `sudo systemctl stop pieeg-server` before starting the server by hand. |
+| Can't open the dashboard from a laptop | Use `http://<pi-ip>:1617`, and check the laptop is on the same network. |
+| Service logs | `journalctl -u pieeg-server -f` |
+
+## Signal
+
+| Problem | Fix |
+|---|---|
+| All 16 channels noisy at once | Check the **reference and bias ear clips** first. Clean the earlobes and clip them firmly. |
+| One channel flat or very large | That electrode isn't touching the skin. Part the hair, press it in, or add gel. |
+| Strong 50/60 Hz hum | Something is connected to the mains. Unplug every charger, run the monitor from the battery, move away from power strips and laptops on chargers. |
+| Big slow spikes on the front channels | Blinks and eye movements. Ask the person to keep the eyes still or closed. |
+| Bursts of high-frequency noise | Jaw, face or neck muscles. Relax the face, don't talk or chew. |
+| Signal jumps when someone moves | Cable movement. Bundle the 16 leads, keep them short and still, and sit still. |
+| Alpha doesn't rise with eyes closed | Check the back-of-head electrodes (O1, O2, P3, P4) touch the scalp. Keep the eyes closed for at least 10 seconds in a quiet room. |
+
+<Callout type="info">
+  **Is it the board or the setup?** Set all channels on both chips to input-shorted mode (`CHnSET = 0x01`). If the signal stays within a few µV, the hardware is fine. Follow the three tests in [Noise elimination](/hardware/signal-quality/noise-elimination).
+</Callout>
+
+## Quick noise checklist
+
+- [ ] Everything runs from the power bank, nothing from the mains
+- [ ] Wi-Fi and Bluetooth off on the Pi during recording (unless you use the dashboard remotely)
+- [ ] Wired keyboard and mouse
+- [ ] Short, bundled electrode cables
+- [ ] Setup on an insulating surface, away from routers, phones and chargers
+- [ ] Person sitting still, feet not on a metal surface
+
+## Still stuck?
+
+Ask on [Discord](https://discord.gg/5Ps24p47), open an issue on [GitHub](https://github.com/pieeg-club/PiEEG-16/issues), or email [pieeg@pieeg.com](mailto:pieeg@pieeg.com).
