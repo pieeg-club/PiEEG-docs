@@ -1,0 +1,93 @@
+---
+title: "Specification"
+description: "MicroBCI technical specification: ADS1299 front end, NUCLEO-WB55 host, Bluetooth LE data format and µV conversion."
+---
+
+import { Callout } from 'nextra/components'
+
+# Specification
+
+![MicroBCI shield](/images/hardware/2026/10/microbci_hand.jpg)
+
+## Hardware
+
+| | |
+|---|---|
+| **Channels** | 8 biosignal inputs |
+| **Extra inputs** | Reference (shared by all channels) and bias |
+| **Analog front end** | Texas Instruments ADS1299 |
+| **Resolution** | 24-bit, delta-sigma, all channels sampled at the same moment |
+| **Sample rate** | 250 SPS |
+| **Signals** | EEG, EMG, ECG, EOG |
+| **Electrodes** | Dry or wet Ag/AgCl, 2.54 mm header |
+| **Host** | STMicroelectronics NUCLEO-WB55 (STM32WB55: Arm Cortex-M4 application core, Cortex-M0+ radio core) |
+| **Wireless** | Bluetooth LE |
+| **Firmware** | `Micro_BCI.hex` + STM32WB BLE stack, flashed with STM32CubeProgrammer |
+| **Power** | 5 V via the Nucleo's Micro-USB, from a small power bank |
+| **Isolation** | None. Battery operation is required. |
+
+## Software support
+
+| Software | Setting |
+|---|---|
+| [Python SDK](https://github.com/pieeg-club/MicroBCI/tree/main/SDK) | `bleak`, by address or name `EAREEG` |
+| [Android app](https://github.com/pieeg-club/MicroBCI/tree/main/Mobile_SDK) | Settings → 8 ch |
+| [PiEEG Cloud](/cloud) | PiEEG Devices → IronBCI |
+| [PiEEG Server](/software/getting-started/installation#ironbci--eareeg-support) | `--device ironbci8` |
+
+## Bluetooth data format
+
+The same protocol as [IronBCI](/hardware/devices/ironbci/specification#ble-data-format):
+
+| | |
+|---|---|
+| **Advertised name** | `EAREEG` |
+| **Data characteristic** (notify) | `0000fe42-8e22-4541-9d4c-21edae82ed19` |
+| **Sample** | 8 channels × 3 bytes = 24 bytes, 24-bit big-endian two's complement. A notification can carry one or more samples. |
+
+## Converting to microvolts
+
+```python
+raw = (b[0] << 16) | (b[1] << 8) | b[2]
+if raw & 0x800000:
+    raw -= 16777214
+uV = raw * 4.5 / 16777215 * 1e6        # about 0.268 µV per count
+```
+
+## Minimal Python reader
+
+```python
+import asyncio
+from bleak import BleakClient
+
+ADDRESS = "00:80:E1:XX:XX:XX"                      # your board
+CHAR    = "0000fe42-8e22-4541-9d4c-21edae82ed19"
+
+def to_uv(b0, b1, b2):
+    raw = (b0 << 16) | (b1 << 8) | b2
+    if raw & 0x800000:
+        raw -= 16777214
+    return raw * 4.5 / 16777215 * 1e6
+
+def on_data(_, data):
+    for s in range(len(data) // 24):
+        sample = data[s*24:(s+1)*24]
+        print([round(to_uv(*sample[3*i:3*i+3]), 1) for i in range(8)])
+
+async def main():
+    async with BleakClient(ADDRESS) as client:
+        await client.start_notify(CHAR, on_data)
+        await asyncio.sleep(10)
+
+asyncio.run(main())
+```
+
+<Callout type="info">
+  Raw values carry a large DC offset from the electrode contact. That is normal. Apply a band-pass filter (for example 1–40 Hz) before looking at EEG.
+</Callout>
+
+## Documents
+
+- [PDF quick-start manual](https://github.com/pieeg-club/MicroBCI/blob/main/Manuals/Micro_BCI_How_To_Start.pdf)
+- [NUCLEO-WB55 schematic (MB1355)](https://github.com/pieeg-club/MicroBCI/blob/main/datasheet/mb1355-wb55rg-d01_schematic.pdf)
+- [Nucleo kit datasheet](https://github.com/pieeg-club/MicroBCI/blob/main/datasheet/Nucleo%20Kit%20Datasheet.pdf)

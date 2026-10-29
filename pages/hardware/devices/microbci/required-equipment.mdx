@@ -1,0 +1,44 @@
+---
+title: "What's in the Box"
+description: "Contents of the MicroBCI package and the extra items you need: NUCLEO-WB55 board, Micro-USB cable, power bank, electrodes and a cap."
+---
+
+import { Callout } from 'nextra/components'
+
+# What's in the Box
+
+## Included
+
+| Item | Details |
+|---|---|
+| **1 × MicroBCI shield** | 8-channel ADS1299 board with Nucleo headers and a 2.54 mm electrode header |
+
+![MicroBCI shield](/images/hardware/2026/10/microbci_hand.jpg)
+
+## Not included
+
+| Item | Requirements | More |
+|---|---|---|
+| **NUCLEO-WB55 board** | STMicroelectronics NUCLEO-WB55RG (STM32WB55, Bluetooth LE). Its built-in ST-LINK is used to flash the firmware. | [Firmware](/hardware/devices/microbci/firmware) |
+| **Micro-USB cable** | A **data** cable: for flashing from a computer, then for power from the power bank | [Firmware](/hardware/devices/microbci/firmware) |
+| **5 V power bank** | Small: 5 V, up to 1 A, up to 1,000 mAh | [Power bank](/hardware/accessories/power-bank) |
+| **Electrodes** | 8 EEG electrodes (dry or wet Ag/AgCl) with 2.54 mm connectors, plus **2 ear-clip electrodes** for reference and bias. Or an EMG / ECG kit. | [Electrodes](/hardware/accessories/electrodes) |
+| **EEG cap** | Holds the electrodes on the scalp (10-20 system) | [Cap](/hardware/accessories/cap) |
+| **Computer** | Windows, macOS or Linux, with **STM32CubeProgrammer** (to flash once) and Python 3 with Bluetooth LE, or Chrome / Edge | [Software](/hardware/devices/microbci/software) |
+| **Android phone (optional)** | For the MicroBCI Android app | [Software](/hardware/devices/microbci/software#android-app) |
+
+<Callout type="warning">
+  **Battery only.** Flash the board from the computer with **no electrodes on anyone**. Then unplug it and power it from the power bank for recording.
+</Callout>
+
+## Checklist
+
+- [ ] MicroBCI shield
+- [ ] NUCLEO-WB55 board
+- [ ] Micro-USB data cable
+- [ ] Small 5 V power bank, charged
+- [ ] 8 electrodes and 2 ear clips
+- [ ] EEG cap (and gel if you use wet electrodes)
+- [ ] Computer with STM32CubeProgrammer and Python (or Chrome / Edge)
+
+Next: [How to Start](/hardware/devices/microbci/setup)

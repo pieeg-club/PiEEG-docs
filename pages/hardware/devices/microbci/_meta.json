@@ -1,0 +1,12 @@
+{
+  "index": "MicroBCI Intro",
+  "required-equipment": "What's in the Box",
+  "setup": "How to Start",
+  "connections": "Electrodes & Mounting",
+  "software": "Software",
+  "examples": "Signals & Datasets",
+  "firmware": "Firmware",
+  "specification": "Specification",
+  "troubleshooting": "Troubleshooting",
+  "safety": "Safety"
+}

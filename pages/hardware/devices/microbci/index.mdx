@@ -1,0 +1,101 @@
+---
+title: "MicroBCI Intro"
+description: "MicroBCI — a low-cost 8-channel EEG shield for the STMicroelectronics NUCLEO-WB55 board, with a TI ADS1299 and Bluetooth LE streaming to Python, Android and the browser."
+---
+
+import { Cards, Callout } from 'nextra/components'
+
+# MicroBCI
+
+**EEG with an STM32 development board.**
+
+MicroBCI is a low-cost shield for the **STMicroelectronics NUCLEO-WB55** board. It measures 8 channels of biosignals (EEG, EMG, ECG and EOG) with a Texas Instruments **ADS1299**, and the STM32WB55 on the Nucleo streams them over **Bluetooth LE** to a computer, an Android phone or the browser. Ideal for embedded and STM32 developers who want to work with real biosignals.
+
+![MicroBCI shield on a NUCLEO-WB55 board](/images/hardware/2026/10/microbci_board.jpg)
+
+<Callout type="warning">
+  MicroBCI is **not a medical device**. Run it **from a small 5 V battery only**, never from a computer's USB port or a wall charger while electrodes are on a person. Read [Safety](/hardware/devices/microbci/safety) first.
+</Callout>
+
+## At a glance
+
+| | |
+|---|---|
+| **Channels** | 8 biosignal inputs, plus reference and bias |
+| **Converter** | TI ADS1299, 24-bit, simultaneous sampling |
+| **Sample rate** | 250 SPS |
+| **Signals** | EEG, EMG, ECG, EOG |
+| **Host** | STMicroelectronics NUCLEO-WB55 (STM32WB55, not included) |
+| **Wireless** | Bluetooth LE, same protocol as IronBCI |
+| **Electrodes** | Dry or wet Ag/AgCl, 2.54 mm header |
+| **Power** | Small 5 V power bank via the Nucleo's Micro-USB |
+| **Software** | Python SDK, Android app, PiEEG Cloud, PiEEG Server |
+
+## How it works
+
+```
+ Electrodes 1–8 ─┐
+ Reference (ear) ┼─► MicroBCI ─SPI─► NUCLEO-WB55 ─BLE─► Python SDK
+ Bias (ear) ─────┘   (ADS1299)       (STM32WB55)        ├ Android app
+                                          ▲             ├ cloud.pieeg.com
+                5 V power bank ───────────┘             └ PiEEG Server
+```
+
+1. **Flash once:** load the Bluetooth stack and the MicroBCI firmware onto the Nucleo with STM32CubeProgrammer.
+2. **Measure:** the ADS1299 on the shield digitises all 8 channels, 250 times per second.
+3. **Send:** the STM32WB55 streams the samples over Bluetooth LE to your computer, phone or browser.
+
+![MicroBCI wiring: cap, reference, bias and channels 1–8](/images/hardware/2026/10/microbci_connection.png)
+
+## Which 8-channel board?
+
+| | PiEEG-8 | ardEEG | IronBCI-8 | MicroBCI |
+|---|---|---|---|---|
+| **Host** | Raspberry Pi | Arduino UNO R4 WiFi | None | NUCLEO-WB55 |
+| **Link** | On the Pi | Wi-Fi | Bluetooth LE | Bluetooth LE |
+| **Firmware** | None | Arduino sketch | Pre-installed | Flash with STM32CubeProgrammer |
+| **Best for** | Research | Education, Arduino projects | Wearable | STM32 development |
+
+## What you can measure
+
+| Signal | What it shows | Typical first test |
+|---|---|---|
+| **EEG** | Brain rhythms | Close your eyes and watch alpha (8–12 Hz) rise |
+| **EMG** | Muscle activity | Chew or clench the jaw |
+| **EOG** | Eye movement and blinks | Blink with electrodes on the forehead |
+| **ECG** | Heart activity | Electrodes on the chest or wrists |
+
+See real recordings in [Signals & Datasets](/hardware/devices/microbci/examples).
+
+## Get started
+
+<Cards>
+  <Cards.Card title="What's in the Box" href="/hardware/devices/microbci/required-equipment" />
+  <Cards.Card title="How to Start" href="/hardware/devices/microbci/setup" />
+  <Cards.Card title="Firmware" href="/hardware/devices/microbci/firmware" />
+  <Cards.Card title="Software" href="/hardware/devices/microbci/software" />
+</Cards>
+
+## Video
+
+[How to measure EEG with STM32 and MicroBCI](https://youtu.be/crqOmnJ3Hjg): uploading the firmware and Bluetooth stack, connecting electrodes, and the Python GUI.
+
+## Related
+
+- [GitHub: MicroBCI](https://github.com/pieeg-club/MicroBCI): firmware, Python SDK, Android app, datasets, datasheets
+- [PDF quick-start manual](https://github.com/pieeg-club/MicroBCI/blob/main/Manuals/Micro_BCI_How_To_Start.pdf)
+- [IronBCI-8](/hardware/devices/ironbci): uses the same Bluetooth protocol
+- [Noise elimination](/hardware/signal-quality/noise-elimination): getting a clean signal
+- [Buy MicroBCI](https://pieeg.com/microbci/)
+
+## Citation
+
+If you use MicroBCI in research, please cite:
+
+> I. Rakhmatulin. *Low-Cost Shield MicroBCI to Measure EEG with STM32.* Preprints 2025, 2025091345. [preprints.org/manuscript/202509.1345/v1](https://www.preprints.org/manuscript/202509.1345/v1)
+
+## Support
+
+- **Discord:** [discord.gg/5Ps24p47](https://discord.gg/5Ps24p47)
+- **GitHub:** [github.com/pieeg-club](https://github.com/pieeg-club)
+- **Email:** [pieeg@pieeg.com](mailto:pieeg@pieeg.com)
