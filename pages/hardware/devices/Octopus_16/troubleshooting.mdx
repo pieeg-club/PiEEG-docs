@@ -1,0 +1,80 @@
+---
+title: "Troubleshooting & Care"
+description: "Fix common Octopus 16 problems — flashing, Bluetooth, no data, weak signal — and how to clean and unstick the pogo pins."
+---
+
+import { Callout } from 'nextra/components'
+
+# Troubleshooting & Care
+
+## Flashing
+
+| Problem | Fix |
+|---|---|
+| No serial port when the XIAO is plugged in | Use a USB-C **data** cable, not a charge-only one. Close other programs that use serial ports. |
+| Install fails or the port disappears | Hold **BOOT**, tap **RESET**, release BOOT, then click Install again. |
+| Board silent after flashing | Unplug and replug the USB once. |
+| Flasher page has no Install button | Use desktop **Chrome or Edge**. |
+
+## Bluetooth connection
+
+| Problem | Fix |
+|---|---|
+| `Octopus-16-XXXX` not in the list | Check the power bank is on and the LED blinks slowly. Move closer. If the board was never flashed, see [Firmware](/hardware/devices/Octopus_16/firmware). |
+| Board shows another name (`Octopos`, `FE-Gamepad-…`, `bioron_16`) | It runs a different firmware build. Flash the official firmware again, or connect with a tool that finds it by service UUID. |
+| Connects, then drops | Keep the board close to the computer, check the BLE antenna is clipped on, and retry. |
+| No Bluetooth button in the browser | Use **Chrome or Edge**. Safari, Firefox and iPhone / iPad browsers don't support Web Bluetooth. |
+| macOS: Python finds nothing | Allow your terminal to use Bluetooth: **System Settings → Privacy & Security → Bluetooth**. |
+
+## No data or bad data
+
+| Problem | Fix |
+|---|---|
+| Connected, but no EEG data, or the LED **fast double-blinks** | The XIAO is mounted the **wrong way round** (180°). Reseat it so the `5V / GND / 3V3` labels line up. A board that flashes and shows up on Bluetooth does not prove the ADC is connected. |
+| Gaps in the data | Lost packets. Check the sample counter, keep the board closer, and avoid crowded 2.4 GHz areas. |
+| Values in the thousands of counts | That's raw ADC counts with an offset. Use µV (see [Specification](/hardware/devices/Octopus_16/specification#converting-to-microvolts)) and a band-pass filter. |
+
+## Signal
+
+| Problem | Fix |
+|---|---|
+| **EEG ok** stays red | Press the board **straight down** so every pin touches the scalp. Part the hair under the pins. Sit still. |
+| A few channels much noisier than the rest | Those pins aren't touching, or are stuck. Press more evenly, or check the pins (see below). |
+| Huge swings in the signal | Blinks, jaw clenches or movement. Relax the face and keep still. |
+| Alpha doesn't rise with eyes closed | Place the board over **Pz** or the back of the head. Keep the eyes closed for a full 10 seconds. |
+| Strong 50/60 Hz hum | Something is on mains power. Use the power bank only, and keep away from chargers and power strips. |
+
+## Pogo pin care
+
+The pogo pins have a spring inside. Over time, dirt, liquid or sideways force can make a pin **stick** (stay pushed in).
+
+**Why pins stick**
+
+- Dust, debris and hair inside the pin barrel
+- Oils, moisture or sticky residue
+- Sideways pressure, or pressing the board beyond the pins' travel
+
+**Keep them working**
+
+- Clean the pin tips regularly with isopropyl alcohol (IPA above 90%) on a swab or brush.
+- Blow out dust around the pin bases with compressed air.
+- Press the board **straight down** (90°). Never push or tilt the pins sideways under pressure.
+- Don't over-compress the pins.
+
+**Free a stuck pin**
+
+1. Put a drop of high-purity IPA into the stuck pin's barrel to dissolve the grime.
+2. Gently work the plunger with a **non-metal** tool so the spring can push it back up.
+3. Let the IPA **dry completely** before powering on.
+
+<Callout type="error">
+  **Never use oil or grease** on the pins. It attracts dirt and ruins the electrical contact.
+</Callout>
+
+<Callout type="info">
+  The board often still works with one or two stuck pins, as long as they still touch the skin. Damage from dirt, contamination or rough handling is **not covered by the warranty**.
+</Callout>
+
+## Still stuck?
+
+Ask on [Discord](https://discord.gg/5Ps24p47), open an issue on [GitHub](https://github.com/pieeg-club/Octopus_16/issues), or email [pieeg@pieeg.com](mailto:pieeg@pieeg.com).

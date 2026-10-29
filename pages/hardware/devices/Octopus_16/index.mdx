@@ -1,0 +1,99 @@
+---
+title: "Octopus 16 Intro"
+description: "Octopus 16 — a coin-sized 16-channel wireless EEG sensor with dry pogo-pin electrodes, two TI ADS131M08 converters and Bluetooth LE via a Seeed Studio XIAO ESP32-S3."
+---
+
+import { Cards, Callout } from 'nextra/components'
+
+# Octopus 16
+
+**16 channels of EEG in a coin-sized sensor.**
+
+Octopus 16 packs sixteen EEG electrodes, a reference and a ground into a single **26 mm** round board: a cluster of spring-loaded **pogo pins** that press through the hair onto the scalp. No gel, no cap and no ear clips. Two Texas Instruments **ADS131M08** converters measure all 16 channels, and a **Seeed Studio XIAO ESP32-S3** on top streams them over **Bluetooth LE** straight to the browser.
+
+![Octopus 16 with the XIAO ESP32-S3 mounted](/images/hardware/2026/10/octopus16_render.jpg)
+
+<Callout type="warning">
+  Octopus 16 is **not a medical device**. While it's on a head, it runs from a **power bank only**, never plugged into a computer or a wall charger. Read [Safety](/hardware/devices/Octopus_16/safety) before the first recording.
+</Callout>
+
+## At a glance
+
+| | |
+|---|---|
+| **Channels** | 16, plus reference and ground, all in the same cluster |
+| **Electrodes** | 18 dry spring-loaded pogo pins, 4 × 11 mm |
+| **Converters** | 2 × TI ADS131M08, 24-bit, simultaneous sampling |
+| **Sample rate** | 250 SPS |
+| **Board** | 26 mm round, 4 layers |
+| **Controller** | Seeed Studio XIAO ESP32-S3 (not included) |
+| **Wireless** | Bluetooth LE 5, appears as `Octopus-16-XXXX` |
+| **Power** | Small 5 V power bank, battery only while worn |
+| **Software** | PiEEG Cloud, octoBridge, JavaScript SDK, Python SDK |
+
+## How it works
+
+One sensor, one controller, one power bank, no cables to the computer.
+
+```
+ 18 pogo pins ─► 2 × ADS131M08 ─► XIAO ESP32-S3 ─► Bluetooth LE
+ (16 ch + REF + GND)                     ▲            │
+                                         │            ├ cloud.pieeg.com
+                 5 V power bank ─────────┘            ├ octobridge.pieeg.com
+                                                      ├ JavaScript SDK
+                                                      └ Python SDK
+```
+
+1. **Touch:** the pogo pins press through the hair onto the scalp. Reference and ground are in the same cluster, so no other electrodes are needed.
+2. **Measure:** two ADS131M08 chips digitise 8 channels each, 250 times per second.
+3. **Send:** the XIAO ESP32-S3 streams every sample over Bluetooth LE to a browser tab or your own code.
+
+## Octopus 16 or a cap-based board?
+
+| | PiEEG-16 / IronBCI-8 | Octopus 16 |
+|---|---|---|
+| **Electrodes** | Separate electrodes in a cap, ear clips for reference and bias | **Built in**: 18 pogo pins on the board |
+| **Coverage** | Spread over the whole head | **One local spot** (about 2 × 2 cm), for example over Pz |
+| **Setup time** | Minutes (cap, gel, clips) | **Seconds**: strap it on |
+| **Wireless** | PiEEG-16: no · IronBCI-8: yes | **Yes** (BLE 5) |
+| **Best for** | Full-head research | Quick tests, classrooms, neurofeedback, a "brain stethoscope" |
+
+## What you can measure
+
+| Signal | What it shows | Typical first test |
+|---|---|---|
+| **EEG** | Local brain rhythms: delta, theta, alpha, beta, gamma | Place over Pz, close your eyes, watch alpha (8–13 Hz) rise |
+| **Artifacts** | Blinks and jaw clenches | Place over the forehead (Fp) and blink |
+| **EMG** | Muscle activity under the sensor | Clench the jaw |
+
+See real recordings in [Signals & Datasets](/hardware/devices/Octopus_16/examples).
+
+## Get started
+
+<Cards>
+  <Cards.Card title="What's in the Box" href="/hardware/devices/Octopus_16/required-equipment" />
+  <Cards.Card title="How to Start" href="/hardware/devices/Octopus_16/setup" />
+  <Cards.Card title="Pins & Placement" href="/hardware/devices/Octopus_16/connections" />
+  <Cards.Card title="Software" href="/hardware/devices/Octopus_16/software" />
+</Cards>
+
+## Videos
+
+- [Octopus 16: start measuring EEG](https://www.youtube.com/watch?v=Yz7GLRGZNk8)
+- [Python SDK demo](https://www.youtube.com/watch?v=OMOJHC0NXXE)
+
+## Related
+
+- [OctoBio Kit](/hardware/devices/OctoBio_Kit): Octopus 16 plus an Arduino starter kit, for the classroom
+- [octoBridge](/software/octobridge): the browser lab with block programming
+- [PiEEG Cloud](/cloud): dashboards, experiences and Buddy AI in the browser
+- [JavaScript SDK](/software/api/javascript-sdk): `device: 'octopus-16'`
+- [GitHub: Octopus_16](https://github.com/pieeg-club/Octopus_16): firmware source, Python SDK, datasets
+- 3D models on Thingiverse: [Octopus 16](https://www.thingiverse.com/thing:7386761) · [boxes](https://www.thingiverse.com/PiEEG/designs)
+- [Buy from the PiEEG shop](https://www.pieeg.com/hardware)
+
+## Support
+
+- **Discord:** [discord.gg/5Ps24p47](https://discord.gg/5Ps24p47)
+- **GitHub:** [github.com/pieeg-club](https://github.com/pieeg-club)
+- **Email:** [pieeg@pieeg.com](mailto:pieeg@pieeg.com)

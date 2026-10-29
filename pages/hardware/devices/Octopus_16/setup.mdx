@@ -1,0 +1,114 @@
+---
+title: "How to Start"
+description: "Set up Octopus 16: mount the XIAO ESP32-S3, flash the firmware, power from a power bank, connect over Bluetooth, place it on the head and check the signal."
+---
+
+import { Steps, Tabs, Callout } from 'nextra/components'
+
+# How to Start
+
+From the box to 16 live channels in your browser, in seven steps.
+
+<Steps>
+
+### Gather the parts
+
+You need the Octopus 16, a Seeed Studio XIAO ESP32-S3 with its antenna, a USB-C data cable, a small 5 V power bank and a strap. See [What's in the Box](/hardware/devices/Octopus_16/required-equipment).
+
+### Mount the XIAO the right way round
+
+1. Solder the headers onto the XIAO ESP32-S3 if it came without pins.
+2. Line up the XIAO with the sockets on the Octopus 16 so the **`5V`, `GND` and `3V3`** labels on both boards match.
+3. Press it down gently until it's fully seated.
+4. Clip the **BLE antenna** onto the XIAO's antenna connector.
+
+![XIAO ESP32-S3 mounted on Octopus 16, with the antenna](/images/hardware/2026/10/octopus16_xiao_mounted.jpg)
+
+<Callout type="warning">
+  A XIAO mounted **180° the wrong way** still flashes and shows up on Bluetooth, but sends **no EEG data** (the LED fast double-blinks). Check the `5V / GND / 3V3` labels line up.
+</Callout>
+
+### Flash the firmware (first time only)
+
+1. Open **[octobridge.pieeg.com/flash](https://octobridge.pieeg.com/flash)** in desktop **Chrome or Edge**.
+2. Plug the XIAO into the computer with the USB-C **data** cable. The board must **not** be on anyone's head.
+3. Click **Install Octopus-16**, choose the port and wait about 30 seconds.
+4. Unplug and replug once. It now shows up over Bluetooth as **`Octopus-16-XXXX`**.
+
+No port? Hold **BOOT**, tap **RESET**, release BOOT and install again. Full details: [Firmware](/hardware/devices/Octopus_16/firmware).
+
+### Power from the power bank
+
+Unplug the computer's USB cable and connect the **power bank** to the XIAO's USB-C port. The LED blinks slowly while it waits for a connection.
+
+<Callout type="error">
+  The board has **no isolation** from its power supply. While it's on a head, it runs from the **power bank only**, never plugged into a computer or a wall charger.
+</Callout>
+
+### Connect over Bluetooth
+
+<Tabs items={['PiEEG Cloud', 'octoBridge', 'Python']}>
+<Tabs.Tab>
+
+1. Open **[cloud.pieeg.com](https://cloud.pieeg.com)** in **Chrome or Edge**.
+2. In the Session Lobby, open the **PiEEG Devices** tab and choose **Octopus 16**.
+3. Pick `Octopus-16-XXXX` in the browser's Bluetooth window.
+
+![Choosing Octopus 16 in the PiEEG Cloud Session Lobby](/images/hardware/2026/10/octopus16_cloud.jpg)
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+1. Open **[octobridge.pieeg.com/connect](https://octobridge.pieeg.com/connect)** in **Chrome or Edge**.
+2. Choose `Octopus-16-XXXX` in the Bluetooth picker.
+3. Go to **Board** to see live band power, focus, relax and the **EEG ok** check.
+
+Best for classrooms and the [OctoBio Kit](/hardware/devices/OctoBio_Kit).
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+```bash
+pip install bleak matplotlib numpy scipy
+git clone https://github.com/pieeg-club/Octopus_16.git
+cd Octopus_16/GUI
+python SDK_Data_Visual.py
+```
+
+It finds the board by its Bluetooth service and shows 16 live channels, a heatmap and an FFT.
+
+</Tabs.Tab>
+</Tabs>
+
+When connected, the LED stays on and data streams at 250 samples per second.
+
+### Put it on
+
+1. Place the sensor over **Pz** (top-back of the head) for the alpha test, or over the **back of the head** (visual cortex).
+2. Part the hair under the cluster so the pins reach the scalp.
+3. Press it **straight down** and hold it with the strap. The power bank can sit under the strap at the back of the head.
+
+<div style={{display: 'flex', gap: '1rem', flexWrap: 'wrap'}}>
+  <img src="/images/hardware/2026/10/octopus16_wear_back.jpg" alt="Octopus 16 worn over the back of the head" style={{width: '48%', minWidth: '220px', borderRadius: '8px'}} />
+  <img src="/images/hardware/2026/10/octopus16_wear_strap.jpg" alt="Octopus 16 held by a strap, with the power bank" style={{width: '48%', minWidth: '220px', borderRadius: '8px'}} />
+</div>
+
+### Check the signal
+
+Sit still, relax the face and run these quick tests. If they behave as described, you are recording real biosignals.
+
+| Test | What you should see |
+|---|---|
+| **EEG ok** (PiEEG Cloud / octoBridge) | Green when the signal size (RMS) is between 2 and 200 µV |
+| **Close your eyes for 10 seconds** (sensor over Pz) | Alpha (8–13 Hz) rises, then drops when the eyes open |
+| **Blink** (sensor on the forehead) | Large slow spikes on every channel |
+| **Clench the jaw** | RMS and gamma jump, then settle. That is muscle, not brain activity. |
+
+![Alpha with eyes closed, sensor over Pz](/images/hardware/2026/10/octopus16_alpha.jpg)
+
+</Steps>
+
+## Next steps
+
+- **Build something:** block programs in [octoBridge](/software/octobridge), or your own web app with the [JavaScript SDK](/software/api/javascript-sdk).
+- **Weak or noisy signal?** See [Troubleshooting & Care](/hardware/devices/Octopus_16/troubleshooting).

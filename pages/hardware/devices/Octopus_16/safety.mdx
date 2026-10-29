@@ -1,0 +1,39 @@
+---
+title: "Safety"
+description: "Read before anyone wears Octopus 16: power-bank-only operation, flashing off the head, and responsible use."
+---
+
+import { Callout } from 'nextra/components'
+
+# Safety
+
+**Read this before anyone puts it on.**
+
+<Callout type="warning">
+  Octopus 16 is **not a medical device** and has not been certified by any regulator for use with the human body. It is a learning and experimentation tool. You use it at your own risk.
+</Callout>
+
+## Rules
+
+1. **Power bank only while worn.** Wear Octopus 16 on battery power only, never while it's plugged into a computer or a wall charger. The board has no isolation from its power supply.
+2. **Flash off the head.** USB from a computer is only for flashing, with the board off the head.
+3. **No diagnosis.** Band power, focus and relax are uncalibrated learning indicators. Never use them for diagnosis, or as a measure of mood or ability.
+4. **Implanted devices.** Don't use it on a person with a pacemaker or other implanted electronic device without a physician's approval.
+5. **Skin.** Use clean, intact skin. Stop if the skin becomes irritated or the pins press too hard.
+6. **Pin care.** Press the pins straight down. Clean them with isopropyl alcohol, never oil or grease.
+
+## Power while worn
+
+| Power source | While worn | Why |
+|---|---|---|
+| **Small 5 V power bank** | ✅ Safe | The board is on its own battery, with no path to the mains. |
+| **Laptop USB** | ❌ Not while worn | USB from a computer is only for flashing. A plugged-in laptop links the electrodes to the mains. |
+| **Wall charger** | ❌ Never | Connects the person to the mains through the electrodes. |
+
+## In the classroom
+
+- An adult checks the power source before each session.
+- Flash and charge boards **before** the lesson, with the boards off the head.
+- Clean the pins with isopropyl alcohol between users.
+
+See also the general [PiEEG safety](/hardware/safety) and [liabilities](/hardware/safety/liabilities) pages.
