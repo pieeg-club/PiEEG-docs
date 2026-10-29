@@ -1,0 +1,97 @@
+---
+title: "PiEEG-8 Intro"
+description: "PiEEG-8 — an open-source 8-channel Raspberry Pi shield for measuring EEG, EMG and ECG, built on the TI ADS1299."
+---
+
+import { Cards, Callout } from 'nextra/components'
+
+# PiEEG-8
+
+**Turn a Raspberry Pi into an 8-channel brain-computer interface.**
+
+PiEEG-8 is an open-source shield that plugs straight onto the Raspberry Pi 40-pin header. It reads up to 8 channels of biosignals (EEG, EMG and ECG) through a Texas Instruments **ADS1299** front end, and the Pi streams, records and processes the data in real time. Hardware, SDK and server software are all open source.
+
+![PiEEG-8 shield mounted on a Raspberry Pi](/images/hardware/2026/10/pieeg8_on_pi.jpg)
+
+<Callout type="warning">
+  PiEEG-8 is **not a medical device**. It is a tool for research, education and engineering. Run it **from a 5 V battery only**, never from the mains. Read [Safety](/hardware/devices/pieeg-8/safety) before the first recording.
+</Callout>
+
+## At a glance
+
+| | |
+|---|---|
+| **Channels** | 8 biosignal inputs, plus reference and bias |
+| **Converter** | TI ADS1299, 24-bit, simultaneous sampling |
+| **Sample rate** | 250 SPS (default) |
+| **Signals** | EEG, EMG, ECG |
+| **Host** | Raspberry Pi 4 or Raspberry Pi 5 |
+| **Link to the Pi** | SPI0 on the 40-pin GPIO header |
+| **Electrodes** | Dry or wet Ag/AgCl, 2.54 mm header |
+| **Software** | PiEEG Server, Python SDK, BrainFlow |
+| **Power** | 5 V battery (power bank) only |
+
+## How it works
+
+One shield, one Raspberry Pi, everything on battery power.
+
+```
+ Electrodes 1–8 ─┐
+ Reference (ear) ┼─► PiEEG-8 ─SPI─► Raspberry Pi ─► PiEEG Server
+ Bias (ear) ─────┘   (ADS1299)      4 or 5            │
+                                     ▲                ├ dashboard :1617
+               5 V power bank ───────┘                ├ WebSocket :1616
+                                                      └ CSV · LSL · OSC
+```
+
+1. **Measure:** the ADS1299 digitises all 8 channels at the same moment, 250 times per second.
+2. **Transfer:** the Pi reads each sample over SPI when the board signals *data ready*.
+3. **Use:** PiEEG Server filters the signal, shows it in the browser and streams it to your own code.
+
+![PiEEG-8 measurement setup: cap, shield on the Pi, power bank, monitor, keyboard and mouse](/images/hardware/2026/10/pieeg8_setup.png)
+
+## What you can measure
+
+| Signal | What it shows | Typical first test |
+|---|---|---|
+| **EEG** | Brain rhythms: delta, theta, alpha, beta, gamma | Close your eyes and watch alpha (8–13 Hz) rise |
+| **EMG** | Muscle activity | Clench a fist or the jaw |
+| **ECG** | Heart activity | Electrodes on the chest or wrists |
+
+See real recordings in [Signals & Datasets](/hardware/devices/pieeg-8/examples).
+
+## Who it's for
+
+- **Researchers** who want raw, unfiltered 24-bit data and full control over the ADC registers.
+- **Students and teachers** learning neuroscience, signal processing and embedded Linux on hardware they can see and modify.
+- **Developers** building BCI apps: stream over WebSocket, LSL or OSC, or use BrainFlow.
+
+## Get started
+
+<Cards>
+  <Cards.Card title="What's in the Box" href="/hardware/devices/pieeg-8/required-equipment" />
+  <Cards.Card title="How to Start" href="/hardware/devices/pieeg-8/setup" />
+  <Cards.Card title="Electrodes & Pinout" href="/hardware/devices/pieeg-8/connections" />
+  <Cards.Card title="Software" href="/hardware/devices/pieeg-8/software" />
+</Cards>
+
+## Related
+
+- [PiEEG Server](/software/getting-started/quick-start): streaming, dashboard and recording (`--device pieeg8`)
+- [PiEEG-16](/hardware/devices/pieeg-16): the 16-channel version of this shield
+- [Noise elimination](/hardware/signal-quality/noise-elimination): getting a clean signal
+- [GitHub: PiEEG-8](https://github.com/pieeg-club/PiEEG-8): SDK scripts, datasets and manuals
+
+## Citation
+
+If you use PiEEG-8 in research, please cite:
+
+> I. Rakhmatulin et al. *PIEEG: Turn a Raspberry Pi into a Brain-Computer-Interface to measure biosignals.* arXiv:2201.02228, 2022. [arxiv.org/abs/2201.02228](https://arxiv.org/abs/2201.02228)
+
+> I. Rakhmatulin et al. *Raspberry Pi Shield – for measure EEG (PIEEG).* 2021 5th International Conference on Electrical, Electronics, Communication, Computer Technologies and Optimization Techniques (ICEECCOT), pp. 410–413. DOI: [10.1109/ICEECCOT52851.2021.9707969](https://ieeexplore.ieee.org/document/9707969)
+
+## Support
+
+- **Discord:** [discord.gg/5Ps24p47](https://discord.gg/5Ps24p47)
+- **GitHub:** [github.com/pieeg-club](https://github.com/pieeg-club)
+- **Email:** [pieeg@pieeg.com](mailto:pieeg@pieeg.com)
