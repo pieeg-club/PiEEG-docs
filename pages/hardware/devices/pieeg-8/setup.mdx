@@ -1,0 +1,121 @@
+---
+title: "How to Start"
+description: "Set up PiEEG-8: prepare the Raspberry Pi, mount the shield, connect electrodes, power on from battery, install PiEEG Server and check the signal."
+---
+
+import { Steps, Callout } from 'nextra/components'
+
+# How to Start
+
+From a bare Raspberry Pi to live EEG in your browser, in seven steps.
+
+<Steps>
+
+### Gather the parts
+
+You need the PiEEG-8, a Raspberry Pi 4 or 5, a 5 V power bank, electrodes with two ear clips, and a cap. See [What's in the Box](/hardware/devices/pieeg-8/required-equipment).
+
+### Prepare the Raspberry Pi
+
+1. Flash **Raspberry Pi OS** (64-bit, with desktop) to the microSD card with [Raspberry Pi Imager](https://www.raspberrypi.com/software/).
+2. Boot the Pi once, finish the first-run wizard and connect it to the internet (needed only for installing software).
+
+<Callout type="info">
+  SPI must be on for the Pi to talk to the shield. The PiEEG Server installer turns it on for you. To do it by hand: `sudo raspi-config` → **Interface Options** → **SPI** → **Enable**, then reboot.
+</Callout>
+
+### Mount the shield
+
+1. **Shut down the Pi** and unplug the power bank.
+2. Line up the PiEEG-8 with the 40-pin GPIO header, so the board sits over the Pi and pin 1 matches pin 1.
+3. Press it down evenly until every pin is fully seated.
+
+![PiEEG-8 mounted on the Raspberry Pi GPIO header](/images/hardware/2026/10/pieeg8_on_pi.jpg)
+
+<Callout type="warning">
+  Never plug in or remove the shield while the Pi is powered.
+</Callout>
+
+### Connect the electrodes
+
+| Connector | Electrode | Where it goes |
+|---|---|---|
+| **Channels 1–8** | 8 EEG electrodes in the cap | Scalp positions of the 10-20 system |
+| **Reference** | Ear-clip electrode | One earlobe |
+| **Bias** | Ear-clip electrode | The other earlobe |
+
+![Wiring of channels 1–8, reference and bias](/images/hardware/2026/10/pieeg8_connection.png)
+
+Full details, header layout and a default montage: [Electrodes & Pinout](/hardware/devices/pieeg-8/connections).
+
+### Power on from the battery
+
+1. Connect the monitor, wired keyboard and mouse. The monitor must be powered from the power bank or the Pi.
+2. Plug the **power bank** into the Raspberry Pi.
+3. The LED on the PiEEG-8 lights up once the shield is powered.
+
+![LED on the PiEEG-8 lights up when the board is powered](/images/hardware/2026/10/pieeg8_led.png)
+
+<Callout type="error">
+  The PiEEG-8 has **no isolation** from its power supply. While electrodes are on a person, the Pi, the shield and everything cabled to them must run **from the power bank only**. No wall charger, no desktop power supply, no USB cable to a mains-powered computer.
+</Callout>
+
+### Install and start PiEEG Server
+
+Open a terminal on the Pi and run:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/pieeg-club/PiEEG-server/main/install.sh | bash
+sudo reboot        # first time only: enables SPI
+```
+
+The installer creates a service that starts the server on every boot. The service starts in **16-channel mode** by default, so set it to PiEEG-8 once:
+
+```bash
+sudo sed -i 's|bin/pieeg-server|bin/pieeg-server --device pieeg8|' /etc/systemd/system/pieeg-server.service
+sudo systemctl daemon-reload
+sudo systemctl restart pieeg-server
+```
+
+Or run it by hand in a terminal (stop the service first with `sudo systemctl stop pieeg-server`):
+
+```bash
+pieeg-server --device pieeg8
+```
+
+Check the setup at any time with:
+
+```bash
+pieeg-server doctor
+```
+
+### Check the signal
+
+Open the dashboard at **http://localhost:1617** on the Pi, or **http://raspberrypi.local:1617** from a battery-powered laptop on the same network. Click **Connect**.
+
+Sit still, relax the face and run these quick tests. If they behave as described, you are recording real biosignals.
+
+| Test | What you should see |
+|---|---|
+| **Sit still for 30 seconds** | All 8 channels settle. Flat lines or huge values mean a loose electrode. |
+| **Close your eyes for 10 seconds** | Alpha (8–13 Hz) rises on the back-of-head channels (O1, O2), then drops when the eyes open |
+| **Blink a few times** | Large slow spikes on the front channels (Fp1, Fp2) |
+| **Clench the jaw** | Bursts of high-frequency noise on all channels. That is muscle (EMG), not brain activity. |
+
+<Callout type="info">
+  A blink or jaw clench is a big signal, but it is not a thought. Learning to recognise these artifacts is the first step to clean EEG.
+</Callout>
+
+![Alpha rhythm appears when the eyes are closed](/images/hardware/2026/10/pieeg8_alpha.png)
+
+</Steps>
+
+## Next steps
+
+- **Record:** `pieeg-server record session.csv --device pieeg8` saves raw µV to CSV. See [Recording](/software/features/recording).
+- **Stream to your code:** WebSocket, LSL, OSC and webhooks. See [Software](/hardware/devices/pieeg-8/software).
+- **Noisy signal?** Work through [Troubleshooting](/hardware/devices/pieeg-8/troubleshooting) and [Noise elimination](/hardware/signal-quality/noise-elimination).
+
+## Video guide
+
+[![How to start with PiEEG — video](/images/hardware/2026/10/pieeg8_video.jpg)](https://youtu.be/zOxcixEGeE8)

@@ -1,0 +1,66 @@
+---
+title: "Firmware"
+description: "Update the IronBCI-32 firmware with an ST-Link programmer and STM32CubeProgrammer, or build it from source."
+---
+
+import { Steps, Callout } from 'nextra/components'
+
+# Firmware
+
+IronBCI-32 ships with firmware already installed. You only need this page if you are asked to update it, or if the board stops streaming and nothing in [Troubleshooting](/hardware/devices/ironbci-32/troubleshooting) helps.
+
+## What you need
+
+| Item | Details |
+|---|---|
+| **ST-Link V2** programmer | With its 4 jumper wires |
+| **STM32CubeProgrammer** | Free tool from STMicroelectronics: [st.com/stm32cubeprog](https://www.st.com/en/development-tools/stm32cubeprog.html) |
+| **Firmware file** | [`hex/ironbci32.hex`](https://github.com/pieeg-club/ironbci-32/tree/main/hex) |
+| **5 V USB battery** | To power the board while flashing |
+
+<Callout type="warning">
+  Flash with **no electrodes on a person**.
+</Callout>
+
+<Steps>
+
+### Wire the ST-Link
+
+Connect the ST-Link to the 4-pin programming header on the board:
+
+| ST-Link | IronBCI-32 |
+|---|---|
+| GND | GND |
+| RST | RST |
+| SWDIO | SWDIO |
+| SWCLK | SWCLK |
+
+![ST-Link wiring to IronBCI-32: GND, RST, SWDIO, SWCLK](/images/hardware/2026/10/ironbci32_stlink.jpg)
+
+### Power the board
+
+Plug the 5 V USB battery into the **Power** port, then plug the ST-Link into the computer.
+
+### Flash
+
+1. Open **STM32CubeProgrammer**, choose **ST-LINK** and click **Connect**.
+2. Open `ironbci32.hex`.
+3. Click **Download** to write it to the board.
+4. Disconnect the ST-Link and unplug the power for a few seconds.
+
+### Check
+
+Power the board again and connect the data cable. The serial port should appear and stream as before.
+
+</Steps>
+
+## Build from source
+
+The STM32H743 firmware project (Makefile, GCC Arm toolchain, OpenOCD scripts) is in [`Framework`](https://github.com/pieeg-club/ironbci-32/tree/main/Framework). It is marked as a beta. Use the ready-made `.hex` file unless you want to change the firmware.
+
+## Hardware files
+
+| Folder | Content |
+|---|---|
+| [`Electrical`](https://github.com/pieeg-club/ironbci-32/tree/main/Electrical) | KiCad schematic and PDF |
+| [`Gerber`](https://github.com/pieeg-club/ironbci-32/tree/main/Gerber) | Gerber files for PCB manufacturing (70 × 70 mm, 4 layers, 1.6 mm FR4) |

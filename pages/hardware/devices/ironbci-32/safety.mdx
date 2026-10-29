@@ -1,0 +1,45 @@
+---
+title: "Safety"
+description: "Read before using IronBCI-32 on a person: battery power for the board and the laptop, and responsible use."
+---
+
+import { Callout } from 'nextra/components'
+
+# Safety
+
+**Read this before putting electrodes on anyone.**
+
+<Callout type="warning">
+  IronBCI-32 is **not a medical device** and has not been certified by any regulator for use with the human body. It is an engineering development and evaluation board for research and education. You use it at your own risk.
+</Callout>
+
+## Rules
+
+1. **Battery only, for everything.** The board runs from a 5 V USB battery, and the laptop on the data cable must run on its own battery, **unplugged from the wall**.
+2. **No mains connection of any kind** while electrodes are on a person. No wall charger on the board, no charger on the laptop, no desktop PC, no USB hub with its own power supply.
+3. **No diagnosis.** Don't use IronBCI-32 to diagnose, monitor or treat any medical condition.
+4. **Implanted devices.** Don't use it on a person with a pacemaker or other implanted electronic device without a physician's approval.
+5. **Skin.** Use clean, intact skin. Stop if the skin becomes irritated, and clean off gel after each session.
+6. **Power pins.** Never connect anything to the AVSS / AVDD pins at the end of each header.
+7. **Exposed electronics.** The board has no case. Handle it by the edges, keep liquids away, or use a [3D-printed box](https://www.thingiverse.com/PiEEG/designs).
+
+## Power while recording
+
+| Setup | While electrodes are on | Why |
+|---|---|---|
+| **Board on a 5 V USB battery, laptop on battery** | ✅ Safe | No path to the mains. |
+| **Laptop plugged into its wall charger** | ❌ Never | The data cable links the mains to the board and the person. |
+| **Board powered from a wall USB charger** | ❌ Never | Connects the person to the mains. |
+| **Desktop computer on the data cable** | ❌ Never | A desktop is always on mains power. |
+
+<Callout type="error">
+  IronBCI-32 has **no isolation circuitry**. Full galvanic isolation from the mains depends entirely on the board **and** the laptop running from batteries.
+</Callout>
+
+## Good practice
+
+- Charge the USB battery and the laptop **before** the session, never during it.
+- Check every cable before each session. A supervisor checks the setup when students use it.
+- Clean electrodes with water after use and let them dry. Don't soak them in disinfectant or hot water.
+
+See also the general [PiEEG safety](/hardware/safety) and [liabilities](/hardware/safety/liabilities) pages.

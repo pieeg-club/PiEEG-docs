@@ -1,6 +1,12 @@
 {
-  "index": "Overview",
-  "required-equipment": "Required Equipment",
-  "Connection": "Connection",
-  "software": "Software Setup"
+  "index": "Octopus 16 Intro",
+  "required-equipment": "What's in the Box",
+  "setup": "How to Start",
+  "connections": "Pins & Placement",
+  "software": "Software",
+  "examples": "Signals & Datasets",
+  "firmware": "Firmware",
+  "specification": "Specification",
+  "troubleshooting": "Troubleshooting & Care",
+  "safety": "Safety"
 }

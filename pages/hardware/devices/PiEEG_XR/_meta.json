@@ -1,10 +1,13 @@
 {
   "index": "PiEEG XR Intro",
+  "required-equipment": "What's in the Box",
+  "setup": "How to Start",
+  "connections": "Mask & Electrodes",
+  "software": "Software",
+  "Application": "Recording During Activity",
+  "examples": "Signals & Projects",
   "Specification": "Specification",
-  "required-equipment": "Required Equipment",
-  "connections": "Connection",
-  "software": "Software Setup",
-  "Service":"Service",
-  "Application":"Application",
-   "FQA":"FQA"
+  "Service": "Firmware & Service",
+  "FQA": "Troubleshooting & FAQ",
+  "safety": "Safety"
 }

@@ -1,0 +1,45 @@
+---
+title: "Safety"
+description: "Read before using MicroBCI on a person: battery-only operation, flashing off the person, and responsible use."
+---
+
+import { Callout } from 'nextra/components'
+
+# Safety
+
+**Read this before putting electrodes on anyone.**
+
+<Callout type="warning">
+  MicroBCI is **not a medical device** and has not been certified by any regulator for use with the human body. It is an engineering development and evaluation board for research and education. You use it at your own risk.
+</Callout>
+
+## Rules
+
+1. **Battery only.** While electrodes are on a person, the Nucleo and the MicroBCI run from a small 5 V power bank.
+2. **Flash off the person.** Connect the Nucleo to a computer only to flash the firmware, with no electrodes on anyone. Unplug it before recording.
+3. **No mains connection of any kind.** No wall charger, no desk power supply, no USB cable to a computer while recording.
+4. **No diagnosis.** Don't use MicroBCI to diagnose, monitor or treat any medical condition.
+5. **Implanted devices.** Don't use it on a person with a pacemaker or other implanted electronic device without a physician's approval.
+6. **Skin.** Use clean, intact skin. Stop if the skin becomes irritated, and clean off gel after each session.
+7. **Exposed electronics.** The boards have no case. Handle them by the edges, use anti-static precautions and keep liquids away.
+
+## Power while recording
+
+| Setup | While electrodes are on | Why |
+|---|---|---|
+| **Nucleo + MicroBCI on a small 5 V power bank** | ✅ Safe | No path to the mains. |
+| **Computer or phone receiving data over Bluetooth** | ✅ Safe | No cable to the board or the person. |
+| **Nucleo plugged into a computer's USB** | ❌ Never | Links the person to the mains through the computer. |
+| **Nucleo on a wall charger** | ❌ Never | Connects the person to the mains through the electrodes. |
+
+<Callout type="error">
+  MicroBCI has **no patient isolation circuitry**. Full galvanic isolation from the mains depends entirely on running from a battery.
+</Callout>
+
+## Good practice
+
+- Charge the power bank **before** the session, never during it.
+- Check every cable before each session. A supervisor checks the setup when students use it.
+- Clean electrodes with water after use and let them dry.
+
+See also the general [PiEEG safety](/hardware/safety) and [liabilities](/hardware/safety/liabilities) pages.

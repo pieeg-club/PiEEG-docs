@@ -1,22 +1,62 @@
 ---
-title: "How to start. Connections with ardEEG"
+title: "Electrodes & Pinout"
+description: "How to connect electrodes to ardEEG, a suggested 8-channel montage, and the Arduino pins the shield uses."
 ---
 
-# How to start. Connections with ardEEG
+import { Callout } from 'nextra/components'
 
-This page explains how to physically connect your ardEEG shield, Arduino UNO R4, and electrodes before starting a recording session.
-### Step 1 — Attach the ardEEG Shield
-Align the ardEEG shield with the header pins on your Arduino UNO R4 and press it firmly into place. Make sure all pins are fully and evenly seated before powering on.
+# Electrodes & Pinout
 
+## Electrode connections
 
-### Step 2 — Connect the Electrodes
-ardEEG uses three types of electrode connections:
-- Channel Electrodes (1–8)
-- Connect 8 EEG electrodes to channels 1 through 8. Place them on the scalp according to the 10-20 system to capture the EEG signal.
-- Reference Electrode: Attach a clip electrode to one ear. This provides a stable voltage reference for all 8 channels.
-Bias Electrode: Attach a second clip electrode to the other ear. This actively cancels electromagnetic interference, reducing noise in the signal.  
+ardEEG has three kinds of electrode inputs.
 
-### Step 3 — Power On
-Connect a 5V power bank (max 1A, up to 1,000 mAh) to the Arduino UNO R4. Do not power the device from a PC USB port or mains adapter — battery power only ensures clean signal acquisition. Once powered, proceed to Software Setup to configure the firmware.
+| Input | Count | Electrode | Purpose |
+|---|---|---|---|
+| **Channels 1–8** | 8 | Dry or wet Ag/AgCl, in the cap | Each channel measures the voltage between its electrode and the reference |
+| **Reference** | 1 | Ear clip on one earlobe | The common 0 µV point that all 8 channels are measured against |
+| **Bias** | 1 | Ear clip on the other earlobe | Actively drives the body to cancel common-mode noise such as 50/60 Hz mains hum |
 
-![Image](/images/hardware/2025/05/download-3-1-300x181.jpeg)
+![ardEEG wiring: channels 1–8, reference and bias](/images/hardware/2026/10/ardeeg_connection.png)
+
+The electrode header is a standard **2.54 mm** pin header, so most EEG cables with 2.54 mm (0.1") female connectors fit. See [Cap](/hardware/accessories/cap).
+
+<Callout type="info">
+  The **reference and bias clips matter most**. A loose ear clip makes every channel noisy at once. Clean the earlobes and make sure both clips sit firmly.
+</Callout>
+
+## Suggested montage
+
+These 8 positions spread across the front, centre, sides and back of the head:
+
+| Position | Area | Good for |
+|---|---|---|
+| **F7**, **F8** | Front left and right, side | Eye movement, frontal activity |
+| **Fz** | Front centre | Blinks, attention; used for the example recordings |
+| **C3**, **C4** | Centre left and right | Motor activity (hands) |
+| **T5**, **T6** | Back left and right, side | Temporal activity |
+| **Pz** | Back centre, top | Alpha rhythm |
+
+![8-electrode arrangement on the 10-20 system, and the assembled kit](/images/hardware/2026/10/ardeeg_montage.jpg)
+
+Assign them to channels 1–8 in any order, and keep a note of which channel went where.
+
+## Arduino pinout
+
+The shield uses only these Arduino pins, plus power and ground:
+
+| Arduino pin | Signal |
+|---|---|
+| **D13** | SPI clock (SCK) |
+| **D12** | SPI MISO (data from the ADS1299) |
+| **D11** | SPI MOSI (data to the ADS1299) |
+| **D10** | Chip select |
+| **D7** | DRDY: *data ready* from the ADS1299 |
+
+![ardEEG pins on the Arduino headers](/images/hardware/2026/10/ardeeg_pinout.png)
+
+All other pins are free for your own sensors, buttons or outputs.
+
+<Callout type="info">
+  **DRDY** goes low each time a new sample is ready (250 times per second). The sketch waits for that edge, then reads 27 bytes over SPI. Details in [Specification](/hardware/devices/ardeeg/specification#data-format).
+</Callout>

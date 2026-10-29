@@ -1,80 +1,102 @@
 ---
-title: "Software Setup"
----
-import { Cards } from 'nextra/components'
-
-# Software Setup 
-
-## Software Setup Options
-
-Choose one of the following methods to install and run the **BodyPress** application:
-
-### Option A: Work Directly in VR (Recommended)
-
-Install the native VR app from the Meta Quest Store to view and analyze your bio-signal data directly inside your headset.
-
-* 📱 **App Store:** [BodyPress on Meta Quest Store](https://www.meta.com/en-gb/experiences/bodypress/1271355469389420/)
-* 🎬 **Launch Tutorial:** [How to Launch In-App (YouTube Short)](https://youtube.com/shorts/Bs9vT9CmJcE)
-* 💡 **Usage Example:** [VR Data Overlay Demo (YouTube)](https://www.youtube.com/watch?v=KBcBU8NnY2E)
-
-Example of using:    
-📱 **Play Tennis** [With PiEEG XR and BodyPress](https://www.youtube.com/watch?v=vkuwRFJJNxQ)  
-   
+title: "Software"
+description: "Software for PiEEG XR: BodyPress on Meta Quest and Android, PiEEG Cloud in the browser, PiEEG Server, and a brain-reactive VRChat avatar over OSC."
 ---
 
-### Option B: Mobile Setup (Android)
+import { Callout } from 'nextra/components'
 
-Alternatively, test and stream device data on your Android mobile device using the official Google Play application.
+# Software
 
-* 📱 **Google Play:** [BodyPress on Google Play Store](https://play.google.com/store/apps/details?id=com.bodypress.governorhq&hl=en_GB)
+PiEEG XR streams over Bluetooth LE. Pick the option that fits what you want to do.
 
+| | Best for | Runs on |
+|---|---|---|
+| **[BodyPress for Quest](#bodypress-on-meta-quest)** | Seeing your signals inside VR, VR games | Meta Quest |
+| **[BodyPress for Android](#bodypress-on-android)** | Quick tests and recording on a phone | Android |
+| **[PiEEG Cloud](#pieeg-cloud)** | Testing without a headset, dashboards, Face Trainer | Chrome or Edge |
+| **[PiEEG Server](#pieeg-server)** | Recording, LSL, OSC, WebSocket stream to any language | Windows, macOS, Linux |
+| **[VRChat avatar](#brain-reactive-vrchat-avatar)** | An avatar that reacts to your brain | PC + VRChat |
 
+The device advertises as **`PiEEG XR`**. It uses the same Bluetooth protocol as [IronBCI](/hardware/devices/ironbci/specification#ble-data-format).
 
-## 🚀 VRChat Fast start  
+## BodyPress on Meta Quest
 
-### 1. Running PiEEG XR on Meta Quest
-Learn how to deploy and configure PiEEG XR on Meta Quest. This covers hardware setup, software dependencies, and running real-time EEG processing in XR.
-* **Guide:** [PiEEG XR Meta Quest Tutorial](https://www.pieeg.com/tutorials/run-pieeg-xr-meta-quest)
-* **Video:** [YouTube Demonstration](https://www.youtube.com/watch?v=ycL2kZpIdvM)
+Install the native VR app and see your bio-signals inside the headset.
 
-### 2. Brain-Reactive VRChat Avatar (OSC Configuration)
-Configure Open Sound Control (OSC) to send real-time EEG brainwave metrics into VRChat to control avatar animations, parameters, and visual effects dynamically.
-* **Manual:** [Brain-Reactive VRChat Avatar Manual](https://www.pieeg.com/tutorials/brain-reactive-vrchat-avatar)
-* **Video:** [YouTube Setup Guide](https://www.youtube.com/watch?v=uKa9QgcLvSA&t=126s)
+- **Install:** [BodyPress on the Meta Quest Store](https://www.meta.com/en-gb/experiences/bodypress/1271355469389420/)
+- **How to launch:** [short video](https://youtube.com/shorts/Bs9vT9CmJcE)
+- **Example:** [VR data overlay](https://www.youtube.com/watch?v=KBcBU8NnY2E) · [Playing tennis with PiEEG XR](https://www.youtube.com/watch?v=vkuwRFJJNxQ)
+- **Full tutorial:** [Run PiEEG XR on Meta Quest](https://www.pieeg.com/tutorials/run-pieeg-xr-meta-quest) · [video](https://www.youtube.com/watch?v=ycL2kZpIdvM)
 
----
+## BodyPress on Android
 
+Test and stream on an Android phone: [BodyPress on Google Play](https://play.google.com/store/apps/details?id=com.bodypress.governorhq).
 
-# Device test
+## PiEEG Cloud
 
-This page is a short introduction to getting PiEEG XR running with the software. For full details, follow the linked videos below.
+You don't need a headset to try PiEEG XR.
 
-> [!NOTE]
-> You don't need a Meta Quest to try PiEEG XR — you can test it directly through the **PiEEG Server** in your browser.
+1. Open **[cloud.pieeg.com](https://cloud.pieeg.com)** in **Chrome or Edge**, with Bluetooth on.
+2. In the Session Lobby, open the **PiEEG Devices** tab and choose **PiEEG XR** (8 channels) or **PiEEG XR-16**.
+3. Pick `PiEEG XR` in the browser's Bluetooth window.
 
-## 1. Connect via the Live Demo
+Then:
 
-1. Open [pieeg.com](https://pieeg.com) and click **Try Live Demo**.
-2. Make sure **Bluetooth is turned on** on your device.
-3. Connect to the **`PiEEG XR`** device over **BLE**.
+- Watch the live data and run the blink and jaw tests.
+- Try the **band-pass filter** and other settings.
+- **Save** your data.
+- Test facial expressions in **Mini-Games → Face Trainer**.
 
-Once connected, live data begins streaming.
+Videos: [quick test and data quality](https://www.youtube.com/watch?v=khi54mGcJUk) · [Face Trainer](https://www.youtube.com/watch?v=g-XgVWwQzwE)
 
-## 2. Test the Signal
+## PiEEG Server
 
-1. Put the mask on your face.
-2. Watch the incoming data and run a few simple tests — **blinking** and **chewing** produce clear, visible signals.
-3. Experiment with the **band-pass filter** and other settings.
-4. **Save your data**, or test facial mimics through the built-in **mini-games**.
+PiEEG Server connects to PiEEG XR over Bluetooth on a PC and adds recording, LSL, OSC and a WebSocket stream. Use the IronBCI driver, which also finds PiEEG XR units:
 
-> [!TIP]
-> To test mimics, open **Mini-Games** and choose **Face Trainer**.
+```bash
+pip install "pieeg-server[ironbci]"
 
-<Cards>
-  <Cards.Card title="Video: Software quick test & data quality" href="https://www.youtube.com/watch?v=khi54mGcJUk" />
-  <Cards.Card title="Video: Face Trainer" href="https://www.youtube.com/watch?v=g-XgVWwQzwE" />
-</Cards>
+pieeg-server --device ironbci8                                   # scan and connect
+pieeg-server --device ironbci8 --ble-name "PiEEG XR"             # pick it by name
+pieeg-server --device ironbci8 --ble-address AA:BB:CC:DD:EE:FF   # skip the scan
+```
 
-## Learn More
+Dashboard: **http://localhost:1617**. More: [IronBCI software](/hardware/devices/ironbci/software#pieeg-server) · [Configuration](/software/getting-started/configuration#ble-options-ironbci).
 
-Full software documentation is on the [PiEEG Software page](#).
+<Callout type="info">
+  PiEEG Server's IronBCI driver reads **8 channels**. For a 16-channel PiEEG XR-16, use PiEEG Cloud.
+</Callout>
+
+## Brain-reactive VRChat avatar
+
+Send your EEG band powers to VRChat over OSC and let them move your avatar (ears, tail, effects).
+
+```
+ PiEEG XR ─BLE─► PiEEG Server (PC) ─OSC, UDP 9000─► VRChat ─► avatar animator
+```
+
+**1. Start PiEEG Server with OSC**
+
+```bash
+pieeg-server --device ironbci8 --osc
+```
+
+It sends five float parameters (0–1, normalised) to VRChat on UDP port 9000:
+
+| OSC address | Band |
+|---|---|
+| `/avatar/parameters/EEG_Delta` | 0.5–4 Hz |
+| `/avatar/parameters/EEG_Theta` | 4–8 Hz |
+| `/avatar/parameters/EEG_Alpha` | 8–13 Hz (relaxed, the easiest to control) |
+| `/avatar/parameters/EEG_Beta` | 13–30 Hz |
+| `/avatar/parameters/EEG_Gamma` | 30–100 Hz |
+
+**2. Enable OSC in VRChat:** Action Menu → **OSC** → **Enabled**. **OSC Debug** shows the incoming values.
+
+**3. Add the parameters to your avatar** in Unity: add the five `EEG_*` floats to the avatar's Expression Parameters and Animator, then drive an animation (for example a blend tree on `EEG_Alpha`). For ears or a tail, set a PhysBone's **Parameter** field to `EEG_Alpha`.
+
+<Callout type="info">
+  OSC is a PC feature. On a Meta Quest, run VRChat on the PC through **Air Link** or **Steam Link**.
+</Callout>
+
+Full guides: [Brain-reactive VRChat avatar](https://www.pieeg.com/tutorials/brain-reactive-vrchat-avatar) · [video](https://www.youtube.com/watch?v=uKa9QgcLvSA) · [step-by-step manual (Word)](https://github.com/pieeg-club/PiEEG_XR_Hardware/tree/main/Docs) · [VRChat OSC reference](/software/integrations/vrchat-osc)

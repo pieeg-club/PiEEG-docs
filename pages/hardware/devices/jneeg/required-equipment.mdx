@@ -1,19 +1,49 @@
 ---
-title: "What need equipment except JNEEG"
+title: "What's in the Box"
+description: "Contents of the JNEEG package and the extra items you need: Jetson Nano, power bank, electrodes, cap, monitor and peripherals."
 ---
 
-# Required Equipment
+import { Callout } from 'nextra/components'
 
-To start measuring Bio Data with PiEEG, it is necessary to have the following parts:
+# What's in the Box
 
-- Power Bank: A 5V power bank with a minimum output current of 3A and a capacity of no more than 10,000 mAh. See the Power Bank page for full requirements and recommendations.
+## Included
 
-- Peripherals: A USB keyboard and USB mouse to interact with the Raspberry Pi desktop.
+| Item | Details |
+|---|---|
+| **1 × JNEEG shield** | 8-channel ADS1299 board with low-noise voltage regulators, a status LED, a 40-pin header for the Jetson Nano and a 2.54 mm electrode header |
 
-- Display: A portable monitor or screen. Power it directly from the power bank using a USB cable.
+![JNEEG shield: ADS1299, low-noise regulators, status LED and 40-pin header](/images/hardware/2026/10/jneeg_pinout.png)
 
--  Jetson Nano: Jetson Nano (with mciroSD card, connection to power bank)
+## Not included
 
-- EEG cap: A cap to hold the electrodes in position on the scalp. See the Cap page for options including the recommended PiEEG nylon cap and DIY instructions.
+| Item | Requirements | More |
+|---|---|---|
+| **NVIDIA Jetson Nano Developer Kit** | With a microSD card (32 GB or more) and NVIDIA's JetPack image | [How to Start](/hardware/devices/jneeg/setup) |
+| **5 V power bank** | 5 V, at least **3 A**, capacity up to 10,000 mAh. Powers the Jetson, the shield and the monitor. | [Power bank](/hardware/accessories/power-bank) |
+| **Electrodes** | 8 EEG electrodes (dry or wet Ag/AgCl) with 2.54 mm connectors, plus **2 ear-clip electrodes** for reference and bias | [Electrodes](/hardware/accessories/electrodes) |
+| **EEG cap** | Holds the electrodes on the scalp (10-20 system) | [Cap](/hardware/accessories/cap) |
+| **Monitor** | Portable monitor powered from the power bank or the Jetson, never from a wall socket | [Safety](/hardware/devices/jneeg/safety) |
+| **Keyboard and mouse** | Wired USB. Wireless devices add radio noise. | [Noise elimination](/hardware/signal-quality/noise-elimination) |
+| **Conductive gel** | Only for wet electrodes | [Electrodes](/hardware/accessories/electrodes) |
 
-- Electrodes: 8 EEG electrodes (dry or Ag/AgCl wet) with cables, plus 2 clip electrodes for the reference and bias connections. See the Electrodes page for compatible types.
+![JNEEG kit: 1 JNEEG on the Jetson Nano, 2 ear-clip electrodes, 3 EEG cap, 4 power bank](/images/hardware/2026/10/jneeg_kit.jpg)
+
+<Callout type="info">
+  **Headless option:** skip the monitor, keyboard and mouse and open the PiEEG Server dashboard from a laptop on the same network. The laptop must run **on battery** and must never be cabled to the Jetson or the electrodes.
+</Callout>
+
+<Callout type="warning">
+  **Battery only.** Every device cabled to the JNEEG (the Jetson, the monitor, the keyboard) must run from the power bank. Never use the Jetson's wall power supply while electrodes are on a person.
+</Callout>
+
+## Checklist
+
+- [ ] JNEEG shield
+- [ ] Jetson Nano with JetPack on a microSD card
+- [ ] Charged 5 V / 3 A power bank and a short, thick USB cable
+- [ ] 8 electrodes and 2 ear clips
+- [ ] EEG cap (and gel if you use wet electrodes)
+- [ ] Battery-powered monitor, wired keyboard and mouse (or a battery-powered laptop for headless use)
+
+Next: [How to Start](/hardware/devices/jneeg/setup)

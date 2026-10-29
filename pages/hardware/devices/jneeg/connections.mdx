@@ -1,25 +1,63 @@
 ---
-title: "How to start. Connections with JNEEG"
+title: "Electrodes & Pinout"
+description: "How to connect electrodes to JNEEG, a suggested 8-channel montage, and the Jetson Nano header pins the shield uses."
 ---
 
-This page explains how to physically connect your JNEEG shield, Jetson Nano, and electrodes before starting a recording session.
+import { Callout } from 'nextra/components'
 
-### Step 1 — Attach the JNEEG Shield  
-Align the JNEEG shield with the 40-pin GPIO header on your Jetson Nano and press it firmly into place. Make sure all pins are seated correctly before powering on.  
-### Step 2 — Connect the Electrodes
-JNEEG uses three types of electrode connections:  
-- Channel Electrodes (1–8)  
-  Connect 8 EEG electrodes to channels 1 through 8. These are placed on the scalp according to the 10-20 system and capture the EEG signal.  
-- Reference Electrode  
-  Attach a clip electrode to one ear. This provides a stable voltage reference for all 8 channels.  
-- Bias Electrode  
-  Attach a second clip electrode to the other ear. This actively cancels electromagnetic interference from the signal, reducing noise.  
+# Electrodes & Pinout
 
-Refer to the connection diagram image above for the exact pin positions of each electrode on the JNEEG connector header.  
+## Electrode connections
 
-### Step 3 — Power On  
-Connect your power bank to the Jetson Nano.
+JNEEG has three kinds of electrode inputs.
 
+| Input | Count | Electrode | Purpose |
+|---|---|---|---|
+| **Channels 1–8** | 8 | Dry or wet Ag/AgCl, in the cap | Each channel measures the voltage between its electrode and the reference |
+| **Reference** | 1 | Ear clip on one earlobe | The common 0 µV point that all 8 channels are measured against |
+| **Bias** | 1 | Ear clip on the other earlobe | Actively drives the body to cancel common-mode noise such as 50/60 Hz mains hum |
 
+![JNEEG: electrodes, reference and bias on the 2.54 mm header; ADS1299, regulators, status LED and 40-pin header](/images/hardware/2026/10/jneeg_pinout.png)
 
-![Image](/images/hardware/2025/05/download-1-300x120.jpeg)
+The electrode header is a standard **2.54 mm** pin header (marked **1-8 Elec**), so most EEG cables with 2.54 mm female connectors fit. See [Cap](/hardware/accessories/cap).
+
+<Callout type="info">
+  The **reference and bias clips matter most**. A loose ear clip makes every channel noisy at once. Clean the earlobes and make sure both clips sit firmly.
+</Callout>
+
+## Suggested montage
+
+Place the electrodes on the 10-20 system. This layout is the same as the PiEEG-8 default, so recordings can be compared:
+
+| Channel | Position | Area | Good for |
+|---|---|---|---|
+| 1 | **Fp1** | Front left | Blinks, eye movement |
+| 2 | **Fp2** | Front right | Blinks, eye movement |
+| 3 | **C3** | Centre left | Motor activity (right hand) |
+| 4 | **C4** | Centre right | Motor activity (left hand) |
+| 5 | **P7** | Back left, side | Parietal and temporal activity |
+| 6 | **P8** | Back right, side | Parietal and temporal activity |
+| 7 | **O1** | Back left | Alpha rhythm, vision |
+| 8 | **O2** | Back right | Alpha rhythm, vision |
+
+![International 10-20 electrode positions](/images/hardware/2024/08/New-Bitmap-Image-264x300.jpg)
+
+You can use any other positions. Keep a note of which channel went where.
+
+## Jetson Nano pinout
+
+The shield talks to the Jetson Nano over **SPI** (`spi1` in `jetson-io`, which appears as `/dev/spidev0.0`). It uses these pins on the 40-pin header:
+
+| Header pin | Signal | Direction |
+|---|---|---|
+| **19** | SPI MOSI | Jetson → ADS1299 |
+| **21** | SPI MISO | ADS1299 → Jetson |
+| **23** | SPI SCK | Jetson → ADS1299 |
+| **24** | SPI CS0 (chip select) | Jetson → ADS1299 |
+| **7** | DRDY (data ready) | ADS1299 → Jetson |
+
+The shield also takes its power and ground from the header.
+
+<Callout type="info">
+  **DRDY** goes low each time a new sample is ready (250 times per second). The Python scripts read it as **board pin 7** with `Jetson.GPIO`. PiEEG Server reads it as line **216** on `/dev/gpiochip0`.
+</Callout>

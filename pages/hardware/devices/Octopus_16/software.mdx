@@ -1,31 +1,115 @@
 ---
-title: "How to start. Software with Octopus 16"
+title: "Software"
+description: "Software for Octopus 16: PiEEG Cloud, the octoBridge classroom lab, the octoWatch Garmin app, the JavaScript SDK and the Python SDK for live view and recording."
 ---
 
-### Step 1 — Upload Firmware
-Connect the ESP-32 S3 via USB-C to your computer and upload firmware via the next link        
-https://firmware.pieeg.com/  
-![Image](/images/hardware/2026/01/octopos_1.jpg)
+import { Callout } from 'nextra/components'
 
-###  Step 2: PiEEG-Server 
-Octopus 16  integrated to pieeg -server.  
-Open the PiEEG website pieeg.com and run the PiEEG server with  Octopus 16
+# Software
 
-### Classroom lab — octoBridge
+Octopus 16 streams over Bluetooth LE, so it works straight from a browser tab or your wrist. Pick the option that fits what you want to do.
 
-For the browser classroom lab (Octopus-16 over Bluetooth, plus the octoBio Kit over USB), open **[octobridge.pieeg.com](https://octobridge.pieeg.com/)**. Docs: [octoBridge](/software/octobridge).
+| | Best for | Runs on | Install |
+|---|---|---|---|
+| **[PiEEG Cloud](#pieeg-cloud)** | Dashboards, spectra, experiences, Buddy AI | Chrome or Edge | None |
+| **[octoBridge](#octobridge)** | Classrooms, block programs, the OctoBio Kit | Chrome or Edge | None |
+| **[octoWatch](#garmin-smartwatch-app--octowatch)** | Live wrist EEG scope, readiness HUD & 10–20 fit guide | Garmin smartwatches | [Connect IQ Store](https://apps.garmin.com/apps/8e994535-c853-45ca-abe3-ccef61119c8b) |
+| **[JavaScript SDK](#javascript-sdk)** | Your own web app | Chrome or Edge | One script |
+| **[Python SDK](#python-sdk)** | Live view with heatmap and FFT, recording to Excel | Windows, macOS, Linux | `pip install bleak` |
 
-### Garmin Smartwatch App — octoWatch
+All of them connect to a board flashed with the official firmware, which appears as **`Octopus-16-XXXX`**. First time? See [Firmware](/hardware/devices/Octopus_16/firmware).
+
+## Garmin Smartwatch App — octoWatch
 
 Stream and visualize live 16-channel 250 SPS EEG from Octopus-16 directly on your Garmin watch (Venu, fēnix, epix, Forerunner, vívoactive) over Bluetooth Low Energy:
 - **Garmin Connect IQ Store:** [https://apps.garmin.com/apps/8e994535-c853-45ca-abe3-ccef61119c8b](https://apps.garmin.com/apps/8e994535-c853-45ca-abe3-ccef61119c8b)
 - **Documentation & Fit Guide:** [octoWatch](/software/octowatch)
 
-![Image](/images/hardware/2026/01/octopos_2.jpg)
+## PiEEG Cloud
 
+1. Open **[cloud.pieeg.com](https://cloud.pieeg.com)** in **Chrome or Edge**.
+2. In the Session Lobby, open the **PiEEG Devices** tab and choose **Octopus 16**.
+3. Pick `Octopus-16-XXXX` in the browser's Bluetooth window.
 
-## 📹 Video Tutorial
-Watch how to set up and start using the Octopus 16:
+![PiEEG Cloud Session Lobby with Octopus 16](/images/hardware/2026/10/octopus16_cloud.jpg)
 
-[![Octopus 16. Start measure EEG](https://img.youtube.com/vi/Yz7GLRGZNk8/0.jpg)](http://www.youtube.com/watch?v=Yz7GLRGZNk8)  
-*Click the image above to watch the video on YouTube: [Octopus 16. Start measure EEG](http://www.youtube.com/watch?v=Yz7GLRGZNk8)*   
+You get live waveforms, spectra, topographic maps, recording and playback, plus the [Live Lab](/cloud/live-lab), [experiences](/software/features/experiences) and [Buddy AI](/cloud/buddy). Processing runs in your browser. More: [PiEEG Cloud](/cloud).
+
+## octoBridge
+
+The classroom lab at **[octobridge.pieeg.com](https://octobridge.pieeg.com/)**. Connect the Octopus 16 (and, optionally, the OctoBio Kit's Arduino board), watch live readings and build block programs.
+
+| Reading | Meaning |
+|---|---|
+| **Band power** | δ θ α β γ, relative (share of total power) |
+| **Focus** | Uncalibrated index, Beta / (Beta + Theta) |
+| **Relax** | Uncalibrated index, Alpha / (Alpha + Beta) |
+| **RMS** | Signal size in µV |
+| **EEG ok** | Green when RMS is between 2 and 200 µV |
+
+More: [octoBridge](/software/octobridge) · [OctoBio Kit lessons](/hardware/devices/OctoBio_Kit/lessons).
+
+## JavaScript SDK
+
+`pieeg.js` connects to Octopus 16 from your own web page, with filtering and band power built in.
+
+```js
+const eeg = new PiEEG();
+eeg.onBandPowers((p) => console.log('Alpha', p.Alpha, 'Beta', p.Beta));
+
+button.addEventListener('click', async () => {         // must be a click handler
+  const info = await eeg.connectBLE({ device: 'octopus-16' });
+  console.log(`${info.deviceName}: ${info.channels} ch @ ${info.sampleRate} Hz`);
+});
+```
+
+More: [JavaScript SDK](/software/api/javascript-sdk).
+
+## Python SDK
+
+Scripts built on [`bleak`](https://github.com/hbldh/bleak), in the [Octopus_16 repository](https://github.com/pieeg-club/Octopus_16).
+
+```bash
+pip install bleak matplotlib numpy scipy openpyxl pandas
+git clone https://github.com/pieeg-club/Octopus_16.git
+cd Octopus_16
+```
+
+### Live view: `GUI/SDK_Data_Visual.py`
+
+16 live channels, a heatmap and an FFT with the EEG bands marked.
+
+```bash
+python GUI/SDK_Data_Visual.py                      # find the board and stream
+python GUI/SDK_Data_Visual.py --scan               # list nearby Bluetooth devices
+python GUI/SDK_Data_Visual.py --save data.csv      # also save to CSV
+python GUI/SDK_Data_Visual.py --notch 60           # 60 Hz mains (default 50)
+python GUI/SDK_Data_Visual.py --window 6           # 6-second window (default 4)
+python GUI/SDK_Data_Visual.py --demo               # synthetic data, no board
+```
+
+The script finds the board by its Bluetooth **service UUID**, so it works whatever name the board advertises.
+
+[Python SDK demo video](https://www.youtube.com/watch?v=OMOJHC0NXXE)
+
+### Recorder: `Dataset/Visualisation.py`
+
+Records a set number of seconds of raw 16-channel data and saves it to Excel.
+
+```bash
+python Dataset/Visualisation.py --duration 30 --out my_session.xlsx
+python Dataset/Visualisation.py --demo                                # no board
+```
+
+### Analysis: `Dataset/FFT.py`
+
+Band-pass filters one channel of a saved file (1–30 Hz) and plots its spectrum. Set the file and channel at the top of the script.
+
+<Callout type="info">
+  On macOS, allow your terminal (or Python) to use Bluetooth: **System Settings → Privacy & Security → Bluetooth**. On Linux, make sure the Bluetooth service is running (`sudo systemctl start bluetooth`).
+</Callout>
+
+## Next
+
+- [Signals & Datasets](/hardware/devices/Octopus_16/examples): sample recordings and datasets
+- [Specification](/hardware/devices/Octopus_16/specification): BLE protocol, packet format and µV conversion

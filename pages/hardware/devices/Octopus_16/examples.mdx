@@ -1,0 +1,52 @@
+---
+title: "Signals & Datasets"
+description: "Real recordings made with Octopus 16 — a blink test over Fp and an alpha test over Pz — and the open datasets."
+---
+
+import { Callout } from 'nextra/components'
+
+# Signals & Datasets
+
+What real Octopus 16 recordings look like, and open data to practise with. All recordings use the built-in dry pogo pins at 250 samples per second.
+
+## Example signals
+
+### Blinking test, sensor over Fp
+
+Sensor on the forehead. The top plot is the raw signal, with its slow drift. The bottom plot is the same signal after a band-pass filter: each blink is a clear spike.
+
+![Blink test with Octopus 16 over Fp: raw and filtered](/images/hardware/2026/10/octopus16_blink.png)
+
+### Alpha test, sensor over Pz
+
+Eyes closed, sensor on the top-back of the head. The spectrum shows a peak in the alpha band (8–13 Hz).
+
+![Alpha test with Octopus 16 over Pz](/images/hardware/2026/10/octopus16_alpha.jpg)
+
+<Callout type="info">
+  Blinks and jaw clenches are muscle, not brain activity. Learn to recognise them before you analyse anything.
+</Callout>
+
+## Datasets
+
+In the [`Dataset`](https://github.com/pieeg-club/Octopus_16/tree/main/Dataset) folder of the Octopus 16 repository. Each file has a **Raw data** sheet and an **Info** sheet.
+
+| File | Content | Size |
+|---|---|---|
+| `Blinking_Fp.xlsx` | Blinking, sensor over Fp | 2,503 samples (about 10 s), 16 channels |
+| `closed_eys_Pz.xlsx` | Eyes closed, sensor over Pz | 2,503 samples (about 10 s), 16 channels |
+| `open_yeys_Pz.xlsx` | Eyes open, sensor over Pz | 2,503 samples (about 10 s), 16 channels |
+
+**Columns:** `Time (s)`, `Counter` (packet counter, 0–255), `CH1`…`CH16`.
+
+<Callout type="info">
+  The channel values are **raw ADC counts**, not µV. Multiply by about **0.0358** to get µV. See [Specification](/hardware/devices/Octopus_16/specification#converting-to-microvolts).
+</Callout>
+
+**Try it:** compare `closed_eys_Pz.xlsx` with `open_yeys_Pz.xlsx`. The eyes-closed file should show more power at 8–13 Hz. [`FFT.py`](https://github.com/pieeg-club/Octopus_16/blob/main/Dataset/FFT.py) plots the spectrum of one channel.
+
+## Projects
+
+- **Classroom lessons:** one condition, one action, for example "eyes closed → LED on". See [OctoBio Kit lessons](/hardware/devices/OctoBio_Kit/lessons).
+- **Neurofeedback game controller:** the ESP32-S3 firmware in the repository can also act as a Bluetooth or USB **gamepad**, turning EEG features into joystick movement. See [Firmware](/hardware/devices/Octopus_16/firmware#build-from-source).
+- **Your own web app:** use the [JavaScript SDK](/software/api/javascript-sdk) with `device: 'octopus-16'`.

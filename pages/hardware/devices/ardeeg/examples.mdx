@@ -1,0 +1,58 @@
+---
+title: "Signals & Datasets"
+description: "Real recordings made with ardEEG and dry electrodes — alpha test, chewing and blinking artifacts, internal noise — and the open datasets."
+---
+
+import { Callout } from 'nextra/components'
+
+# Signals & Datasets
+
+What real ardEEG recordings look like, and open data to practise with. All recordings were made at 250 samples per second.
+
+## Example signals
+
+### EEG: alpha test
+
+Dry electrode at **Fz**, eyes closed and open in turn. The signal is filtered to 8–12 Hz, so the alpha rhythm shows as bigger waves in the "closed" periods.
+
+![Alpha test with ardEEG: eyes closed and open](/images/hardware/2026/10/ardeeg_alpha.png)
+
+### EEG: chewing and blinking artifacts
+
+Dry electrode at **Fz**. Chewing 4, 3, 2 and 1 times, then blinking 4, 3, 2 and 1 times. Filtered to 1–40 Hz. These large spikes come from muscles and eye movement, not the brain.
+
+![Chewing and blinking artifacts recorded with ardEEG](/images/hardware/2026/10/ardeeg_artifacts.png)
+
+<Callout type="info">
+  Learn to recognise artifacts before you analyse anything. Remove or mark them before computing band power or training a model.
+</Callout>
+
+### Internal noise
+
+The board's own noise, with no person connected. Each channel stays within a few µV: about **0.5 µV RMS** (3–4 µV peak-to-peak) on most channels once the signal has settled.
+
+![ardEEG internal noise on 8 channels](/images/hardware/2026/10/ardeeg_noise.png)
+
+### 8 channels live
+
+![8 channels in the Python receiver](/images/hardware/2026/10/ardeeg_8ch.jpg)
+
+## Datasets
+
+In the [`dataset`](https://github.com/Ildaron/ardEEG/tree/main/dataset) folder of the ardEEG repository. Values in µV, 250 SPS.
+
+| Folder | File | Content | Size |
+|---|---|---|---|
+| `alpha` | `Alpha.xlsx` | Eyes closed and open, dry electrode at Fz | 1 channel, 8,998 samples (about 36 s) |
+| `artefacts` | `artefacts.xlsx` | Chewing and blinking 4-3-2-1 times, dry electrode at Fz | 1 channel, 5,199 samples (about 21 s) |
+| `internal_noise` | `internal_noise.xlsx` | Internal noise test | 8 channels, 1,700 samples (about 7 s) |
+
+The `alpha` and `artefacts` folders each have a `plot.py` script that filters and plots the data.
+
+<Callout type="info">
+  Raw values carry a large DC offset (tens of thousands of µV for the electrode recordings). That is normal. Apply a band-pass filter before looking at EEG.
+</Callout>
+
+## Projects
+
+ardEEG leaves the Arduino's other pins free, so the same board that reads your brain can drive LEDs, motors or a buzzer, or talk to other devices. Ideas: an LED that lights when alpha rises, a toy car steered by blinks, or a robotic arm controlled by jaw clenches.

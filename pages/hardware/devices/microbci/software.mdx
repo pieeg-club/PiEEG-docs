@@ -1,25 +1,104 @@
 ---
 title: "Software"
+description: "Software for MicroBCI: the Python BLE SDK for live graphs and saving data, the Android app, PiEEG Cloud and PiEEG Server."
 ---
+
+import { Callout } from 'nextra/components'
 
 # Software
 
-### Easy start
+MicroBCI streams over Bluetooth LE with the **same protocol as IronBCI**, so it works with all of these:
 
-First, upload the [.hex](https://github.com/pieeg-club/MicroBCI/blob/main/Framework/Micro_BCI.hex) file and the [Stack](https://github.com/pieeg-club/MicroBCI/blob/main/Framework/stm32wb5x_BLE_Stack_full_fw.bin)
+| | Best for | Runs on | Install |
+|---|---|---|---|
+| **[Python SDK](#python-sdk)** | Live graphs, saving to Excel, your own processing | Windows, macOS, Linux | `pip install bleak` |
+| **[Android app](#android-app)** | Mobile demos and recording | Android | One APK |
+| **[PiEEG Cloud](#pieeg-cloud)** | Dashboards, spectra, experiences | Chrome or Edge | None |
+| **[PiEEG Server](#pieeg-server)** | Recording, LSL, OSC, WebSocket stream | Windows, macOS, Linux | `pip` |
 
-to the Nucle Board via the Micro USB cable Via [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
+The board must have the Bluetooth stack and firmware installed first. See [Firmware](/hardware/devices/microbci/firmware).
 
-Step-by-Step Manual in this [Video](https://youtu.be/crqOmnJ3Hjg)
+## Python SDK
 
-Step-by-Step pdf Paper Manual in this [link](https://github.com/pieeg-club/MicroBCI/blob/main/Manuals/Micro_BCI_How_To_Start.pdf)
+Scripts built on [`bleak`](https://github.com/hbldh/bleak), in [`SDK/GUI`](https://github.com/pieeg-club/MicroBCI/tree/main/SDK/GUI).
 
-### Signal Processing
+| Script | What it does |
+|---|---|
+| `1.GUI.py` | Live graph of all 8 channels, raw |
+| `1.1_GUI.py` | Live graph with a **1–40 Hz band-pass** filter (recommended) |
+| `2.Save_data.py` | Finds the board by name and saves **2,000 samples** (8 s) to `eareeg_data.xlsx` |
+| `2.1_Save_data.py` | Connects by address and saves **10,000 samples** (40 s) to `EEG_datas.xlsx` |
 
-[SDK](https://github.com/pieeg-club/MicroBCI/tree/main/Mobile_SDK) for Mobile Phone
+```bash
+pip install bleak matplotlib numpy scipy pandas openpyxl
+git clone https://github.com/pieeg-club/MicroBCI.git
+cd MicroBCI/SDK/GUI
+python 1.1_GUI.py
+```
 
-[SDK](https://github.com/pieeg-club/MicroBCI/tree/main/SDK) for Python script
+### Find your board's address
 
-### Dataset
+The GUI scripts connect to a fixed Bluetooth address written at the top of the file:
 
-Samples can be found [here](https://github.com/pieeg-club/MicroBCI/tree/main/Dataset) Dry Electrodes, without Gel
+```python
+address = "00:80:E1:27:96:0B"     # change to your board's address
+```
+
+To find yours, run this once with the board powered:
+
+```python
+import asyncio
+from bleak import BleakScanner
+
+async def main():
+    for d in await BleakScanner.discover(timeout=8):
+        print(d.address, d.name)
+
+asyncio.run(main())
+```
+
+Look for the board (usually named `EAREEG`). On macOS, `bleak` shows a UUID instead of a MAC address: use that.
+
+### Analyse saved data
+
+[`SDK/For_dataset`](https://github.com/pieeg-club/MicroBCI/tree/main/SDK/For_dataset) has two scripts for recordings:
+
+| Script | What it does |
+|---|---|
+| `1.Band_pass.py` | Band-pass filter and plot the channels of a CSV file |
+| `2.Band_pass_and_Wavelet.py` | Band-pass filter plus a wavelet view, for the alpha test (needs `pip install PyWavelets`) |
+
+Set the file name at the top of each script.
+
+## Android app
+
+An open-source Android app (MIT licence) for live viewing and recording.
+
+1. Download [`mobile_sdk_Micro_BCI.apk`](https://github.com/pieeg-club/MicroBCI/tree/main/Mobile_SDK) and install it (allow installs from this source when Android asks).
+2. In **settings**, choose **8 ch**.
+3. Connect to the board and watch the signal.
+4. Press **Save** to record and **Stop** to finish, then send the file any way you like.
+
+The Flutter source is in `EEG-Flutter-App-master_Micro_BCI.zip` in the same folder.
+
+## PiEEG Cloud
+
+1. Open **[cloud.pieeg.com](https://cloud.pieeg.com)** in **Chrome or Edge**.
+2. In the Session Lobby, open the **PiEEG Devices** tab and choose **IronBCI**.
+3. Pick the board in the browser's Bluetooth window.
+
+More: [PiEEG Cloud](/cloud).
+
+## PiEEG Server
+
+```bash
+pip install "pieeg-server[ironbci]"
+pieeg-server --device ironbci8                                   # scan and connect
+pieeg-server --device ironbci8 --ble-address 00:80:E1:XX:XX:XX   # connect by address
+```
+
+Dashboard at **http://localhost:1617**. More: [IronBCI software](/hardware/devices/ironbci/software#pieeg-server).
+
+<Callout type="info">
+  On macOS, allow your terminal (or Python) to use Bluetooth: **System Settings → Privacy & Security → Bluetooth**.
+</Callout>

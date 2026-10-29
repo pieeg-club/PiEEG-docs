@@ -1,27 +1,108 @@
 ---
-title: "PiEEG-16"
+title: "PiEEG-16 Intro"
+description: "PiEEG-16 — an open-source 16-channel Raspberry Pi shield for measuring EEG, EMG and ECG, built on two TI ADS1299 chips."
 ---
 
+import { Cards, Callout } from 'nextra/components'
+
 # PiEEG-16
-PiEEG-16 is the expanded version of the original PiEEG shield, doubling the channel count from 8 to 16. It connects directly to the Raspberry Pi GPIO header and uses two ADS1299 analog front-end chips in daisy-chain configuration to deliver 16 channels of high-quality biosignal data in real time.  
-This makes PiEEG-16 well suited for full-coverage EEG recordings, higher-density EMG setups, and research applications that require more electrode positions than the 8-channel PiEEG can provide.  
-Captured data is streamed, recorded, and processed by the PiEEG Server software, which exposes it over WebSocket, LSL, OSC, and webhooks — with a built-in browser dashboard included.  
 
-Key Features:
-- 16 channels of simultaneous biosignal acquisition
-- Supports EEG, EMG, and ECG measurements
-- Connects directly to the Raspberry Pi GPIO header
-- Dual ADS1299 analog front-end chips in daisy-chain configuration
-- Compatible with dry and Ag/AgCl wet electrodes via 2.54 mm pin pitch connectors
-- Works with the PiEEG Server for real-time streaming, recording, and integrations
+**16 channels of EEG on a Raspberry Pi.**
 
-## How It Differs from PiEEG
+PiEEG-16 is an open-source shield that plugs straight onto the Raspberry Pi 40-pin header and turns it into a 16-channel brain-computer interface. Two Texas Instruments **ADS1299** chips read up to 16 channels of biosignals (EEG, EMG and ECG), and the Pi streams, records and processes the data in real time. Hardware, SDK and server software are all open source.
 
-| Feature | PiEEG | PiEEG-16 |
-| :--- | :--- | :--- |
+![PiEEG-16 shield mounted on a Raspberry Pi](/images/hardware/2026/10/pieeg16_on_pi.jpg)
+
+<Callout type="warning">
+  PiEEG-16 is **not a medical device**. It is a tool for research, education and engineering. Run it **from a 5 V battery only**, never from the mains. Read [Safety](/hardware/devices/pieeg-16/safety) before the first recording.
+</Callout>
+
+## At a glance
+
+| | |
+|---|---|
+| **Channels** | 16 biosignal inputs, plus reference and bias |
+| **Converters** | 2 × TI ADS1299, 24-bit, 8 channels each |
+| **Sample rate** | 250 SPS (default) |
+| **Signals** | EEG, EMG, ECG |
+| **Host** | Raspberry Pi 4 or Raspberry Pi 5 |
+| **Link to the Pi** | SPI0 on the 40-pin GPIO header, one chip-select and one DRDY line per chip |
+| **Electrodes** | Dry or wet Ag/AgCl, 2.54 mm headers |
+| **Software** | PiEEG Server (default device), Python SDK |
+| **Power** | 5 V battery (power bank) only |
+
+## How it works
+
+Two converters, one shield, one Raspberry Pi, all on battery power.
+
+```
+ Electrodes 1–8  ─► ADS1299 #1 ─┐
+ Electrodes 9–16 ─► ADS1299 #2 ─┼─SPI─► Raspberry Pi ─► PiEEG Server
+ Reference + bias (ear clips) ──┘       4 or 5            │
+                                          ▲               ├ dashboard :1617
+                  5 V power bank ─────────┘               ├ WebSocket :1616
+                                                          └ CSV · LSL · OSC
+```
+
+1. **Measure:** each ADS1299 digitises its 8 channels at the same moment, 250 times per second.
+2. **Transfer:** the Pi reads chip 1, then chip 2, over the same SPI bus, each when its *data ready* line signals.
+3. **Use:** PiEEG Server joins the two halves into one 16-channel frame, filters it, shows it in the browser and streams it to your own code.
+
+![PiEEG-16 with a 16-electrode cap](/images/hardware/2026/10/pieeg16_setup.jpg)
+
+## PiEEG-16 or PiEEG-8?
+
+| | PiEEG-8 | PiEEG-16 |
+|---|---|---|
 | **Channels** | 8 | 16 |
-| **ADS1299 chips** | 1 | 2 (daisy-chain) |
-| **Use case** | General BCI, research | High-density EEG, research |
-| **Form factor** | Raspberry Pi shield | Raspberry Pi shield |
+| **ADS1299 chips** | 1 | 2 |
+| **Head coverage** | Key areas (front, centre, back) | Full 10-20 coverage |
+| **PiEEG Server** | `--device pieeg8` | `--device pieeg16` (default) |
+| **BrainFlow** | Yes (`PIEEG_BOARD`) | No |
+| **Best for** | Getting started, focused experiments | Mapping activity across the head, research |
 
-![PiEEG measure 16 channels EEG with RAspberryPI](/images/hardware/2024/08/PiEEG-16_3-300x300.jpg)
+See [PiEEG-8](/hardware/devices/pieeg-8) for the 8-channel version.
+
+## What you can measure
+
+| Signal | What it shows | Typical first test |
+|---|---|---|
+| **EEG** | Brain rhythms across the whole head: delta, theta, alpha, beta, gamma | Close your eyes and watch alpha (8–13 Hz) rise at the back of the head |
+| **EMG** | Muscle activity | Clench the jaw or a fist |
+| **ECG** | Heart activity | Electrodes on the chest or wrists |
+
+See real recordings in [Signals & Datasets](/hardware/devices/pieeg-16/examples).
+
+## Where it's used
+
+Read signals from the brain, process them on the Pi, and control something in the real world: a robotic arm, a computer, an exoskeleton, a drone or a toy car.
+
+![PiEEG-16 applications: robotic arm, computer, exoskeleton, drone, toy car](/images/hardware/2026/10/pieeg16_applications.jpg)
+
+## Get started
+
+<Cards>
+  <Cards.Card title="What's in the Box" href="/hardware/devices/pieeg-16/required-equipment" />
+  <Cards.Card title="How to Start" href="/hardware/devices/pieeg-16/setup" />
+  <Cards.Card title="Electrodes & Pinout" href="/hardware/devices/pieeg-16/connections" />
+  <Cards.Card title="Software" href="/hardware/devices/pieeg-16/software" />
+</Cards>
+
+## Related
+
+- [PiEEG Server](/software/getting-started/quick-start): streaming, dashboard and recording
+- [PiEEG-8](/hardware/devices/pieeg-8): the 8-channel version of this shield
+- [Noise elimination](/hardware/signal-quality/noise-elimination): getting a clean signal
+- [GitHub: PiEEG-16](https://github.com/pieeg-club/PiEEG-16): SDK scripts, datasets, 3D-printable case
+
+## Citation
+
+If you use PiEEG-16 in research, please cite:
+
+> I. Rakhmatulin. *PiEEG-16 to Measure 16 EEG Channels with Raspberry Pi for Brain-Computer Interfaces and EEG devices.* arXiv:2409.07491, 2024. [arxiv.org/abs/2409.07491](https://arxiv.org/abs/2409.07491)
+
+## Support
+
+- **Discord:** [discord.gg/5Ps24p47](https://discord.gg/5Ps24p47)
+- **GitHub:** [github.com/pieeg-club](https://github.com/pieeg-club)
+- **Email:** [pieeg@pieeg.com](mailto:pieeg@pieeg.com)

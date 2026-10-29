@@ -1,0 +1,46 @@
+---
+title: "What's in the Box"
+description: "Contents of the IronBCI-8 package and the extra items you need to start recording."
+---
+
+import { Callout } from 'nextra/components'
+
+# What's in the Box
+
+## Included
+
+| Item | Details |
+|---|---|
+| **1 × IronBCI-8** | Stack of three boards: ADC board (ADS1299), BLE board (STM32) and power board with Micro USB charging, two switches and status LEDs |
+
+![IronBCI-8 board](/images/hardware/2026/10/ironbci8_board_top.jpg)
+
+## Not included
+
+| Item | Requirements | More |
+|---|---|---|
+| **LiPo battery** | Single-cell LiPo, **200 mAh recommended**, **2.0 mm JST** connector. Check the polarity before connecting. | [Electrodes & Battery](/hardware/devices/ironbci/connections#battery) |
+| **Electrodes** | 8 EEG electrodes (dry or wet Ag/AgCl) with 2.54 mm connectors, plus **2 ear-clip electrodes** for reference and bias | [Electrodes](/hardware/accessories/electrodes) |
+| **EEG cap or headset** | Holds the electrodes in place. Nylon cap, DIY cap, or the [3D-printable IronBCI headset](https://github.com/pieeg-club/ironbci_3D_EEG_Printable_Headset). | [Cap](/hardware/accessories/cap) |
+| **Micro USB cable** | For charging only, from a 5 V USB charger | [Safety](/hardware/devices/ironbci/safety) |
+| **A device with Bluetooth LE** | One of: a computer with **Chrome or Edge** (for PiEEG Cloud), an **Android** phone (for the app), or a computer with **Python 3.10+** (for PiEEG Server or the Python SDK) | [Software](/hardware/devices/ironbci/software) |
+| **Conductive gel** | Only for wet electrodes | [Electrodes](/hardware/accessories/electrodes) |
+
+<Callout type="warning">
+  **Battery polarity.** Some JST batteries are wired the opposite way round. A reversed battery **will damage the board**. Check the red and black wires against the board's markings before the first connection.
+</Callout>
+
+<Callout type="info">
+  Safari, Firefox and iPhone / iPad browsers don't support Web Bluetooth. Use Chrome or Edge on a computer or Android device for PiEEG Cloud.
+</Callout>
+
+## Checklist
+
+- [ ] IronBCI-8
+- [ ] 200 mAh LiPo battery with 2.0 mm JST connector, polarity checked
+- [ ] 8 electrodes and 2 ear clips
+- [ ] Cap or headset (and gel if you use wet electrodes)
+- [ ] Micro USB cable for charging
+- [ ] Chrome / Edge computer, Android phone, or Python on a computer with Bluetooth LE
+
+Next: [How to Start](/hardware/devices/ironbci/setup)

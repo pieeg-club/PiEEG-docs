@@ -1,87 +1,124 @@
 ---
-title: "How to start. Software with JNEEG"
+title: "Software"
+description: "Software for JNEEG: PiEEG Server with the jetson-nano profile, and Python scripts for live graphs and saving data on the Jetson Nano."
 ---
 
 import { Steps, Callout } from 'nextra/components'
 
-# How to start. Software with JNEEG
+# Software
 
-### PiEEG Server
+JNEEG works with two software stacks. Pick the one that fits what you want to do.
 
-JNEEG runs the official [PiEEG Server](https://github.com/pieeg-club/PiEEG-server) —
-the same real-time streaming, dashboard, recording, and integrations available on
-the Raspberry Pi boards. It is an 8-channel board (single ADS1299); run it with
-`--device jneeg`, which applies the `jetson-nano` hardware profile automatically
-(600 kHz SPI, GPIO on `/dev/gpiochip0`).
+| | Best for | Language | Effort |
+|---|---|---|---|
+| **[PiEEG Server](#pieeg-server)** | Live dashboard, recording, streaming to apps, LSL, OSC, webhooks | Any (WebSocket JSON) | A few commands |
+| **[Python scripts](#python-scripts)** | Learning how the ADS1299 works, raw data, quick plots | Python | Edit and run a script |
+
+![PiEEG Server dashboard](/images/hardware/2025/05/pieeg-1024x485.jpg)
+
+## PiEEG Server
+
+JNEEG runs the official [PiEEG Server](https://github.com/pieeg-club/PiEEG-server): the same real-time streaming, dashboard, recording and integrations as on the Raspberry Pi boards. Run it with `--device jneeg`, which applies the `jetson-nano` hardware profile automatically (600 kHz SPI, GPIO on `/dev/gpiochip0`).
 
 <Steps>
 
-#### Enable SPI on the 40-pin header
-
-SPI is off by default on the Nano. Enable it with NVIDIA's config tool:
+### Enable SPI on the 40-pin header
 
 ```bash
 sudo /opt/nvidia/jetson-io/jetson-io.py
 ```
 
-In the menu: **Configure 40-pin header** → enable **spi1** → **Save and reboot**.
-After reboot, confirm the device node exists:
+**Configure 40-pin header** → enable **spi1** → **Save and reboot**. Then check `ls /dev/spidev0.0`.
 
-```bash
-ls /dev/spidev0.0
-```
-
-#### Grant SPI/GPIO access
-
-Add your user to the `spi` and `gpio` groups so you don't need `sudo`:
+### Grant SPI and GPIO access
 
 ```bash
 sudo groupadd -f spi
 sudo usermod -aG spi,gpio "$USER"
 ```
 
-Log out and back in (or reboot) for the groups to take effect.
+Log out and back in (or reboot).
 
-#### Install the server
+### Install the server
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
-pip install pieeg-server[rpi]
+pip install "pieeg-server[rpi]"
 ```
 
 <Callout type="info">
-  The `rpi` extra just installs `spidev`, which is generic Linux SPI and works on
-  the Jetson Nano. The Pi-only `setup.sh` script is not used on Jetson.
+  The `rpi` extra just installs `spidev`, which is generic Linux SPI and works on the Jetson Nano. The Pi-only `setup.sh` script isn't used on the Jetson. PiEEG Server needs **Python 3.10+**.
 </Callout>
 
-#### Verify and run
+### Check and run
 
 ```bash
-pieeg-server doctor          # diagnose SPI, GPIO, and dependencies
+pieeg-server doctor          # check SPI, GPIO and dependencies
 pieeg-server --device jneeg  # start streaming (8 channels)
 ```
 
-The `jetson-nano` profile auto-detects from `/proc/device-tree/model`. Open
-**http://localhost:1617** for the dashboard.
+Open **http://localhost:1617** for the dashboard.
 
 </Steps>
 
+| Address | What it is |
+|---|---|
+| `http://<jetson-ip>:1617` | Browser dashboard |
+| `ws://<jetson-ip>:1616` | WebSocket stream: JSON frames with 8 channels in µV |
+
+**Common options**
+
+```bash
+pieeg-server --device jneeg --filter               # 1–40 Hz band-pass
+pieeg-server --device jneeg --record session.csv   # record while streaming
+pieeg-server --device jneeg --lsl                  # Lab Streaming Layer outlet
+pieeg-server record session.csv --device jneeg     # CSV only, no server
+```
+
 <Callout type="warning">
-  **DRDY pin check (one-time).** The `jetson-nano` profile assumes the data-ready
-  line (header pin 7) maps to line offset **216** on `/dev/gpiochip0`. If samples
-  never arrive, confirm the offset for your JetPack release with
-  `sudo apt install -y gpiod && gpioinfo gpiochip0`, then pass the chip explicitly:
-  `pieeg-server --device jneeg --gpio-chip /dev/gpiochip0`.
+  **DRDY line check (one-time).** The `jetson-nano` profile expects the data-ready line (header pin 7) at line offset **216** on `/dev/gpiochip0`. If samples never arrive, check the offset for your JetPack release with `sudo apt install -y gpiod && gpioinfo gpiochip0`, then pass the chip explicitly: `pieeg-server --device jneeg --gpio-chip /dev/gpiochip0`.
 </Callout>
 
-### SDK   
+More: [Installation](/software/getting-started/installation#jneeg-nvidia-jetson-nano) · [Configuration](/software/getting-started/configuration) · [WebSocket API](/software/api/websocket) · [LSL](/software/integrations/lsl)
 
-Scripts are available on GitHub. Read data with a band-pass filter and real-time visualisation with Jetson Nano for [graph](https://github.com/Ildaron/EEG-with-JetsonNano/blob/master/GUI/1.Graph_real_time.py)  
+## Python scripts
 
-To save Raw data to Excel, you can use the following [script](https://github.com/pieeg-club/EEG-with-JetsonNano/blob/master/GUI/2.Save_data.py) for Jetson Nano.  
+Small scripts that set up the ADS1299, read raw samples over SPI and plot or save them. They run on the Jetson's stock Python.
 
-For power supply, use only a battery with 5V for JetsonNano, and for the monitor, as in the picture  
+Source: [github.com/pieeg-club/EEG-with-JetsonNano/tree/master/GUI](https://github.com/pieeg-club/EEG-with-JetsonNano/tree/master/GUI)
 
-![Image](/images/hardware/2025/05/download-2-300x200.jpeg)  
+| Script | What it does |
+|---|---|
+| [`1.Graph_real_time.py`](https://github.com/pieeg-club/EEG-with-JetsonNano/blob/master/GUI/1.Graph_real_time.py) | Live 8-channel graph, band-pass filtered (1–10 Hz by default) |
+| [`2.Save_data.py`](https://github.com/pieeg-club/EEG-with-JetsonNano/blob/master/GUI/2.Save_data.py) | Save raw µV for all 8 channels to Excel after 10,000 samples (40 s) |
+| [`dataset/Data_visualisation.py`](https://github.com/pieeg-club/EEG-with-JetsonNano/tree/master/GUI/dataset) | Plot a saved file |
+
+**Install and run**
+
+```bash
+sudo apt install -y python3-pip python3-matplotlib python3-scipy
+pip3 install spidev pandas openpyxl
+git clone https://github.com/pieeg-club/EEG-with-JetsonNano.git
+cd EEG-with-JetsonNano/GUI
+python3 1.Graph_real_time.py
+```
+
+The scripts use `Jetson.GPIO` (preinstalled on JetPack) to read DRDY on board pin 7, and `spidev` for SPI.
+
+**Tested library versions:** matplotlib 3.6.3 · spidev 3.5 · scipy 1.10.1
+
+<Callout type="info">
+  The folder `with_c_library_not_support` holds an older C version using `c-periphery`. It isn't supported any more. Use the Python scripts or PiEEG Server.
+</Callout>
+
+## Machine learning on the GPU
+
+The Jetson Nano's GPU lets you run trained models on the EEG stream in real time:
+
+1. Stream samples from PiEEG Server's WebSocket (`ws://localhost:1616`) or read them with the Python scripts.
+2. Compute features (for example band power per channel, once per second).
+3. Run your PyTorch or TensorRT model on the features, on the GPU.
+
+See the [machine-learning example for PiEEG-16](/hardware/devices/pieeg-16/examples#machine-learning-stress-detection): the same steps work on JNEEG's 8 channels.

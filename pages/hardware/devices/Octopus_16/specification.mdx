@@ -1,0 +1,118 @@
+---
+title: "Specification"
+description: "Octopus 16 technical specification: ADS131M08 front end, pogo-pin array, board, XIAO ESP32-S3, BLE protocol, packet format and µV conversion."
+---
+
+import { Callout } from 'nextra/components'
+
+# Specification
+
+Everything you need to know about the hardware, plus the Bluetooth protocol for writing your own software.
+
+![Octopus 16](/images/hardware/2026/10/octopus16_top.jpg)
+
+## Signal acquisition
+
+| | |
+|---|---|
+| **Converters** | 2 × Texas Instruments ADS131M08 |
+| **Type** | 24-bit, 8-channel, simultaneous-sampling, delta-sigma |
+| **Channels** | 16 (8 per converter) |
+| **Gain** | 4 on all channels (set in firmware; the ADS131M08 supports 1 to 128) |
+| **DC block** | ADS131M08 built-in DC-block filter on (about 1 Hz) |
+| **Reference voltage** | 1.2 V internal |
+| **Clock** | External 8.192 MHz oscillator |
+| **Oversampling ratio** | 16384 |
+| **Sample rate** | 250 SPS (8.192 MHz ÷ (2 × 16384)) |
+| **Interface** | Shared SPI bus, a chip select per converter, shared RESET, DRDY from converter 1 as the sync master |
+
+<Callout type="info">
+  **Sample rate on some boards:** boards fitted with an **8.000 MHz** clock run at about **244 SPS** (4 MHz ÷ 16384), even though the stream is labelled 250. That is fine for viewing and band power. Correct for it if you need precise timing (ERP, P300).
+</Callout>
+
+## Electrode array
+
+| | |
+|---|---|
+| **Contacts** | Spring-loaded pogo pins, ⌀ 4 × 11 mm |
+| **Total pins** | 18: 16 signal, 1 reference (`AINREF`), 1 ground (`GND`) |
+| **Pitch** | About 5.38 mm, hexagonal packing |
+| **Array span** | About 20.3 × 20.3 mm |
+| **Reference / ground** | Selectable by jumpers for single-board or stacked use |
+
+## Board and controller
+
+| | |
+|---|---|
+| **Board** | Round, 26.0 mm diameter, 4 layers |
+| **Controller** | Seeed Studio XIAO ESP32-S3 (not included) |
+| **Radio** | Bluetooth LE 5, 2M PHY |
+| **Power** | 5 V power bank via the XIAO's USB-C, no more than 2 A. Battery only while worn. |
+| **Isolation** | None |
+| **3D models** | [Thingiverse](https://www.thingiverse.com/thing:7386761) |
+
+## BLE protocol
+
+| | |
+|---|---|
+| **Advertised name** | `Octopus-16-XXXX` (official firmware) |
+| **Service** | `4fafc201-1fb5-459e-8fcc-c5c9c331914b` |
+| **Data characteristic** (notify) | `beb5483e-36e1-4688-b7f5-ea07361b26a8` |
+| **Command characteristic** (write + notify) | `c0de0001-36e1-4688-b7f5-ea07361b26a8`: register bridge to read and write ADC registers |
+
+**Packet: 51 bytes, one sample per notification**
+
+| Bytes | Content |
+|---|---|
+| `[0]` | `0xA0` start marker |
+| `[1]` | Sample counter (0–255, wraps) |
+| `[2..25]` | ADC 1, channels 1–8 (8 × 3 bytes, 24-bit big-endian two's complement) |
+| `[26..49]` | ADC 2, channels 9–16 |
+| `[50]` | `0xC0` end marker |
+
+Use the sample counter to spot lost packets.
+
+## Converting to microvolts
+
+1.2 V reference, gain 4, 24-bit:
+
+```python
+raw = (b[0] << 16) | (b[1] << 8) | b[2]   # 3 bytes of one channel
+if raw & 0x800000:                       # negative value
+    raw -= 1 << 24
+uV = raw * (1.2 / 4.0 / 8388607) * 1e6   # about 0.0358 µV per count
+```
+
+## Minimal Python reader
+
+```python
+import asyncio
+from bleak import BleakScanner, BleakClient
+
+SERVICE = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+DATA    = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+SCALE   = 1.2 / 4.0 / 8388607 * 1e6
+
+def on_data(_, p):
+    if len(p) != 51 or p[0] != 0xA0 or p[50] != 0xC0:
+        return
+    uv = []
+    for c in range(16):
+        b = p[2 + 3*c: 5 + 3*c]
+        raw = (b[0] << 16) | (b[1] << 8) | b[2]
+        if raw & 0x800000:
+            raw -= 1 << 24
+        uv.append(raw * SCALE)
+    print(p[1], [round(v, 1) for v in uv[:4]], "...")
+
+async def main():
+    dev = await BleakScanner.find_device_by_filter(
+        lambda d, adv: SERVICE in [u.lower() for u in adv.service_uuids])
+    async with BleakClient(dev) as client:
+        await client.start_notify(DATA, on_data)
+        await asyncio.sleep(10)
+
+asyncio.run(main())
+```
+
+In a browser, the easiest path is the [JavaScript SDK](/software/api/javascript-sdk): `eeg.connectBLE({ device: 'octopus-16' })`.

@@ -1,0 +1,63 @@
+---
+title: "Firmware"
+description: "Flash the Octopus 16 firmware onto the XIAO ESP32-S3 from the browser, read the LED states, or build the firmware from source."
+---
+
+import { Steps, Callout } from 'nextra/components'
+
+# Firmware
+
+The XIAO ESP32-S3 needs the Octopus 16 firmware once, before first use. You flash it from the browser, with no Arduino IDE.
+
+<Steps>
+
+### Open the flasher
+
+Open **[octobridge.pieeg.com/flash](https://octobridge.pieeg.com/flash)** in desktop **Chrome or Edge**. The same installer is also at [firmware.pieeg.com](https://firmware.pieeg.com/).
+
+![Octopus-16 firmware installer](/images/hardware/2026/10/octopus16_flasher.jpg)
+
+### Plug in the XIAO
+
+Connect the XIAO ESP32-S3 to the computer with a USB-C **data** cable. It can stay mounted on the Octopus 16.
+
+<Callout type="warning">
+  Flash with the board **off the head**. USB from a computer is only for flashing.
+</Callout>
+
+### Install
+
+Click **Install Octopus-16**, choose the serial port and wait about 30 seconds.
+
+### Replug
+
+Unplug and replug the XIAO once. It now advertises over Bluetooth as **`Octopus-16-XXXX`**.
+
+</Steps>
+
+**No port shows up, or flashing fails?** Hold **BOOT**, tap **RESET**, release BOOT, then click Install again. Also try another USB-C cable: charge-only cables can't flash.
+
+## LED states
+
+| Pattern | State |
+|---|---|
+| Solid (brief) | Booting |
+| Slow blink, about once a second | Advertising, waiting for an app |
+| Solid | Connected and streaming |
+| Fast double-blink | ADC not detected: check the XIAO is mounted the right way round |
+
+## Build from source
+
+The [`Framework`](https://github.com/pieeg-club/Octopus_16/tree/main/Framework) folder has Arduino sketches and an ADS131M08 driver, for developers who want to change the firmware.
+
+| File | What it is |
+|---|---|
+| `ADS131M08.cpp`, `ADS131M08.h` | Driver for the two ADS131M08 converters |
+| `XIAO_ESP_32_S6.ino` | Sketch for the XIAO ESP32-S3: EEG over BLE, plus on-board FFT and **gamepad output** (Bluetooth and USB HID) for neurofeedback control |
+| `XIAO_ESP_32_C3.ino` | Simpler EEG-over-BLE sketch for a XIAO ESP32-C3 |
+
+The sketches use the NimBLE Arduino library (and ESP32-BLE-Gamepad for the S3 sketch). They set both ADCs to OSR 16384 (250 SPS) and gain 4, and use the same BLE service and 51-byte packet as the official firmware. See [Specification](/hardware/devices/Octopus_16/specification#ble-protocol).
+
+<Callout type="info">
+  The sketches advertise under other names (`Octopos` or `FE-Gamepad-XXXX`). PiEEG Cloud, the JavaScript SDK and the Python SDK find the board by its **service UUID**, so they still connect. To go back to the official firmware, flash it again from the browser.
+</Callout>

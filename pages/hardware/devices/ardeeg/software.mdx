@@ -1,29 +1,89 @@
 ---
-title: "How to start. Software with ardEEG"
+title: "Software"
+description: "Software for ardEEG: the Arduino sketch that sends data over Wi-Fi, the Python receiver with live graphs, a speed test, and how to change filters."
 ---
 
-ardEEG uses a two-part setup: an Arduino sketch that reads and transmits biosignal data over Wi-Fi, and a Python script on your computer that receives and visualises it in real time.
-All scripts are available on [GitHub](https://github.com/Ildaron/ardEEG/).
+import { Callout } from 'nextra/components'
 
-### Step 1 — Upload the Arduino Sketch
-Open the Arduino sketch in the Arduino IDE and find the following lines near the top of the file:
+# Software
 
-char ssid[] = "Wifi Name";  
-char pass[] = "password";  
+ardEEG uses two pieces of software: an **Arduino sketch** that reads the shield and sends the data over Wi-Fi, and a **Python script** on your computer that receives, filters and plots it.
 
-Replace Wifi Name and password with your own Wi-Fi network credentials. Then connect your Arduino UNO R4 to your computer via USB and upload the sketch.
-Once uploaded, disconnect the USB cable and power the Arduino from your 5V battery only. Do not use a PC USB port or mains adapter during measurements.
+```
+ ardEEG ─SPI─► Arduino UNO R4 WiFi ─UDP, port 13900─► Python on your computer
+               (1.Send_data_via_wifi.ino)              (1.Alpha_real_time.py)
+```
 
-###  Step 2 — Run the Python Script
-On your computer, run the Python visualisation script. It connects to the Arduino over Wi-Fi and displays the incoming biosignal data as a real-time graph with a band-pass filter applied.  
-Make sure your computer is connected to the same Wi-Fi network as the Arduino before running the script.  
+Source: [github.com/Ildaron/ardEEG/tree/main/software](https://github.com/Ildaron/ardEEG/tree/main/software)
 
-### Step 3 — Verify the Signal
-Once both scripts are running, you should see a live graph of the EEG, EMG, or ECG signal. If no data appears, check that:
+## Arduino sketch
 
-The Arduino is powered on and connected to Wi-Fi
-Your computer is on the same network
-The correct Wi-Fi credentials were entered before uploading the sketch
+[`software/arduino/1.Send_data_via_wifi.ino`](https://github.com/Ildaron/ardEEG/blob/main/software/arduino/1.Send_data_via_wifi.ino) sets up the ADS1299, reads every sample and sends packets of 50 samples over Wi-Fi.
 
+Change three things before uploading:
 
-![Image](/images/hardware/2025/05/download.bmp)
+```cpp
+char ssid[] = "Wifi Name";                 // your Wi-Fi name
+char pass[] = "password";                  // your Wi-Fi password
+...
+udp.beginPacket("192.168.1.241", 13900);   // your computer's IP address, port
+```
+
+**Upload:** Arduino IDE → board **Arduino UNO R4 WiFi** → **Upload**. Then unplug the USB cable and power the Arduino from the battery.
+
+<Callout type="info">
+  The Arduino UNO R4 WiFi joins **2.4 GHz** networks. If your router has separate 2.4 and 5 GHz names, use the 2.4 GHz one.
+</Callout>
+
+## Python receiver
+
+[`software/python/1.Alpha_real_time.py`](https://github.com/Ildaron/ardEEG/blob/main/software/python/1.Alpha_real_time.py) receives the packets, converts them to µV, filters them and shows 8 live graphs.
+
+```bash
+pip install matplotlib scipy
+python 1.Alpha_real_time.py
+```
+
+Set your computer's IP at the top first:
+
+```python
+UDP_IP = "192.168.1.241"   # this computer's IP on the Wi-Fi network
+UDP_PORT = 13900
+```
+
+![8 channels in the Python receiver](/images/hardware/2026/10/ardeeg_8ch.jpg)
+
+### Change the filter
+
+The script shows the **8–12 Hz alpha band** by default. The band is set by these two lines (the names are swapped, but the values are the band edges):
+
+```python
+highcut = 8     # lower edge, Hz
+lowcut = 12     # upper edge, Hz
+```
+
+For a general EEG view with blinks and chewing, use `highcut = 1` and `lowcut = 40`.
+
+## Speed test
+
+[`speed_test_250_samples.py`](https://github.com/Ildaron/ardEEG/tree/main/software/python) checks that the data arrives at the full rate (250 samples per second = 6,750 bytes per second). It receives 25 packets and prints the time taken next to the expected time (5 seconds).
+
+```bash
+python speed_test_250_samples.py          # set UDP_IP inside first
+```
+
+If it takes much longer than expected, the Wi-Fi link is too slow or losing packets. Move the Arduino closer to the router.
+
+## Check the port is free (Windows)
+
+If the Python script can't receive, check nothing else uses port 13900:
+
+```bash
+netstat -ano | findstr :13900
+```
+
+## More
+
+- [Manual on Google Colab](https://colab.research.google.com/drive/1xW6fwzVdLH83zHoorjeWai6SdZoOanfA)
+- [Signals & Datasets](/hardware/devices/ardeeg/examples): sample recordings with plotting scripts
+- [Specification](/hardware/devices/ardeeg/specification): data format and registers, for writing your own receiver

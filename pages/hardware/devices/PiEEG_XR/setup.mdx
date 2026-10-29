@@ -1,0 +1,106 @@
+---
+title: "How to Start"
+description: "Set up PiEEG XR: fit the mask, mount the BCI box, power it, connect over Bluetooth and check the signal with a blink test."
+---
+
+import { Steps, Tabs, Callout } from 'nextra/components'
+
+# How to Start
+
+From the box to live signals in your headset or browser, in seven steps. The example shows a **Meta Quest 3**.
+
+<Steps>
+
+### Gather the parts
+
+You need the PiEEG XR made for your headset, a power bank or battery head strap, a USB-A to USB-C cable, and alcohol pads. See [What's in the Box](/hardware/devices/PiEEG_XR/required-equipment).
+
+### Replace the face mask
+
+1. Remove the headset's original facial interface.
+2. Line up the four buckles of the PiEEG XR mask with the headset.
+3. Press to snap in the **two back** buckles.
+4. Press to snap in the **two front** buckles.
+
+![Replacing the face mask in four steps](/images/hardware/2026/10/pieegxr_mask_steps.jpg)
+
+<Callout type="info">
+  **Prefer your own mask?** Remove just the **silicone insert** from the PiEEG XR mask and fit it into your headset's original facial interface. Adjust it until it sits firmly with no gaps or bending.
+</Callout>
+
+### Mount the BCI box
+
+1. Remove the head strap from the headset.
+2. Place the BCI box against the headset, then reattach the strap so it holds the box.
+3. Route the cable from the mask to the box.
+
+![Mounting the BCI box under the head strap](/images/hardware/2026/10/pieegxr_mount_steps.jpg)
+
+### Power on
+
+Connect the **5 V power bank** (or battery strap) to the box with the USB-A to USB-C cable. The box starts advertising over Bluetooth as **`PiEEG XR`**.
+
+<Callout type="warning">
+  Battery power only. Never connect the box to a wall charger or to a computer on mains power while you're wearing it.
+</Callout>
+
+### Clean and put it on
+
+1. Wipe the forehead and temples with an alcohol pad, and let the skin dry.
+2. Wipe the electrodes in the mask.
+3. Put the headset on and tighten the strap so the mask presses **firmly and evenly** on the face.
+
+### Connect
+
+<Tabs items={['On the headset', 'In the browser', 'Android']}>
+<Tabs.Tab>
+
+1. Install **[BodyPress](https://www.meta.com/en-gb/experiences/bodypress/1271355469389420/)** from the Meta Quest Store.
+2. Open it and connect to **`PiEEG XR`**.
+
+[How to launch it (short video)](https://youtube.com/shorts/Bs9vT9CmJcE)
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+No headset needed for a first test.
+
+1. Open **[cloud.pieeg.com](https://cloud.pieeg.com)** in **Chrome or Edge**, with Bluetooth on.
+2. In the Session Lobby, open the **PiEEG Devices** tab and choose **PiEEG XR** (or **PiEEG XR-16**).
+3. Pick `PiEEG XR` in the browser's Bluetooth window.
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+1. Install **[BodyPress](https://play.google.com/store/apps/details?id=com.bodypress.governorhq)** from Google Play.
+2. Open it and connect to **`PiEEG XR`**.
+
+</Tabs.Tab>
+</Tabs>
+
+### Check the signal
+
+Sit still, relax the face and wait a few seconds for the filter to settle. Then:
+
+| Test | What you should see |
+|---|---|
+| **Every channel moving** | A gentle line on each channel. A perfectly flat line means that electrode isn't touching. |
+| **Blink hard 3–5 times** | Large, sharp spikes, strongest on the front (forehead) channels |
+| **Look left, then right** | Slower swings, in opposite directions on the left and right channels |
+| **Clench the jaw** | A burst of high-frequency fuzz that stops when you relax |
+
+![Blink test: groups of 4, 3, 2 and 1 blinks on all 8 channels](/images/hardware/2026/10/pieegxr_blink.png)
+
+<Callout type="info">
+  **The blink test is your one-second sanity check.** If blinking shows nothing on the front channels, those electrodes aren't touching. Reseat the mask and tighten the strap before going further.
+</Callout>
+
+Want to try facial expressions? In PiEEG Cloud, open **Mini-Games → Face Trainer**. [Watch the video](https://www.youtube.com/watch?v=g-XgVWwQzwE).
+
+</Steps>
+
+## Next steps
+
+- **Use it in VR:** BodyPress on the Quest, or a brain-reactive VRChat avatar. See [Software](/hardware/devices/PiEEG_XR/software).
+- **Moving while recording?** Read [Recording During Activity](/hardware/devices/PiEEG_XR/Application).
+- **Problems?** See [Troubleshooting & FAQ](/hardware/devices/PiEEG_XR/FQA).

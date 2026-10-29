@@ -1,0 +1,47 @@
+---
+title: "Troubleshooting"
+description: "Fix common MicroBCI problems: flashing with STM32CubeProgrammer, Bluetooth connection, Python SDK and signal quality."
+---
+
+import { Callout } from 'nextra/components'
+
+# Troubleshooting
+
+## Flashing
+
+| Problem | Fix |
+|---|---|
+| ST-LINK not recognised | Use the Nucleo's **ST-LINK USB port** and a Micro-USB **data** cable. Install or update the ST-LINK driver. |
+| Can't connect in STM32CubeProgrammer | Set the port to **SWD** and the programmer to **ST-LINK**, then click Connect. Unplug and replug the board. |
+| FUS version is not v1.2.0.0 or v1.3.0.0 | Update the FUS first with the FUS file from STMicroelectronics for your STM32WB, then install the stack. |
+| Stack upgrade fails | Check the file is `stm32wb5x_BLE_Stack_full_fw.bin` and the address is exactly **`0x080CE000`**. |
+| Board doesn't advertise after flashing | Upload **both** the stack and `Micro_BCI.hex`, then unplug and power the board again. |
+
+## Bluetooth connection
+
+| Problem | Fix |
+|---|---|
+| Python GUI can't connect | The GUI scripts use a fixed address. Set `address` to **your** board's address. See [Find your board's address](/hardware/devices/microbci/software#find-your-boards-address). |
+| Device not found in a scan | Check the board is powered and the stack and firmware are installed. Move closer. |
+| macOS: address format | `bleak` on macOS shows a UUID instead of a MAC address. Use the UUID in the script. |
+| Found but won't connect | It may already be connected to another app or phone. Close it, power the board off and on, and retry. |
+| No Bluetooth option in the browser | Use **Chrome or Edge**. Safari, Firefox and iPhone / iPad browsers don't support Web Bluetooth. |
+
+## Data and signal
+
+| Problem | Fix |
+|---|---|
+| No data, or all values constant | The shield may be shifted by one pin. Unplug, re-seat it, and check the alignment against the [photo](/hardware/devices/microbci/connections#mounting-on-the-nucleo). |
+| All channels noisy at once | Check the **reference and bias ear clips** first. Clean the earlobes and clip them firmly. |
+| One channel flat or very large | That electrode isn't touching the skin. Part the hair, press it in, or add gel. |
+| Strong 50/60 Hz hum | The board must run from the **power bank**, not a computer's USB port. Move away from chargers. |
+| Values in the thousands of µV | Normal DC offset in raw data. Use `1.1_GUI.py` (1–40 Hz filter) or filter the data. |
+| Big swings when moving | Movement of electrodes or cables. Sit still and keep cables short. |
+
+<Callout type="info">
+  See [Noise elimination](/hardware/signal-quality/noise-elimination) for a step-by-step way to find the source of noise.
+</Callout>
+
+## Still stuck?
+
+Ask on [Discord](https://discord.gg/5Ps24p47), open an issue on [GitHub](https://github.com/pieeg-club/MicroBCI/issues), or email [pieeg@pieeg.com](mailto:pieeg@pieeg.com).

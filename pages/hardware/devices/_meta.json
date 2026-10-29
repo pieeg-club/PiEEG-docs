@@ -1,11 +1,11 @@
 {
   "index": "Device Overview",
-  "pieeg": "PiEEG-8",
+  "pieeg-8": "PiEEG-8",
   "pieeg-16": "PiEEG-16",
   "jneeg": "JNEEG",
   "ardeeg": "ardEEG",
   "ironbci": "IronBCI",
   "microbci": "MicroBCI",
-  "ironbci-32": "IronBCI-32"
+  "ironbci-32": "IronBCI-32",
    "OctoBio_Kit": "OctoBio Kit"
 }

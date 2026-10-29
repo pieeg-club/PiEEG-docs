@@ -1,0 +1,56 @@
+---
+title: "Troubleshooting"
+description: "Fix common IronBCI-32 problems: USB cables and serial ports, BrainFlow and PiEEG Server errors, dead channels and noise."
+---
+
+import { Callout } from 'nextra/components'
+
+# Troubleshooting
+
+## USB and serial port
+
+| Problem | Fix |
+|---|---|
+| No new serial port appears | The data cable is probably **charge-only**. Use a full data cable (4 wires). Check it's in the **Data Stream** port, not Power. |
+| Port appears, but no data | The board needs power on the **Power** port too. Check the USB battery is on and charged. |
+| Windows: unknown device | Unplug and replug the data cable. Windows 10 and 11 include the USB serial (CDC) driver. |
+| Linux: `Permission denied` on `/dev/ttyACM0` | `sudo usermod -aG dialout $USER`, then log out and in again (or run with `sudo`). |
+| Port is busy / `Access is denied` | Another program has it open (a serial monitor, another script, PiEEG Server). Close it and try again. Only one program can use the port at a time. |
+| Port name changes | Windows may assign a new `COM` number for a different USB socket. Check Device Manager each time. |
+
+## Software
+
+| Problem | Fix |
+|---|---|
+| `AttributeError: IRONBBCI_32_BOARD` in `2.All_ch.py` | Typo in the script. Change it to `IRONBCI_32_BOARD`. |
+| `BoardIds` has no `IRONBCI_32_BOARD` | BrainFlow is too old. Update it: `pip install -U brainflow` (tested with 5.20.1). |
+| `prepare_session` fails | Wrong port name. Set `params.serial_port` (or `--serial-port`) to the port you found. |
+| PiEEG Server: `pyserial` missing | Install the extra: `pip install "pieeg-server[ironbci32]"`. |
+| PiEEG Server: `--serial-port is required` | The IronBCI-32 needs the port: `--device ironbci32 --serial-port COM3`. |
+| Real-time plot doesn't open | Install the plot libraries: `pip install pyqtgraph PyQt5`. |
+| PiEEG Cloud has no serial option | Use **Chrome or Edge**. Safari and Firefox don't support Web Serial. |
+
+## Signal
+
+| Problem | Fix |
+|---|---|
+| Some channels **completely flat** | The electrode is on the **top row** of the header (shorted to REF). Move it to the bottom row. See [Electrodes & Pinout](/hardware/devices/ironbci-32/connections#top-and-bottom-rows). |
+| Channel numbers seem mixed up | The pins are in the order 8-7-6-5-1-2-3-4 on each header, not 1–8. Check the [pin order](/hardware/devices/ironbci-32/connections#pin-order). |
+| All channels noisy at once | Check the **reference and bias ear clips** on the CH 1–8 header first. Clean the earlobes and clip them firmly. |
+| Strong 50/60 Hz hum | The laptop is probably on its charger. **Unplug it** and run on battery. Move away from power strips and other chargers. |
+| Values in the tens of thousands of µV | Normal DC offset in raw data. Turn on a band-pass filter (for example 1–40 Hz). |
+| Big slow spikes on the front channels | Blinks and eye movements. Ask the person to keep the eyes still or closed. |
+| Bursts of high-frequency noise | Jaw, face or neck muscles. Relax the face, don't talk or chew. |
+| Signal jumps when someone moves | Cable movement. Bundle the 32 leads, keep them short and still. |
+
+<Callout type="info">
+  See [Noise elimination](/hardware/signal-quality/noise-elimination) for a step-by-step way to find the source of noise.
+</Callout>
+
+## Board stopped working
+
+If the board no longer creates a serial port with a known-good data cable and power, re-flash the firmware. See [Firmware](/hardware/devices/ironbci-32/firmware).
+
+## Still stuck?
+
+Ask on [Discord](https://discord.gg/5Ps24p47), open an issue on [GitHub](https://github.com/pieeg-club/ironbci-32/issues), or email [pieeg@pieeg.com](mailto:pieeg@pieeg.com).

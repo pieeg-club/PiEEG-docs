@@ -1,0 +1,66 @@
+---
+title: "Signals & Projects"
+description: "Real EEG recordings made with IronBCI-8 and dry electrodes, an open dataset, and example projects including real-time emotion detection with ChatGPT."
+---
+
+import { Callout } from 'nextra/components'
+
+# Signals & Projects
+
+What real IronBCI-8 recordings look like, open data to practise with, and projects to build on. All recordings below were made with **dry Ag/AgCl electrodes, no gel**, at 250 samples per second.
+
+## Example signals
+
+### EEG: alpha rhythm
+
+Eyes open and closed in turn. The orange line is high while the eyes are closed. The alpha rhythm grows in those periods, and the wavelet view (bottom) shows the extra power in the alpha band.
+
+![Alpha rhythm test with IronBCI-8 and wavelet transform](/images/hardware/2026/10/ironbci8_alpha.png)
+
+### EEG: chewing and blinking artifacts
+
+Raw data. The large bursts are chewing and blinking: muscles and eye movement, not the brain.
+
+![Chewing and blinking artifacts recorded with IronBCI-8](/images/hardware/2026/10/ironbci8_artifacts.png)
+
+<Callout type="info">
+  Learn to recognise artifacts before you analyse anything. Remove or mark them before computing band power or training a model.
+</Callout>
+
+## Dataset
+
+In the [`dataset`](https://github.com/pieeg-club/ironbci/tree/master/dataset) folder of the IronBCI repository. Alpha test: 5 seconds eyes open, 5 seconds eyes closed, repeated. 250 SPS, dry electrodes without gel.
+
+| File | Content | Size |
+|---|---|---|
+| `eeg_raw_Data_alpha_test.xlsx` | Raw data in µV | 4 channels, about 50,000 samples (200 s) |
+| `eeg_band_pass_filtered_alpha_test.xlsx` | The same data after an 8–12 Hz band-pass filter | 4 channels, about 50,000 samples |
+
+To plot your own recordings with a band-pass filter, use [`1.Band_pass_filter_data_visualisation.py`](https://github.com/pieeg-club/ironbci/tree/master/Scripts_for_work_with_dataset). Set the file name and the filter range at the top of the script.
+
+## Projects
+
+### Real-time emotion detection with ChatGPT
+
+[`Chat_GPT_Real_time.py`](https://github.com/pieeg-club/ironbci/tree/master/Chat_GPT) streams EEG from IronBCI-8, computes alpha-band power every second, and asks an OpenAI model to label it as *Scary*, *Sad* or *Funny*, using a few labelled examples in the prompt.
+
+```bash
+pip install bleak numpy scipy pandas openai
+python Chat_GPT_Real_time.py
+```
+
+Set your own OpenAI API key first. Store it in an environment variable rather than in the script. Step-by-step guide: [Connect Brain to ChatGPT](https://www.instructables.com/Connect-Brain-to-ChatGPT/).
+
+<Callout type="warning">
+  This is a fun learning example. A few labelled alpha-power values are not a validated measure of emotion.
+</Callout>
+
+### 3D-printable headset
+
+An open, 3D-printable EEG headset designed for IronBCI, for DIY neuroscience, teaching and BCI experiments. You can adapt it to your own electrode layout.
+
+Files and instructions: [ironbci_3D_EEG_Printable_Headset](https://github.com/pieeg-club/ironbci_3D_EEG_Printable_Headset).
+
+### Build on the app
+
+The Android app is open source (Flutter, MIT licence). Start from [`EEG-Flutter-App-master.zip`](https://github.com/pieeg-club/ironbci/tree/master/mobile_app) to build your own mobile BCI app.

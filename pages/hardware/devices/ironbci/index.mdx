@@ -1,40 +1,112 @@
 ---
-title: "IronBCI"
+title: "IronBCI-8 Intro"
+description: "IronBCI-8 — a low-cost, wearable 8-channel Bluetooth brain-computer interface with a mobile SDK, built on the TI ADS1299."
 ---
 
-import { Cards } from 'nextra/components'
+import { Cards, Callout } from 'nextra/components'
 
-# IronBCI
+# IronBCI-8
 
-IronBCI documentation for device setup, wireless software, and video instructions.
+**A wireless brain-computer interface that fits in your hand.**
+
+IronBCI-8 is a low-cost, open-source, wearable BCI. It measures 8 channels of biosignals (EEG, EMG, ECG and EOG) with a Texas Instruments **ADS1299**, and an STM32 microcontroller streams them over **Bluetooth Low Energy** to a laptop, phone or browser. It runs from a small LiPo battery, so no Raspberry Pi, cables or power bank are needed.
+
+![IronBCI-8 with electrodes and the Android app](/images/hardware/2026/10/ironbci8_app.jpg)
+
+<Callout type="warning">
+  IronBCI-8 is **not a medical device**. It is a tool for research, education and engineering. Never wear it while it is charging. Read [Safety](/hardware/devices/ironbci/safety) before the first recording.
+</Callout>
+
+## At a glance
+
+| | |
+|---|---|
+| **Channels** | 8 biosignal inputs, plus reference and bias |
+| **Converter** | TI ADS1299, 24-bit, simultaneous sampling |
+| **Sample rate** | 250 SPS |
+| **Signals** | EEG, EMG, ECG, EOG |
+| **Wireless** | Bluetooth Low Energy |
+| **Microcontroller** | STM32 |
+| **Electrodes** | Dry or wet Ag/AgCl, 2.54 mm header |
+| **Battery** | LiPo, 200 mAh recommended, 2.0 mm JST connector, charged over Micro USB |
+| **Software** | PiEEG Cloud (browser), Android app, PiEEG Server, Python SDK, JavaScript SDK |
+
+## How it works
+
+Three stacked boards, one battery, no cables to the computer.
+
+```
+ Electrodes 1–8 ─┐
+ Reference (ear) ┼─► ADC board ─► BLE board ─► Bluetooth LE
+ Bias (ear) ─────┘   (ADS1299)    (STM32)        │
+                         ▲                       ├ cloud.pieeg.com
+       LiPo battery ─► Power board               ├ Android app
+                                                 ├ PiEEG Server
+                                                 └ Python / JS SDK
+```
+
+1. **Measure:** the ADS1299 on the ADC board digitises all 8 channels at the same moment, 250 times per second.
+2. **Send:** the STM32 on the BLE board streams each sample over Bluetooth Low Energy.
+3. **Use:** open it in the browser, on an Android phone, or in your own Python or JavaScript code.
+
+![The three IronBCI-8 boards: ADC, BLE and power](/images/hardware/2026/10/ironbci8_boards.jpg)
+
+## IronBCI-8 or PiEEG-8?
+
+| | PiEEG-8 | IronBCI-8 |
+|---|---|---|
+| **Host** | Raspberry Pi 4 / 5 | **None**: works on its own |
+| **Link** | Wired (GPIO, SPI) | **Wireless** (BLE) |
+| **Channels** | 8 | 8 |
+| **Power** | 5 V power bank | Small LiPo battery |
+| **Mobile app** | No | **Yes** (Android) |
+| **Best for** | Desk setups, full register control | Wearable and mobile BCI, quick demos |
+
+## What you can measure
+
+| Signal | What it shows | Typical first test |
+|---|---|---|
+| **EEG** | Brain rhythms: delta, theta, alpha, beta, gamma | Close your eyes and watch alpha (8–13 Hz) rise |
+| **EMG** | Muscle activity | Clench the jaw or a fist |
+| **ECG** | Heart activity | Electrodes on the chest or wrists |
+| **EOG** | Eye movement and blinks | Look left and right, blink |
+
+See real recordings in [Signals & Projects](/hardware/devices/ironbci/examples).
+
+## Get started
 
 <Cards>
-	<Cards.Card title="Version 1.2" href="/hardware/devices/ironbci/version-1-2" />
-	<Cards.Card title="Wireless" href="/hardware/devices/ironbci/wireless" />
-	<Cards.Card title="Video Instruction" href="/hardware/devices/ironbci/video-instruction" />
+  <Cards.Card title="What's in the Box" href="/hardware/devices/ironbci/required-equipment" />
+  <Cards.Card title="How to Start" href="/hardware/devices/ironbci/setup" />
+  <Cards.Card title="Electrodes & Battery" href="/hardware/devices/ironbci/connections" />
+  <Cards.Card title="Software" href="/hardware/devices/ironbci/software" />
 </Cards>
 
+## Videos
 
-IronBCI is a low-cost, wearable Bluetooth Low Energy (BLE) brain-computer interface with 8 channels for measuring EEG, EMG, ECG, and EOG biosignals. Unlike the PiEEG shield family, IronBCI is a fully standalone device — no Raspberry Pi or single-board computer required.
-### What It Does
-IronBCI connects wirelessly to a laptop, smartphone, or tablet over BLE, streaming 8 channels of biosignal data at 250 samples per second. It is powered by a small LiPo battery, making it compact and portable for wearable and mobile BCI applications.
-IronBCI includes a mobile SDK, making it suitable for building iOS and Android BCI applications as well as desktop integrations.
-### Key Features:
-- 8 channels of simultaneous biosignal acquisition
-- Supports EEG, EMG, ECG, and EOG measurements
-- Wireless BLE connection — no cables to a host computer
-- Streams at 250 samples per second
-- Compatible with dry and Ag/AgCl wet electrodes via 2.54 mm pin pitch connectors
-- Powered by a LiPo battery (200 mAh recommended, 2.0 mm JST connector)
-- Includes a mobile SDK for iOS and Android development, Python SDK and software PiEEG-server  
+| | |
+|---|---|
+| [![IronBCI device introduction](/images/hardware/2026/10/ironbci8_video_intro.jpg)](https://youtu.be/gWpfsLuq_eE) | [![Testing the mobile SDK app with IronBCI](/images/hardware/2026/10/ironbci8_video_mobile.jpg)](https://youtu.be/mxDg8fcnsZc) |
+| [Device introduction](https://youtu.be/gWpfsLuq_eE) | [Mobile SDK app test](https://youtu.be/mxDg8fcnsZc) |
+| [![How to program IronBCI](/images/hardware/2026/10/ironbci8_video_sdk.jpg)](https://www.youtube.com/watch?v=iHrR5pZpmRM) | |
+| [How to program a BCI with IronBCI](https://www.youtube.com/watch?v=iHrR5pZpmRM) | |
 
-### How It Differs from PiEEG
+## Related
 
-| Feature | PiEEG | IronBCI |
-| :--- | :--- | :--- |
-| **Host required** | Raspberry Pi 4 / 5 | **None** — standalone |
-| **Connectivity** | Wired (GPIO) | **Wireless** (BLE) |
-| **Channels** | 8 | 8 |
-| **Power source** | Power bank (5V, 3A) | LiPo battery (200 mAh) |
-| **Mobile SDK** | No | **Yes** |
-| **Best for** | Desktop research, fixed setup | Wearable, mobile, on-the-go BCI |
+- [PiEEG Cloud](/cloud): stream IronBCI-8 in Chrome or Edge, no install
+- [PiEEG Server](/software/getting-started/installation#ironbci--eareeg-support): `pip install pieeg-server[ironbci]`
+- [JavaScript SDK](/software/api/javascript-sdk): `ironbci-8` is the default board
+- [GitHub: ironbci](https://github.com/pieeg-club/ironbci): Python SDK, Android app, datasets
+- [3D-printable headset](https://github.com/pieeg-club/ironbci_3D_EEG_Printable_Headset): a wearable frame for IronBCI
+
+## Citation
+
+If you use IronBCI-8 in research, please cite:
+
+> I. Rakhmatulin. *IronBCI: A Low-Cost, Open-Source BCI Platform with Mobile SDK for Rapid Neurotech Prototyping.* Preprints 2025, 2025071198. DOI: [10.20944/preprints202507.1198.v1](https://doi.org/10.20944/preprints202507.1198.v1)
+
+## Support
+
+- **Discord:** [discord.gg/5Ps24p47](https://discord.gg/5Ps24p47)
+- **GitHub:** [github.com/pieeg-club](https://github.com/pieeg-club)
+- **Email:** [pieeg@pieeg.com](mailto:pieeg@pieeg.com)

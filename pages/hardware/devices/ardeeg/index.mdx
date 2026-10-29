@@ -1,31 +1,110 @@
 ---
-title: "ardEEG"
+title: "ardEEG Intro"
+description: "ardEEG — a low-cost, open-source 8-channel shield for the Arduino UNO R4 WiFi that measures EEG, EMG and ECG with a TI ADS1299 and streams over Wi-Fi."
 ---
+
+import { Cards, Callout } from 'nextra/components'
 
 # ardEEG
 
-ardEEG is an open-source shield for the Arduino UNO R4 that measures biosignals — including EEG (electroencephalography), EMG (electromyography), and ECG (electrocardiography).
-### What It Does
-ardEEG brings biosignal acquisition to the Arduino platform, making it the most accessible and lowest-cost entry point in the PiEEG device family. It connects directly to the Arduino UNO R4 header and uses the ADS1299 analog front-end chip to capture high-quality biosignal data.
-ardEEG is ideal for students, hobbyists, and educators who want to explore EEG, EMG, and ECG measurement without the complexity or cost of a single-board computer setup. It is also well suited for embedded BCI prototypes and low-power standalone applications.
+**Measure EEG with an Arduino.**
 
-### Key Features:
-- Supports EEG, EMG, and ECG measurements
-- Connects directly to the Arduino UNO R4 header
-- Powered by the ADS1299 analog front-end chip
-- Compatible with dry and Ag/AgCl wet electrodes via 2.54 mm pin pitch connectors
-- Low power — runs from a small 5V power bank (up to 1,000 mAh, max 1A)
+ardEEG is an open-source shield that plugs onto an **Arduino UNO R4 WiFi** and turns it into an 8-channel biosignal recorder. A Texas Instruments **ADS1299** measures EEG, EMG and ECG, and the Arduino sends the data over **Wi-Fi** to a Python script on your computer. It's the lowest-cost way into the PiEEG family, and a great fit for students, makers and teachers.
 
-### How It Differs from PiEEG: 
-## Comparison: PiEEG vs. ardEEG
+![ardEEG shield](/images/hardware/2026/10/ardeeg_shield.jpg)
 
-| Feature | PiEEG | ardEEG |
-| :--- | :--- | :--- |
-| **Host board** | Raspberry Pi 4 / 5 | Arduino UNO R4 |
+<Callout type="warning">
+  ardEEG is **not a medical device**. Run it **from a small 5 V battery only**, never from a computer's USB port or a wall charger while electrodes are on a person. Read [Safety](/hardware/devices/ardeeg/safety) first.
+</Callout>
+
+## At a glance
+
+| | |
+|---|---|
+| **Channels** | 8 biosignal inputs, plus reference and bias |
+| **Converter** | TI ADS1299, 24-bit, simultaneous sampling |
+| **Sample rate** | 250 SPS |
+| **Internal noise** | About 0.5 µV RMS per channel (measured, see [Signals & Datasets](/hardware/devices/ardeeg/examples)) |
+| **Signals** | EEG, EMG, ECG |
+| **Host** | Arduino UNO R4 WiFi (not included) |
+| **Link to the computer** | Wi-Fi (UDP) |
+| **Electrodes** | Dry or wet Ag/AgCl, 2.54 mm header |
+| **Power** | Small 5 V power bank: up to 1 A, up to 1,000 mAh |
+| **Software** | Arduino sketch + Python script |
+
+## How it works
+
+```
+ Electrodes 1–8 ─┐
+ Reference (ear) ┼─► ardEEG ──SPI──► Arduino UNO R4 ──Wi-Fi──► Python on
+ Bias (ear) ─────┘   (ADS1299)       WiFi                       your computer
+                                       ▲
+             5 V power bank ───────────┘
+```
+
+1. **Measure:** the ADS1299 digitises all 8 channels at the same moment, 250 times per second.
+2. **Collect:** the Arduino reads each sample over SPI when the shield signals *data ready*, and packs 50 samples into one packet.
+3. **Send:** the packets go over Wi-Fi (UDP) to your computer, where a Python script filters and plots them.
+
+![ardEEG kit: cap, shield on the Arduino, power bank](/images/hardware/2026/10/ardeeg_kit.jpg)
+
+## ardEEG or PiEEG-8?
+
+| | PiEEG-8 | ardEEG |
+|---|---|---|
+| **Host** | Raspberry Pi 4 / 5 | Arduino UNO R4 WiFi |
 | **Channels** | 8 | 8 |
-| **Power requirement** | 3A, up to 10,000 mAh | Max 1A, up to 1,000 mAh |
-| **Operating system** | Raspberry Pi OS (Linux) | Arduino firmware |
-| **Best for** | Research, full BCI setup | Education, prototyping, embedded |
+| **Link** | Software runs on the Pi | Wi-Fi to your computer |
+| **Power** | 5 V, 3 A, up to 10,000 mAh | 5 V, up to 1 A, up to 1,000 mAh |
+| **Software** | PiEEG Server, BrainFlow, Python | Arduino sketch + Python |
+| **Best for** | Research, full BCI setup | Education, prototyping, embedded projects |
 
+## What you can measure
 
-![ardEEG Arduino low-cost device to measure EEG, EMG, EKG](/images/hardware/2024/05/genereal-300x112.jpg)
+| Signal | What it shows | Typical first test |
+|---|---|---|
+| **EEG** | Brain rhythms: delta, theta, alpha, beta, gamma | Close your eyes and watch alpha (8–12 Hz) rise |
+| **EMG** | Muscle activity | Chew or clench the jaw |
+| **ECG** | Heart activity | Electrodes on the chest or wrists |
+
+See real recordings in [Signals & Datasets](/hardware/devices/ardeeg/examples).
+
+## Where it's used
+
+Read signals from the brain, process them, and control something: a robotic arm, a computer, an exoskeleton, a drone or a toy car.
+
+![ardEEG applications](/images/hardware/2026/10/ardeeg_applications.jpg)
+
+## Get started
+
+<Cards>
+  <Cards.Card title="What's in the Box" href="/hardware/devices/ardeeg/required-equipment" />
+  <Cards.Card title="How to Start" href="/hardware/devices/ardeeg/setup" />
+  <Cards.Card title="Electrodes & Pinout" href="/hardware/devices/ardeeg/connections" />
+  <Cards.Card title="Software" href="/hardware/devices/ardeeg/software" />
+</Cards>
+
+## Video
+
+[![How to measure EEG with ardEEG](/images/hardware/2026/10/ardeeg_video.jpg)](https://youtu.be/s_5mDDUFp6E)
+
+[How to measure EEG with ardEEG](https://youtu.be/s_5mDDUFp6E)
+
+## Related
+
+- [GitHub: ardEEG](https://github.com/Ildaron/ardEEG): Arduino sketch, Python scripts, datasets
+- [Noise elimination](/hardware/signal-quality/noise-elimination): getting a clean signal
+- [PiEEG-8](/hardware/devices/pieeg-8): the Raspberry Pi version
+- [Buy ardEEG](https://pieeg.com/ardeeg/)
+
+## Citation
+
+If you use ardEEG in research, please cite:
+
+> I. Rakhmatulin. *Low-Cost Shield ardEEG to Measure EEG with Arduino Uno R4 WiFi.* Preprints 2024, 2024051643. DOI: [10.20944/preprints202405.1643.v1](https://doi.org/10.20944/preprints202405.1643.v1)
+
+## Support
+
+- **Discord:** [discord.gg/5Ps24p47](https://discord.gg/5Ps24p47)
+- **GitHub:** [github.com/pieeg-club](https://github.com/pieeg-club)
+- **Email:** [pieeg@pieeg.com](mailto:pieeg@pieeg.com)

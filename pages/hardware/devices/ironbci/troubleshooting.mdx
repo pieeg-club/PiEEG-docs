@@ -1,0 +1,52 @@
+---
+title: "Troubleshooting"
+description: "Fix common IronBCI-8 problems: battery and charging, Bluetooth connection, software and signal quality."
+---
+
+import { Callout } from 'nextra/components'
+
+# Troubleshooting
+
+## Battery and power
+
+| Problem | Fix |
+|---|---|
+| Nothing happens when switched on | Check the battery is charged and plugged in, and **both switches are ON**. |
+| Board got warm or stopped working after a new battery | The battery polarity may be reversed. Disconnect it at once and check the wires against the **GND** marking. |
+| LED 1 doesn't light when charging | Set Switch 1 ON and Switch 2 OFF. Try another Micro USB cable and a 5 V charger. |
+| Battery runs out quickly | Charge until LED 2 lights. A 200 mAh battery is recommended. Old LiPo cells lose capacity: replace them if they swell. |
+
+## Bluetooth connection
+
+| Problem | Fix |
+|---|---|
+| Device not found | Check both switches are ON. Look for **`EAREEG`** (some units show **`IronBCI`**). Move closer to the computer or phone. |
+| Found but won't connect | It may already be connected to another app or phone. Close the other app, switch IronBCI-8 off and on, and try again. |
+| Connected, but no data | Switch 2 must be ON. Disconnect, switch off and on, and reconnect. |
+| Connection drops | Keep the device within a few metres, with a clear line of sight. Avoid crowded 2.4 GHz areas (Wi-Fi routers, many Bluetooth devices). |
+| PiEEG Cloud has no Bluetooth button | Use **Chrome or Edge** over HTTPS. Safari, Firefox and iPhone / iPad browsers don't support Web Bluetooth. |
+| PiEEG Server: `bleak` missing | Install the extra: `pip install "pieeg-server[ironbci]"`. |
+| PiEEG Server can't find the name | Pass it explicitly: `--ble-name IronBCI`, or use `--ble-address` with the address from `1.Find_Device.py`. |
+| Python SDK finds nothing | The scripts look for the name `EAREEG`. If your unit uses another name, change `DEVICE_NAME` at the top of the script. |
+| macOS: no devices found | Allow your terminal (or Python) to use Bluetooth: **System Settings → Privacy & Security → Bluetooth**. |
+| Linux: permission errors | Make sure `bluetoothd` is running and your user can use BlueZ (`sudo systemctl start bluetooth`). |
+
+## Signal
+
+| Problem | Fix |
+|---|---|
+| All channels noisy at once | Check the **reference and bias ear clips** first. Clean the earlobes and clip them firmly. |
+| One channel flat or very large | That electrode isn't touching the skin. Part the hair, press it in, or add gel. |
+| Values in the thousands of µV | Normal DC offset in raw data. Turn on a band-pass filter (for example 1–40 Hz). |
+| Strong 50/60 Hz hum | Keep away from chargers, power strips and laptops on chargers. Never record while IronBCI-8 is charging. |
+| Big slow spikes on the front channels | Blinks and eye movements. Ask the person to keep the eyes still or closed. |
+| Bursts of high-frequency noise | Jaw, face or neck muscles. Relax the face, don't talk or chew. |
+| Signal jumps when someone moves | Cable movement. Keep electrode leads short and the device fixed to the cap or headset. |
+
+<Callout type="info">
+  See [Noise elimination](/hardware/signal-quality/noise-elimination) for a step-by-step way to find the source of noise.
+</Callout>
+
+## Still stuck?
+
+Ask on [Discord](https://discord.gg/5Ps24p47), open an issue on [GitHub](https://github.com/pieeg-club/ironbci/issues), or email [pieeg@pieeg.com](mailto:pieeg@pieeg.com).

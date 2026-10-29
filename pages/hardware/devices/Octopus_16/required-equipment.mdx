@@ -1,12 +1,50 @@
 ---
-title: "Equipment to start with Octopus 16"  
+title: "What's in the Box"
+description: "Contents of the Octopus 16 package and the extra items you need: XIAO ESP32-S3, power bank, USB-C cable and a strap."
 ---
 
-# What equipment is needed except Octopus 16  
+import { Callout } from 'nextra/components'
 
-- Seeed Studio XIAO ESP32S3-2.4GHz Wi-Fi, BLE 5.0, Dual Core    
-![Image](/images/hardware/2026/01/octopos_3.png)  
+# What's in the Box
 
-When you buy it, the pins are usually not soldered; pay attention!   
+## Included
 
-- Power Bank (not more than 300 mAh and 5V, current not more than 2A)  
+| Item | Details |
+|---|---|
+| **1 × Octopus 16** | 26 mm board with 18 pogo-pin electrodes, 2 × ADS131M08 and sockets for a Seeed Studio XIAO |
+
+<div style={{display: 'flex', gap: '1rem', flexWrap: 'wrap'}}>
+  <img src="/images/hardware/2026/10/octopus16_top.jpg" alt="Octopus 16, top side with XIAO sockets" style={{width: '48%', minWidth: '220px', borderRadius: '8px'}} />
+  <img src="/images/hardware/2026/10/octopus16_pins.jpg" alt="Octopus 16, pogo-pin side" style={{width: '48%', minWidth: '220px', borderRadius: '8px'}} />
+</div>
+
+## Not included
+
+| Item | Requirements | More |
+|---|---|---|
+| **Seeed Studio XIAO ESP32-S3** | The controller that sits on top and sends data over Bluetooth. Comes with a small **BLE antenna**. Usually sold **without soldered pins**, so solder the headers first or buy a pre-soldered version. | [How to Start](/hardware/devices/Octopus_16/setup) |
+| **5 V power bank** | Small and light, 5 V output, **no more than 2 A**. Powers the board while it's worn. | [Safety](/hardware/devices/Octopus_16/safety) |
+| **USB-C data cable** | For flashing the firmware once, and for the power bank. Must be a **data** cable for flashing. | [Firmware](/hardware/devices/Octopus_16/firmware) |
+| **Strap or headband** | Holds the sensor on the head. An elastic band works, or a [3D-printed holder](https://www.thingiverse.com/thing:7386761). | [Pins & Placement](/hardware/devices/Octopus_16/connections) |
+| **A device with Bluetooth LE** | A computer or Android device with **Chrome or Edge** (for PiEEG Cloud and octoBridge), or Python 3.10+ for the Python SDK | [Software](/hardware/devices/Octopus_16/software) |
+
+![Seeed Studio XIAO ESP32-S3](/images/hardware/2026/10/octopus16_xiao_s3.jpg)
+
+<Callout type="warning">
+  **Charge-only cables can't flash.** If no serial port appears when you plug in the XIAO, try a different USB-C cable before anything else.
+</Callout>
+
+<Callout type="info">
+  Safari, Firefox and iPhone / iPad browsers don't support Web Bluetooth. Use Chrome or Edge.
+</Callout>
+
+## Checklist
+
+- [ ] Octopus 16
+- [ ] XIAO ESP32-S3 with headers soldered, and its BLE antenna
+- [ ] USB-C data cable
+- [ ] Charged small 5 V power bank (≤ 2 A)
+- [ ] Strap or headband
+- [ ] Chrome or Edge on a device with Bluetooth LE
+
+Next: [How to Start](/hardware/devices/Octopus_16/setup)

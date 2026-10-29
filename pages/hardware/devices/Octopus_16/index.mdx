@@ -1,83 +1,99 @@
 ---
-title: "Octopus 16"
+title: "Octopus 16 Intro"
+description: "Octopus 16 — a coin-sized 16-channel wireless EEG sensor with dry pogo-pin electrodes, two TI ADS131M08 converters and Bluetooth LE via a Seeed Studio XIAO ESP32-S3."
 ---
+
+import { Cards, Callout } from 'nextra/components'
 
 # Octopus 16
 
-![Image](/images/hardware/2026/01/octopos_4.jpg)
-                                  
-Octopus 16 is a 16-channel device designed to measure biosignals — including EEG (electroencephalography), EMG (electromyography), and ECG (electrocardiography).
+**16 channels of EEG in a coin-sized sensor.**
 
-### What It Does
-Octopus 16 brings high-density biosignal acquisition to microcontrollers  the Seeed Studio  ESP32-S3, enabling portable, wireless, and low-cost 16-channel EEG data acquisition. It utilizes Texas Instruments analog front-end chips (such as the ADS131M08) to capture high-quality 24-bit biosignal data.
+Octopus 16 packs sixteen EEG electrodes, a reference and a ground into a single **26 mm** round board: a cluster of spring-loaded **pogo pins** that press through the hair onto the scalp. No gel, no cap and no ear clips. Two Texas Instruments **ADS131M08** converters measure all 16 channels, and a **Seeed Studio XIAO ESP32-S3** on top streams them over **Bluetooth LE** straight to the browser.
 
-Octopus 16 is ideal for researchers, students, and developers building advanced BCI prototypes, wireless neural-interface applications, and multi-channel embedded BCI setups.
+![Octopus 16 with the XIAO ESP32-S3 mounted](/images/hardware/2026/10/octopus16_render.jpg)
 
-### Key Features:
-- **16-Channel Support:** Measures up to 16 channels of EEG, EMG, or ECG data simultaneously.
-- **24-bit ADC Resolution:** Powered by high-precision ADS131M08 analog front-end chips.
-- **Wireless & Portable Firmware:** Supports firmware written for Seeed Studio XIAO ESP32 S3 with Bluetooth streaming options.
-- **Developer Tools:** Includes Python-based data processing scripts (FFT, signal visualization) and GUI visualization tools (`SDK_Data_Visual.py`).
-- **Low Power:** Suitable for wearable, battery-powered BCI applications.
+<Callout type="warning">
+  Octopus 16 is **not a medical device**. While it's on a head, it runs from a **power bank only**, never plugged into a computer or a wall charger. Read [Safety](/hardware/devices/Octopus_16/safety) before the first recording.
+</Callout>
 
-### How It Differs from PiEEG: 
-## Comparison: PiEEG vs. Octopus 16
+## At a glance
 
-| Feature | PiEEG | Octopus 16 |
-| :--- | :--- | :--- |
-| **Host / MCU** | Raspberry Pi 3 / 4 / 5 | Seeed Studio XIAO (ESP32-S3 |
-| **Channels** | 8 | 16 |
-| **Analog Front-End** | ADS1299 | ADS131M08 |
-| **Connectivity** | SPI Direct Header | SPI / Wireless Bluetooth |
-| **Best for** | Standard 8-ch research, single-board Linux setups | High-channel wearable BCI, wireless prototyping, embedded |
+| | |
+|---|---|
+| **Channels** | 16, plus reference and ground, all in the same cluster |
+| **Electrodes** | 18 dry spring-loaded pogo pins, 4 × 11 mm |
+| **Converters** | 2 × TI ADS131M08, 24-bit, simultaneous sampling |
+| **Sample rate** | 250 SPS |
+| **Board** | 26 mm round, 4 layers |
+| **Controller** | Seeed Studio XIAO ESP32-S3 (not included) |
+| **Wireless** | Bluetooth LE 5, appears as `Octopus-16-XXXX` |
+| **Power** | Small 5 V power bank, battery only while worn |
+| **Software** | PiEEG Cloud, octoBridge, JavaScript SDK, Python SDK |
 
+## How it works
 
+One sensor, one controller, one power bank, no cables to the computer.
 
+```
+ 18 pogo pins ─► 2 × ADS131M08 ─► XIAO ESP32-S3 ─► Bluetooth LE
+ (16 ch + REF + GND)                     ▲            │
+                                         │            ├ cloud.pieeg.com
+                 5 V power bank ─────────┘            ├ octobridge.pieeg.com
+                                                      ├ JavaScript SDK
+                                                      └ Python SDK
+```
 
+1. **Touch:** the pogo pins press through the hair onto the scalp. Reference and ground are in the same cluster, so no other electrodes are needed.
+2. **Measure:** two ADS131M08 chips digitise 8 channels each, 250 times per second.
+3. **Send:** the XIAO ESP32-S3 streams every sample over Bluetooth LE to a browser tab or your own code.
 
-# Pogo Pin Care & Maintenance
+## Octopus 16 or a cap-based board?
 
-> [!IMPORTANT]  
-> **Important Notice: Pogo Pin Care & Maintenance**  
-> The Octopus 16 utilizes high-precision spring-loaded pogo pins to ensure reliable electrical contact. Over time and under heavy usage, individual pogo pins may become stuck, compressed, or jammed inside their housing.
+| | PiEEG-16 / IronBCI-8 | Octopus 16 |
+|---|---|---|
+| **Electrodes** | Separate electrodes in a cap, ear clips for reference and bias | **Built in**: 18 pogo pins on the board |
+| **Coverage** | Spread over the whole head | **One local spot** (about 2 × 2 cm), for example over Pz |
+| **Setup time** | Minutes (cap, gel, clips) | **Seconds**: strap it on |
+| **Wireless** | PiEEG-16: no · IronBCI-8: yes | **Yes** (BLE 5) |
+| **Best for** | Full-head research | Quick tests, classrooms, neurofeedback, a "brain stethoscope" |
 
----
+## What you can measure
 
-## 🔍 Why Do Pogo Pins Get Stuck?
+| Signal | What it shows | Typical first test |
+|---|---|---|
+| **EEG** | Local brain rhythms: delta, theta, alpha, beta, gamma | Place over Pz, close your eyes, watch alpha (8–13 Hz) rise |
+| **Artifacts** | Blinks and jaw clenches | Place over the forehead (Fp) and blink |
+| **EMG** | Muscle activity under the sensor | Clench the jaw |
 
-Pogo pins rely on an internal spring mechanism. A pin becomes stuck (impacted) primarily due to external environmental factors:
+See real recordings in [Signals & Datasets](/hardware/devices/Octopus_16/examples).
 
-* **Dirt, Dust, and Debris:** Fine particles, dust, and hair inside the pin housing can block the internal spring.
-* **Liquid Contaminants:** Oils, moisture, or sticky substances entering the pin barrel cause the internal mechanism to seize.
-* **Side-Angle Pressure or Excess Force:** Applying lateral pressure during insertion or over-compressing the pins can cause mechanical binding.
+## Get started
 
----
+<Cards>
+  <Cards.Card title="What's in the Box" href="/hardware/devices/Octopus_16/required-equipment" />
+  <Cards.Card title="How to Start" href="/hardware/devices/Octopus_16/setup" />
+  <Cards.Card title="Pins & Placement" href="/hardware/devices/Octopus_16/connections" />
+  <Cards.Card title="Software" href="/hardware/devices/Octopus_16/software" />
+</Cards>
 
-## ⚠️ Important Disclaimer & Policy
+## Videos
 
-* **User Responsibility:** Contamination, dirt accumulation, and mechanical wear resulting from improper handling or environmental exposure are **not covered under warranty**.
-* **Continued Usage:** If one or more pins become stuck or impacted, the Octopus 16 can often still function, provided the stuck pins maintain adequate contact with the skin for data transmission.
+- [Octopus 16: start measuring EEG](https://www.youtube.com/watch?v=Yz7GLRGZNk8)
+- [Python SDK demo](https://www.youtube.com/watch?v=OMOJHC0NXXE)
 
----
+## Related
 
-## 🛠️ Best Practices to Prevent and Fix Stuck Pins
+- [OctoBio Kit](/hardware/devices/OctoBio_Kit): Octopus 16 plus an Arduino starter kit, for the classroom
+- [octoBridge](/software/octobridge): the browser lab with block programming
+- [PiEEG Cloud](/cloud): dashboards, experiences and Buddy AI in the browser
+- [JavaScript SDK](/software/api/javascript-sdk): `device: 'octopus-16'`
+- [GitHub: Octopus_16](https://github.com/pieeg-club/Octopus_16): firmware source, Python SDK, datasets
+- 3D models on Thingiverse: [Octopus 16](https://www.thingiverse.com/thing:7386761) · [boxes](https://www.thingiverse.com/PiEEG/designs)
+- [Buy from the PiEEG shop](https://www.pieeg.com/hardware)
 
-To maintain optimal performance and prevent pins from sticking:
+## Support
 
-### 1. Keep the Pins Clean
-* **Periodically clean** the pin tips with an Isopropyl Alcohol (IPA > 90%) swab or brush to prevent sticky buildup.
-* **Use compressed air** to blow out loose dust or debris from around the pin bases.
-
-### 2. Handle with Care
-* **Insert and align** the device straight down vertically ($90^\circ$ angle). Avoid pushing or tilting the pins sideways while under pressure.
-* **Do not force or over-compress** the header beyond its intended travel limit.
-
-### 3. How to Unstick an Impacted Pin
-1. **Apply IPA:** Place a drop of high-purity Isopropyl Alcohol (IPA) directly into the affected pin's barrel to dissolve internal grime or sticky residues.
-2. **Exercise the Plunger:** Lightly tap or exercise the plunger gently with a non-metallic tool to help the internal spring push back up. 
-3. **Dry Thoroughly:** Allow the IPA to fully dry before powering on the device.
-
-> [!WARNING]  
-> **Do not use oil-based lubricants or grease**, as they attract more dirt and permanently damage electrical conductivity.  
-
-
+- **Discord:** [discord.gg/5Ps24p47](https://discord.gg/5Ps24p47)
+- **GitHub:** [github.com/pieeg-club](https://github.com/pieeg-club)
+- **Email:** [pieeg@pieeg.com](mailto:pieeg@pieeg.com)

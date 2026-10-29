@@ -1,0 +1,68 @@
+---
+title: "Signals & Datasets"
+description: "Real 16-channel EEG recordings made with PiEEG-16 and dry electrodes, open datasets, and a step-by-step machine-learning example."
+---
+
+import { Callout } from 'nextra/components'
+
+# Signals & Datasets
+
+What real PiEEG-16 recordings look like, open data to practise with, and a first machine-learning project. All recordings below were made with **dry electrodes, no gel**, at 250 samples per second.
+
+## Example signals
+
+### EEG: alpha test
+
+Eyes closed for 5 seconds, open for 5 seconds, repeated. The signal is band-pass filtered to 8–12 Hz, so the alpha rhythm shows up as bursts of larger amplitude while the eyes are closed. Dataset: [`3.Alpha_test.xlsx`](https://github.com/pieeg-club/PiEEG-16/blob/main/Dataset/3.Alpha_test.xlsx).
+
+![16 channels of alpha-band EEG from PiEEG-16](/images/hardware/2026/10/pieeg16_alpha.png)
+
+The same test with a wavelet transform. The bright bands in the lower plot are the eyes-closed periods.
+
+![Alpha test with wavelet transform](/images/hardware/2026/10/pieeg16_alpha_wavelet.png)
+
+### EEG: chewing and blinking artifacts
+
+Chewing 4, 3, 2 and 1 times, then blinking 4, 3, 2 and 1 times. The signal is band-pass filtered to 1–40 Hz. These large spikes come from muscles and eye movement, not the brain. Dataset: [`2.Chewing_Blinking.xlsx`](https://github.com/pieeg-club/PiEEG-16/blob/main/Dataset/2.Chewing_Blinking.xlsx).
+
+![Chewing and blinking artifacts on 16 channels](/images/hardware/2026/10/pieeg16_artifacts.png)
+
+<Callout type="info">
+  Learn to recognise artifacts before you analyse anything. Remove or mark them before computing band power or training a model.
+</Callout>
+
+## Datasets
+
+All datasets are in the [`Dataset`](https://github.com/pieeg-club/PiEEG-16/tree/main/Dataset) folder of the PiEEG-16 repository. Raw data in µV, 16 channels, 250 SPS, dry Ag/AgCl electrodes without gel.
+
+| File | Content | Length |
+|---|---|---|
+| `1.Chewing_Blinking.xlsx` | Chewing 4-3-2-1 times, then blinking 4-3-2-1 times | 10,000 samples (40 s) |
+| `2.Chewing_Blinking.xlsx` | A second recording of the same test | 10,000 samples (40 s) |
+| `3.Alpha_test.xlsx` | Eyes closed for 5 seconds, open for 5 seconds, repeated | 20,000 samples (80 s) |
+
+To plot them, use the scripts in [`Save_data/dataset_visualisation`](https://github.com/pieeg-club/PiEEG-16/tree/main/Save_data/dataset_visualisation). To clean SPI glitch spikes from your own recordings, use [`Dataset/Remove_Spikes.py`](https://github.com/pieeg-club/PiEEG-16/blob/main/Dataset/Remove_Spikes.py).
+
+## Machine learning: stress detection
+
+A complete beginner pipeline in [`ML_Application`](https://github.com/pieeg-club/PiEEG-16/tree/main/ML_Application): record, turn raw EEG into alpha power, then train a classifier.
+
+| Step | Script | What it does |
+|---|---|---|
+| 1. **Collect** | `1.Save_Data.py` | Record raw 16-channel EEG to Excel. Aim for about 50 recordings of 1 minute or more for each condition (for example, *stress* and *no stress*). |
+| 2. **Extract features** | `2.Convert_to_Power_Alpha.py` | Convert each recording to alpha-band power, in 1-second windows. You can do the same for beta, delta and theta. |
+| 3. **Prepare** | | Combine the recordings into one file per condition, and add a column with the recording (or subject) number. |
+| 4. **Train** | `3.ML.py` | Train and test a classifier on the two conditions. |
+
+Each recording is saved with one column per channel:
+
+![Example of a collected dataset: one column per channel](/images/hardware/2026/10/pieeg16_dataset_format.jpg)
+
+<Callout type="warning">
+  This is a learning example. A classifier trained on a few recordings is not a validated measure of stress, emotion or health.
+</Callout>
+
+## Community projects
+
+- **Home brain health station:** Raspberry Pi 5 + PiEEG with a built-in screen and power bank. A Python script computes alpha-band power and sends it to an LLM chatbot (OpenClaw) for feedback. Experimental. [Video](https://youtu.be/ewxFcGmmV60)
+- **Share your own:** add a folder with a README and pictures to [`User_Projects`](https://github.com/pieeg-club/PiEEG-16/tree/main/User_Projects). PiEEG promotes community projects across its channels.

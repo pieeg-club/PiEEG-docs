@@ -1,0 +1,68 @@
+---
+title: "Firmware"
+description: "Flash the NUCLEO-WB55 for MicroBCI with STM32CubeProgrammer: install the Bluetooth stack at 0x080CE000, then upload the MicroBCI hex file."
+---
+
+import { Steps, Callout } from 'nextra/components'
+
+# Firmware
+
+The NUCLEO-WB55 needs two things before it works with MicroBCI: the **Bluetooth stack** (for the STM32WB's radio core) and the **MicroBCI firmware**. You flash both once, over USB, with no extra programmer: the Nucleo has an ST-LINK built in.
+
+## What you need
+
+| Item | Where |
+|---|---|
+| **STM32CubeProgrammer** | Free from STMicroelectronics: [st.com/stm32cubeprog](https://www.st.com/en/development-tools/stm32cubeprog.html) |
+| **Bluetooth stack** | [`stm32wb5x_BLE_Stack_full_fw.bin`](https://github.com/pieeg-club/MicroBCI/blob/main/Framework/stm32wb5x_BLE_Stack_full_fw.bin) |
+| **MicroBCI firmware** | [`Micro_BCI.hex`](https://github.com/pieeg-club/MicroBCI/blob/main/Framework/Micro_BCI.hex) |
+| **Micro-USB data cable** | |
+
+<Callout type="warning">
+  Flash with **no electrodes on anyone**. The board is connected to a computer while flashing.
+</Callout>
+
+<Steps>
+
+### Connect the Nucleo
+
+Plug the Micro-USB cable into the Nucleo's **ST-LINK USB port** (the right-hand USB port) and into the computer.
+
+### Connect in STM32CubeProgrammer
+
+1. Open STM32CubeProgrammer. The **ST-LINK** should be recognised. If it isn't, install or update the ST-LINK driver.
+2. Set the port to **SWD**.
+3. Select **ST-LINK** as the programmer.
+4. Click **Connect**.
+
+### Install the Bluetooth stack
+
+1. Open the **Firmware Upgrade Services** (FUS) panel.
+2. Click **Read FUS infos**.
+3. Check the **FUS version** is **v1.2.0.0** or **v1.3.0.0**.
+4. Check the board reports a **stack version** (not `0.0.0.0`).
+5. Browse to `stm32wb5x_BLE_Stack_full_fw.bin`.
+6. Set the start address to **`0x080CE000`** and click **Firmware Upgrade**.
+
+<Callout type="error">
+  Use exactly address **`0x080CE000`** for this stack file. A wrong address can leave the radio unusable.
+</Callout>
+
+### Upload the MicroBCI firmware
+
+1. Go back to the main programming view and make sure the board is connected.
+2. Open `Micro_BCI.hex`.
+3. Click **Download** to write it to the board.
+
+### Unplug and test
+
+Unplug the USB cable. Mount the shield, power the board from the **power bank**, and connect with the [Python SDK or the app](/hardware/devices/microbci/software).
+
+</Steps>
+
+**Video:** the whole process step by step: [youtu.be/crqOmnJ3Hjg](https://youtu.be/crqOmnJ3Hjg) · **PDF:** [Micro_BCI_How_To_Start.pdf](https://github.com/pieeg-club/MicroBCI/blob/main/Manuals/Micro_BCI_How_To_Start.pdf)
+
+## Board documents
+
+- [NUCLEO-WB55 schematic (MB1355)](https://github.com/pieeg-club/MicroBCI/blob/main/datasheet/mb1355-wb55rg-d01_schematic.pdf)
+- [Nucleo kit datasheet](https://github.com/pieeg-club/MicroBCI/blob/main/datasheet/Nucleo%20Kit%20Datasheet.pdf)

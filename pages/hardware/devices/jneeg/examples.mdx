@@ -1,0 +1,37 @@
+---
+title: "Signals & Datasets"
+description: "A real 8-channel recording made with JNEEG, the open dataset, and ideas for GPU-accelerated BCI projects on the Jetson Nano."
+---
+
+import { Callout } from 'nextra/components'
+
+# Signals & Datasets
+
+## Example recording
+
+20 seconds from the JNEEG example dataset, all 8 channels, band-pass filtered to 1–40 Hz. The large bursts that appear on many channels at once are artifacts such as blinks, chewing or movement. Between them is the ongoing EEG.
+
+![JNEEG example recording: 8 channels, band-pass 1–40 Hz](/images/hardware/2026/10/jneeg_recording.png)
+
+<Callout type="info">
+  Learn to recognise artifacts before you analyse anything. Remove or mark them before computing band power or training a model.
+</Callout>
+
+## Dataset
+
+In [`GUI/dataset`](https://github.com/pieeg-club/EEG-with-JetsonNano/tree/master/GUI/dataset) of the JNEEG repository, saved by `2.Save_data.py`.
+
+| File | Content | Size |
+|---|---|---|
+| `output1.xlsx` | Raw EEG in µV, columns `data_1ch_test`…`data_8ch_test` | 8 channels, 10,000 samples (40 s at 250 SPS) |
+
+Plot it with [`Data_visualisation.py`](https://github.com/pieeg-club/EEG-with-JetsonNano/tree/master/GUI/dataset). The raw values carry a DC offset, so apply a band-pass filter (for example 1–40 Hz) first, as in the chart above.
+
+## Project ideas for the Jetson Nano
+
+The GPU makes JNEEG a good fit for projects that need real-time inference:
+
+- **Eyes-closed detector:** compute alpha power once per second and switch something on when it rises.
+- **Blink and jaw-clench control:** detect artifacts on the front channels and use them as buttons for a robot or a game.
+- **EEG + camera:** combine a webcam model (face, hand or object detection) with EEG features in one app.
+- **Mental-state classifier:** train a small network on band-power features and run it on the GPU. Start from the [PiEEG-16 machine-learning example](/hardware/devices/pieeg-16/examples#machine-learning-stress-detection).

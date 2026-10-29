@@ -1,0 +1,123 @@
+---
+title: "How to Start"
+description: "Set up MicroBCI: flash the NUCLEO-WB55, mount the shield, connect electrodes, power from a battery, connect over Bluetooth and check the signal."
+---
+
+import { Steps, Tabs, Callout } from 'nextra/components'
+
+# How to Start
+
+From the box to live EEG over Bluetooth, in seven steps.
+
+<Steps>
+
+### Gather the parts
+
+You need the MicroBCI, a NUCLEO-WB55 board, a Micro-USB data cable, a small 5 V power bank, 8 electrodes with two ear clips, and a cap. See [What's in the Box](/hardware/devices/microbci/required-equipment).
+
+### Flash the Nucleo (first time only)
+
+The NUCLEO-WB55 needs the Bluetooth stack and the MicroBCI firmware once. You do this from a computer with **STM32CubeProgrammer**, over the Nucleo's built-in ST-LINK USB port:
+
+1. Upload the Bluetooth stack `stm32wb5x_BLE_Stack_full_fw.bin` at address **`0x080CE000`**.
+2. Upload the firmware `Micro_BCI.hex`.
+
+Step by step, with screenshots: [Firmware](/hardware/devices/microbci/firmware). Video: [youtu.be/crqOmnJ3Hjg](https://youtu.be/crqOmnJ3Hjg).
+
+### Mount the shield
+
+1. Unplug the Nucleo.
+2. Line up the MicroBCI with the Nucleo's headers, matching the end pin marked by the arrow in the photo below.
+3. Press it down evenly until all pins are seated.
+
+![MicroBCI on the Nucleo: match the end pin marked by the arrow](/images/hardware/2026/10/microbci_alignment.jpg)
+
+<Callout type="warning">
+  **Pay attention to the alignment.** A shield shifted by one pin won't work. Compare with the photo before powering on.
+</Callout>
+
+### Connect the electrodes
+
+| Connector | Electrode | Where it goes |
+|---|---|---|
+| **Channels 1–8** | 8 EEG electrodes in the cap | Scalp positions of the 10-20 system |
+| **Reference** | Ear-clip electrode | One earlobe |
+| **Bias** | Ear-clip electrode | The other earlobe |
+
+![Wiring of channels 1–8, reference and bias](/images/hardware/2026/10/microbci_connection.png)
+
+Details: [Electrodes & Mounting](/hardware/devices/microbci/connections).
+
+### Power on from the battery
+
+Plug the **power bank** into the Nucleo's Micro-USB port. The board starts advertising over Bluetooth.
+
+<Callout type="error">
+  MicroBCI has **no isolation**. While electrodes are on a person, the Nucleo runs from the **power bank only**, never from a computer's USB port or a wall charger.
+</Callout>
+
+### Connect over Bluetooth
+
+You don't need to pair it in your system's Bluetooth settings. It uses the same Bluetooth protocol as IronBCI.
+
+<Tabs items={['Python', 'Browser', 'Android', 'PiEEG Server']}>
+<Tabs.Tab>
+
+```bash
+pip install bleak matplotlib numpy scipy pandas openpyxl
+git clone https://github.com/pieeg-club/MicroBCI.git
+cd MicroBCI/SDK/GUI
+```
+
+Open `1.1_GUI.py` and set `address` to your board's Bluetooth address (see [Software](/hardware/devices/microbci/software#find-your-boards-address)), then:
+
+```bash
+python 1.1_GUI.py
+```
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+1. Open **[cloud.pieeg.com](https://cloud.pieeg.com)** in **Chrome or Edge**.
+2. In the Session Lobby, open the **PiEEG Devices** tab and choose **IronBCI** (same protocol).
+3. Pick the board in the browser's Bluetooth window.
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+1. Install [`mobile_sdk_Micro_BCI.apk`](https://github.com/pieeg-club/MicroBCI/tree/main/Mobile_SDK) on an Android phone.
+2. In settings, choose **8 ch**.
+3. Connect and watch the signal live. **Save** to record, **Stop** to finish, then share the file.
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+```bash
+pip install "pieeg-server[ironbci]"
+pieeg-server --device ironbci8
+```
+
+Then open **http://localhost:1617**.
+
+</Tabs.Tab>
+</Tabs>
+
+### Check the signal
+
+Sit still, relax the face and run these quick tests.
+
+| Test | What you should see |
+|---|---|
+| **Sit still for 30 seconds** | All 8 channels settle. Flat lines or huge values mean a loose electrode. |
+| **Close your eyes for 10 seconds** | Alpha (8–12 Hz) rises, then drops when the eyes open |
+| **Blink** (electrodes on the forehead) | Large slow spikes |
+| **Chew or clench the jaw** | Bursts of high-frequency noise. That is muscle (EMG), not brain activity. |
+
+![Alpha with eyes closed and open, recorded with MicroBCI](/images/hardware/2026/10/microbci_alpha.png)
+
+</Steps>
+
+## Next steps
+
+- **Record and analyse:** see [Software](/hardware/devices/microbci/software).
+- **No connection or noisy?** See [Troubleshooting](/hardware/devices/microbci/troubleshooting) and [Noise elimination](/hardware/signal-quality/noise-elimination).

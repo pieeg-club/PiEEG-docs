@@ -1,0 +1,61 @@
+---
+title: "Electrodes & Mounting"
+description: "How to mount MicroBCI on the NUCLEO-WB55 and connect electrodes, reference and bias, with a suggested 8-channel montage."
+---
+
+import { Callout } from 'nextra/components'
+
+# Electrodes & Mounting
+
+## Mounting on the Nucleo
+
+MicroBCI plugs onto the **NUCLEO-WB55** headers. Unplug the board first, line the shield up with the end pin marked by the arrow, and press it down evenly.
+
+![MicroBCI alignment on the NUCLEO-WB55: the arrow marks the end pin](/images/hardware/2026/10/microbci_alignment.jpg)
+
+<Callout type="warning">
+  **Pay attention to the right connection.** If the shield is shifted by one pin, the board won't read the ADS1299. Check the alignment against the photo every time you mount it.
+</Callout>
+
+![MicroBCI mounted on the NUCLEO-WB55](/images/hardware/2026/10/microbci_board.jpg)
+
+The pins the Nucleo uses are shown in the official board documents in the repository: [NUCLEO-WB55 schematic](https://github.com/pieeg-club/MicroBCI/blob/main/datasheet/mb1355-wb55rg-d01_schematic.pdf) and [Nucleo kit datasheet](https://github.com/pieeg-club/MicroBCI/blob/main/datasheet/Nucleo%20Kit%20Datasheet.pdf).
+
+## Electrode connections
+
+MicroBCI has three kinds of electrode inputs.
+
+| Input | Count | Electrode | Purpose |
+|---|---|---|---|
+| **Channels 1–8** | 8 | Dry or wet Ag/AgCl, in the cap | Each channel measures the voltage between its electrode and the reference |
+| **Reference** | 1 | Ear clip on one earlobe | The common 0 µV point that all 8 channels are measured against |
+| **Bias** | 1 | Ear clip on the other earlobe | Actively drives the body to cancel common-mode noise such as 50/60 Hz mains hum |
+
+![MicroBCI wiring: cap, reference, bias and channels 1–8](/images/hardware/2026/10/microbci_connection.png)
+
+The electrode header is a standard **2.54 mm** pin header, so most EEG cables with 2.54 mm (0.1") female connectors fit. Kits: [dry-electrode EEG cap](https://pieeg.com/cap-eeg-kit/), [wet-electrode EEG cap](https://pieeg.com/cap-eeg-kit-8-channels-with-wet-electrodes/), [EMG / ECG kit](https://pieeg.com/kit-to-measure-emg-ecg-ekg/).
+
+<Callout type="info">
+  The **reference and bias clips matter most**. A loose ear clip makes every channel noisy at once. Clean the earlobes and make sure both clips sit firmly.
+</Callout>
+
+## Suggested montage
+
+Place the electrodes on the 10-20 system. This layout is the PiEEG 8-channel default:
+
+| Channel | Position | Area | Good for |
+|---|---|---|---|
+| 1 | **Fp1** | Front left | Blinks, eye movement |
+| 2 | **Fp2** | Front right | Blinks, eye movement |
+| 3 | **C3** | Centre left | Motor activity (right hand) |
+| 4 | **C4** | Centre right | Motor activity (left hand) |
+| 5 | **P7** | Back left, side | Parietal and temporal activity |
+| 6 | **P8** | Back right, side | Parietal and temporal activity |
+| 7 | **O1** | Back left | Alpha rhythm, vision |
+| 8 | **O2** | Back right | Alpha rhythm, vision |
+
+![International 10-20 electrode positions](/images/hardware/2024/08/New-Bitmap-Image-264x300.jpg)
+
+You can use any other positions. Keep a note of which channel went where.
+
+**For EMG or ECG**, place the 8 electrodes over the muscles (or on the chest) you want to measure, with the reference and bias on a bony spot nearby, such as the wrist or elbow.
