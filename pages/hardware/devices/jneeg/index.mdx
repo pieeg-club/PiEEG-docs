@@ -1,0 +1,99 @@
+---
+title: "JNEEG Intro"
+description: "JNEEG — an open-source 8-channel shield that turns the NVIDIA Jetson Nano into a brain-computer interface, with a TI ADS1299 and on-device GPU for real-time machine learning."
+---
+
+import { Cards, Callout } from 'nextra/components'
+
+# JNEEG
+
+**A brain-computer interface with a GPU on board.**
+
+JNEEG is an open-source shield for the **NVIDIA Jetson Nano**. It plugs onto the 40-pin header and measures 8 channels of biosignals (EEG, EMG and ECG) with a Texas Instruments **ADS1299**. Because the Jetson Nano has a GPU, you can run neural networks on the EEG **right on the device**: real-time classification, neural decoding, or EEG combined with a camera.
+
+![JNEEG shield on a Jetson Nano](/images/hardware/2026/10/jneeg_board.jpg)
+
+<Callout type="warning">
+  JNEEG is **not a medical device**. Run it **from a 5 V battery only**, never from the mains. Read [Safety](/hardware/devices/jneeg/safety) before the first recording.
+</Callout>
+
+## At a glance
+
+| | |
+|---|---|
+| **Channels** | 8 biosignal inputs, plus reference and bias |
+| **Converter** | TI ADS1299, 24-bit, simultaneous sampling |
+| **Sample rate** | 250 SPS |
+| **Signals** | EEG, EMG, ECG |
+| **Host** | NVIDIA Jetson Nano Developer Kit |
+| **Link to the Jetson** | SPI on the 40-pin header, DRDY on pin 7 |
+| **Electrodes** | Dry or wet Ag/AgCl, 2.54 mm header |
+| **Power** | 5 V power bank, 3 A, up to 10,000 mAh |
+| **Software** | PiEEG Server (`--device jneeg`), Python scripts |
+
+## How it works
+
+```
+ Electrodes 1–8 ─┐
+ Reference (ear) ┼─► JNEEG ──SPI──► Jetson Nano ──► PiEEG Server
+ Bias (ear) ─────┘   (ADS1299)      (GPU)          ├ dashboard :1617
+                                      ▲            ├ WebSocket :1616
+           5 V power bank ────────────┘            └ your ML models
+```
+
+1. **Measure:** the ADS1299 digitises all 8 channels at the same moment, 250 times per second.
+2. **Transfer:** the Jetson Nano reads each sample over SPI when the shield signals *data ready*.
+3. **Use:** stream it with PiEEG Server, or process it on the GPU with your own models.
+
+![JNEEG kit: the shield on the Jetson Nano, ear clips, EEG cap and power bank](/images/hardware/2026/10/jneeg_kit.jpg)
+
+## JNEEG or PiEEG-8?
+
+| | PiEEG-8 | JNEEG |
+|---|---|---|
+| **Host** | Raspberry Pi 4 / 5 | NVIDIA Jetson Nano |
+| **Channels** | 8 | 8 |
+| **Converter** | ADS1299 | ADS1299 |
+| **GPU** | No | **Yes**, 128 CUDA cores |
+| **PiEEG Server** | `--device pieeg8` | `--device jneeg` |
+| **Best for** | General BCI, research | Real-time ML on EEG, EEG + computer vision |
+
+## What you can measure
+
+| Signal | What it shows | Typical first test |
+|---|---|---|
+| **EEG** | Brain rhythms: delta, theta, alpha, beta, gamma | Close your eyes and watch alpha (8–13 Hz) rise |
+| **EMG** | Muscle activity | Clench the jaw or a fist |
+| **ECG** | Heart activity | Electrodes on the chest or wrists |
+
+See a real recording in [Signals & Datasets](/hardware/devices/jneeg/examples).
+
+## Get started
+
+<Cards>
+  <Cards.Card title="What's in the Box" href="/hardware/devices/jneeg/required-equipment" />
+  <Cards.Card title="How to Start" href="/hardware/devices/jneeg/setup" />
+  <Cards.Card title="Electrodes & Pinout" href="/hardware/devices/jneeg/connections" />
+  <Cards.Card title="Software" href="/hardware/devices/jneeg/software" />
+</Cards>
+
+## Related
+
+- [PiEEG Server](/software/getting-started/installation#jneeg-nvidia-jetson-nano): install and run on the Jetson Nano
+- [PiEEG-8](/hardware/devices/pieeg-8): the Raspberry Pi version
+- [Noise elimination](/hardware/signal-quality/noise-elimination): getting a clean signal
+- [GitHub: EEG-with-JetsonNano](https://github.com/pieeg-club/EEG-with-JetsonNano): Python scripts and dataset
+- [Manual on Google Colab](https://colab.research.google.com/drive/1xW6fwzVdLH83zHoorjeWai6SdZoOanfA)
+- [Buy JNEEG](https://pieeg.com/jneeg/)
+
+## Citation
+
+If you use JNEEG in research, please cite:
+
+> I. Rakhmatulin. *Device JNEEG to convert Jetson Nano to brain-computer interfaces. Short report.* arXiv:2301.11110, 2023. [arxiv.org/abs/2301.11110](https://arxiv.org/abs/2301.11110)
+
+## Support
+
+- **Discord:** [discord.gg/5Ps24p47](https://discord.gg/5Ps24p47)
+- **GitHub:** [github.com/pieeg-club](https://github.com/pieeg-club)
+- **Email:** [pieeg@pieeg.com](mailto:pieeg@pieeg.com)

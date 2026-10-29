@@ -1,0 +1,54 @@
+---
+title: "Troubleshooting"
+description: "Fix common JNEEG problems: power, SPI and GPIO on the Jetson Nano, PiEEG Server, Python scripts and signal quality."
+---
+
+import { Callout } from 'nextra/components'
+
+# Troubleshooting
+
+Start with `pieeg-server doctor`. It checks SPI, GPIO, Python packages and your settings in one go.
+
+## Power and hardware
+
+| Problem | Fix |
+|---|---|
+| Status LED on the shield is off | Check the power bank is on and the shield is fully seated on all 40 pins. |
+| Jetson shuts down or restarts | The power bank can't supply enough current. Use a 5 V / 3 A bank and a short, thick cable. Keep the Jetson in its 5 W power mode (`sudo nvpmodel -m 1`) when running from a power bank. |
+| Shield is off by one pin | Shut down, remove and re-seat it. Pin 1 of the shield must match pin 1 of the header. |
+
+## SPI and GPIO
+
+| Problem | Fix |
+|---|---|
+| `/dev/spidev0.0` not found | SPI is off. Run `sudo /opt/nvidia/jetson-io/jetson-io.py` → **Configure 40-pin header** → enable **spi1** → **Save and reboot**. |
+| `Permission denied` on SPI or GPIO | `sudo groupadd -f spi && sudo usermod -aG spi,gpio "$USER"`, then log out and in again. |
+| PiEEG Server: no samples arrive | The DRDY line offset may differ on your JetPack release. Check with `gpioinfo gpiochip0` (after `sudo apt install -y gpiod`) and pass `--gpio-chip /dev/gpiochip0`. |
+| Python script: `Jetson.GPIO` errors | Run as a user in the `gpio` group, or with `sudo`. `Jetson.GPIO` comes with JetPack. |
+
+## PiEEG Server
+
+| Problem | Fix |
+|---|---|
+| `pip` can't install `pieeg-server` | It needs **Python 3.10+**. JetPack 4 ships Python 3.6. Install a newer Python first, or use the [Python scripts](/hardware/devices/jneeg/software#python-scripts). |
+| Dashboard shows 16 channels | Start with `--device jneeg`. |
+| Can't open the dashboard from a laptop | Use `http://<jetson-ip>:1617` and check both are on the same network. |
+
+## Signal
+
+| Problem | Fix |
+|---|---|
+| All channels noisy at once | Check the **reference and bias ear clips** first. Clean the earlobes and clip them firmly. |
+| One channel flat or very large | That electrode isn't touching the skin. Part the hair, press it in, or add gel. |
+| Strong 50/60 Hz hum | Something is on mains power. Unplug every charger, run the monitor from the battery, move away from power strips. |
+| Noise from the fan | Keep electrode cables away from the Jetson's fan and heatsink. |
+| Big slow spikes on the front channels | Blinks and eye movements. Ask the person to keep the eyes still or closed. |
+| Bursts of high-frequency noise | Jaw, face or neck muscles. Relax the face, don't talk or chew. |
+
+<Callout type="info">
+  **Is it the board or the setup?** Set all channels to input-shorted (`CHnSET = 0x01`). If the signal stays within a few µV, the hardware is fine. See [Noise elimination](/hardware/signal-quality/noise-elimination).
+</Callout>
+
+## Still stuck?
+
+Ask on [Discord](https://discord.gg/5Ps24p47), open an issue on [GitHub](https://github.com/pieeg-club/EEG-with-JetsonNano/issues), or email [pieeg@pieeg.com](mailto:pieeg@pieeg.com).
