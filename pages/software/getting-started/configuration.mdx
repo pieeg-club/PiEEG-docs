@@ -20,6 +20,7 @@ pieeg-server [OPTIONS] [COMMAND]
 | `doctor` | Diagnose hardware, software, and configuration |
 | `record FILE` | Record EEG to CSV (standalone, no server) |
 | `monitor` | Live terminal display (standalone, no server) |
+| `studio [FILES…]` | Offline MNE-Python analysis suite on port `1618` (requires `pieeg-server[studio]`) |
 
 #### doctor
 
@@ -49,6 +50,16 @@ pieeg-server monitor --device ironbci8  # IronBCI via BLE
 ```
 
 **Supported flags**: `--device`, `--mock`, `--gpio-chip`, `--profile`, `--ble-name`, `--ble-address`, `--serial-port`, `--verbose`
+
+#### studio
+
+```bash
+pieeg-studio                                  # start offline MNE suite at http://127.0.0.1:1618
+pieeg-server studio recordings/session.csv    # preload a recording
+pieeg-server studio --host 0.0.0.0 --port 1618 --no-browser
+```
+
+**Supported flags**: `files`, `--host`, `--port`, `--sfreq`, `--no-browser` — see [PiEEG Studio](/software/features/studio).
 
 ### Server Options
 
@@ -131,6 +142,8 @@ script manages the chip-select GPIO line directly).
 | `--osc-regions-setup` | — | Interactive wizard for OSC/LSL channel regions |
 | `--lsl` | — | Enable Lab Streaming Layer outlet |
 | `--lsl-name NAME` | `PiEEG` | LSL stream name |
+| `--studio` | — | Also start [PiEEG Studio](/software/features/studio) in a background process |
+| `--studio-port PORT` | `1618` | PiEEG Studio HTTP port when started with `--studio` |
 | `-v, --verbose` | — | Debug logging |
 
 <Callout type="tip">

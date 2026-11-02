@@ -8,5 +8,6 @@
   "optical-bench": "Optical Physiological Bench",
   "oculomotor-bench": "Oculomotor & Pupillometry Bench",
   "detectors": "Detectors",
-  "recording": "Recording"
+  "recording": "Recording",
+  "studio": "PiEEG Studio (MNE)"
 }
