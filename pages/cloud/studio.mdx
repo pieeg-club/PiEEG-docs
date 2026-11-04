@@ -106,22 +106,6 @@ The **BCI & MOABB** tab brings [MOABB (Mother of All BCI Benchmarks)](https://mo
   7. `ERP-Xdawn + LDA` — ERP Spatial-Temporal Covariance + LDA
 - **Visual Diagnostics & Reproducible Script**: Compare pipeline Accuracy, Balanced Accuracy, F1, and ROC-AUC against chance level, inspect per-pipeline confusion matrices and MNE CSP spatial pattern topomaps (`csp_patterns.png`), and download the standalone `pieeg_moabb_benchmark.py` script.
 
----
-
-## Self-Hosting the Cloud Studio Container
-
-The multi-tenant browser Studio service lives in the `studio/` directory of [`PiEEG-server-cloud`](https://github.com/pieeg-club/PiEEG-server-plus) and can be deployed to **Fly.io** (with scale-to-zero) or any Docker host:
-
-```bash
-# Run locally from the studio/ package
-cd studio
-pip install -e .
-pieeg-studio --port 1618
-
-# Or deploy your own scale-to-zero instance on Fly.io
-cd studio
-fly launch --copy-config --no-deploy
-fly deploy
 ```
 
 | Environment Variable | Default | Description |
