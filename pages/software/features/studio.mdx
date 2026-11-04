@@ -1,40 +1,60 @@
 ---
 title: PiEEG Studio (MNE-Python)
-description: Offline EEG analysis suite for PiEEG recordings powered by MNE-Python — filters, ICA, spectral/topomaps, ERPs, connectivity, and reproducible code.
+description: Browser-based and local MNE-Python EEG analysis & MOABB BCI benchmark suite for PiEEG recordings — filters, ICA, spectral/topomaps, ERPs, connectivity, and reproducible code.
 ---
 
 import { Callout, Steps } from 'nextra/components'
 
 # PiEEG Studio
 
-**Offline EEG analysis suite for PiEEG recordings, built on MNE-Python**
+**MNE-Python EEG analysis & MOABB BCI benchmark suite — in the browser on PiEEG Cloud or 100% locally**
 
-`PiEEG-server` is built for **real-time** streaming, live dashboards, games, and BCI experiences. **PiEEG Studio** is its **offline** companion: drop in a `pieeg_YYYYMMDD_HHMMSS.csv` recording (or open it directly from the Dashboard's **Saved Sessions** list) to clean signals with research-grade filters, remove ocular artefacts with ICA, and explore spectra, topomaps, time–frequency, ERPs, and connectivity. Everything runs 100% locally and offline — and any analysis you configure in the UI can be exported as a standalone MNE Python script or Jupyter notebook.
+`PiEEG-server` and `cloud.pieeg.com` are built for **real-time** streaming, live dashboards, games, and BCI experiences. **PiEEG Studio** is their **MNE-Python analysis** companion: open it directly in your browser on **[PiEEG Cloud (`cloud.pieeg.com`)](/cloud/studio)** with zero local installation, or run the **Community Edition locally** (`http://127.0.0.1:1618`) on your machine.
+
+Drop in a `pieeg_YYYYMMDD_HHMMSS.csv` recording, open any saved cloud session from **Saved Sessions**, or send a freshly captured in-memory browser recording straight from the playback toolbar (`Studio ↗`) to clean signals with research-grade filters, remove ocular artefacts with ICA, benchmark BCI decoders with MOABB, and explore spectra, topomaps, time–frequency, ERPs, and connectivity. Any analysis you configure in the UI can be exported as a standalone MNE Python script or Jupyter notebook.
+
+<Callout type="info">
+  **Browser Cloud Preview (`pieeg-studio.fly.dev`) vs. Local Community Edition (`127.0.0.1:1618`):** On [cloud.pieeg.com](https://cloud.pieeg.com), clicking **Studio** or **Studio ↗** automatically checks whether you have `pieeg-studio` running locally on `http://127.0.0.1:1618`. If it is running, your browser routes directly to your local instance for unlimited file sizes, 150+ online MOABB datasets, and native Qt desktop MNE windows; otherwise it opens the hosted **[Cloud Preview](/cloud/studio)** in an isolated per-browser session (`X-Studio-Session`).
+</Callout>
 
 ![PiEEG Studio Overview](/images/studio/overview.png)
 
-| | PiEEG-server | **PiEEG Studio** |
-|---|---|---|
-| **Purpose** | Acquisition, live streaming, BCI | Offline analysis & reporting |
-| **Needs hardware** | Yes (or `--mock`) | **No** |
-| **Needs network** | LAN / WebSocket (`1616` / `1617`) | **No, 100% offline** (`1618`) |
-| **Input** | ADS1299 over SPI / BLE / USB | `recordings/*.csv`, Excel, EDF, BDF, FIF, BrainVision, EEGLAB |
-| **Engine** | NumPy / SciPy (+ Rust `pieeg-core`) | **MNE-Python** + SciPy + scikit-learn |
+| | PiEEG-server / Cloud Live | **PiEEG Studio (Cloud Preview)** | **PiEEG Studio (Local CLI)** |
+|---|---|---|---|
+| **Purpose** | Acquisition, live streaming, BCI | Zero-install browser MNE analysis & MOABB | Offline analysis, large files & desktop Qt |
+| **Needs hardware** | Yes (or `--mock` / demo) | **No** | **No** |
+| **Where it runs** | Browser (`cloud.pieeg.com`) or LAN (`1616`/`1617`) | Hosted (`pieeg-studio.fly.dev`, isolated `ps-sid`) | **100% offline** (`http://127.0.0.1:1618`) |
+| **Input** | ADS1299 over SPI / BLE / USB | Cloud sessions, in-memory browser blobs, CSV, Excel, EDF, BDF, FIF, BrainVision, EEGLAB (≤ 25 MB) | `recordings/*.csv`, Cloud sessions, Excel, EDF, BDF, FIF, BrainVision, EEGLAB (unlimited) |
+| **Engine** | Web Worker DSP / NumPy / SciPy | **MNE-Python** + SciPy + scikit-learn + MOABB | **MNE-Python** + SciPy + scikit-learn + MOABB + Qt |
 
 ---
 
-## Install & Run
+## Launch in Browser or Install Locally
 
-Install the `studio` extra on top of `pieeg-server`:
+### Option 1 — Instant Browser Launch (Zero Install)
+
+On **[cloud.pieeg.com](https://cloud.pieeg.com)** (or directly at **[pieeg-studio.fly.dev](https://pieeg-studio.fly.dev)**):
+- **Session Lobby header**: Click **Studio** (or **More → PiEEG Studio**) to open a blank Studio workspace, drop a local file, or load the 16-channel synthetic demo recording.
+- **Saved Sessions**: Click **Studio ↗** next to any saved cloud session to load its CSV and cloud event annotations directly into MNE.
+- **Unsaved Browser Recordings (`SessionViewer`)**: Click **Studio ↗** in the playback toolbar right after recording in the browser — your in-memory CSV blob and frame markers are uploaded directly to your isolated Studio session without needing to publish first.
+
+See [PiEEG Studio on PiEEG Cloud](/cloud/studio) for details on per-browser session isolation (`ps-sid`), 15-minute idle cleanup, and self-hosting on Fly.io.
+
+### Option 2 — Local Community Edition (CLI)
+
+Install the `studio` extra on top of `pieeg-server` (add `studio-moabb` for 150+ online NeuroTechX MOABB datasets):
 
 ```bash
 pip install "pieeg-server[studio]"
+
+# Optional: 150+ online MOABB datasets + Riemannian geometry
+pip install "pieeg-server[studio,studio-moabb]"
 
 # Optional: fast native Qt desktop browser for interactive raw.plot()
 pip install "pieeg-server[studio-qt]"
 ```
 
-You can launch PiEEG Studio in three ways:
+You can launch the local Community Edition in three ways:
 
 ```bash
 # 1. Standalone CLI (opens http://127.0.0.1:1618)
@@ -49,7 +69,7 @@ pieeg-server --mock --studio
 ```
 
 <Callout type="tip">
-  **One-click from the Dashboard:** In the PiEEG Dashboard (`http://localhost:1617`), open **Saved Sessions** and click **Studio ↗** next to any recording (or in the playback toolbar). If Studio isn't running yet, the server starts it automatically and loads that session with its `.annotations.json` sidecar markers.
+  **One-click from the Dashboard:** In both the local PiEEG Dashboard (`http://localhost:1617`) and [cloud.pieeg.com](https://cloud.pieeg.com), open **Saved Sessions** and click **Studio ↗** next to any recording (or in the playback toolbar). If `pieeg-studio` is running on `127.0.0.1:1618`, it opens locally; otherwise it launches the local child process or the browser Cloud Preview automatically.
 </Callout>
 
 ---
@@ -87,6 +107,7 @@ Steps can be reordered, toggled, and tuned live with before/after PSD comparison
 - **Time–frequency**: Per-channel spectrogram and whole-session band-power timeline.
 - **Events & ERP**: Epoching around annotations or fixed windows, baseline correction, peak-to-peak rejection, condition averages $\pm$ SEM, GFP, `evoked.plot_joint`, and `epochs.plot_image`.
 - **Connectivity**: Coherence, PLV, wPLI, and band-limited correlation rendered as an adjacency matrix and circular chord diagram.
+- **BCI & MOABB Benchmark Lab**: Standardized BCI paradigm epoching (**Motor Imagery / ERD**, **P300 / ERP**, **SSVEP**), built-in synthetic and online [NeuroTechX MOABB](https://moabb.neurotechx.com/) datasets in an isolated `moabb_data/` directory, and 7 decoding pipelines (`CSP + LDA`, `CSP + SVM`, `Riemannian TS + LR`, `Riemannian MDM`, `LogVar + LDA`, `BandPower + RF`, `ERP-Xdawn + LDA`) with Stratified K-Fold / Cross-Session evaluation, confusion matrices, MNE CSP spatial pattern topomaps, and standalone `pieeg_moabb_benchmark.py` export.
 
 ### MNE Visual Lab & Exports
 

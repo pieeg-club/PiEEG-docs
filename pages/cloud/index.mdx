@@ -21,6 +21,7 @@ The cloud platform is built from the [PiEEG-server-cloud](https://github.com/pie
   <Cards.Card title="Dashboard (cloud.pieeg.com)" href="https://cloud.pieeg.com" />
   <Cards.Card title="BrainFlow Devices" href="/cloud/brainflow" />
   <Cards.Card title="Live Lab (Bio-Pen)" href="/cloud/live-lab" />
+  <Cards.Card title="PiEEG Studio (MNE)" href="/cloud/studio" />
   <Cards.Card title="Experiences gallery" href="/software/features/experiences" />
   <Cards.Card title="Buddy AI (Live Copilot)" href="/cloud/buddy" />
   <Cards.Card title="Local Bridge (WebRTC OSC)" href="/cloud/local-bridge" />
@@ -31,6 +32,7 @@ The cloud platform is built from the [PiEEG-server-cloud](https://github.com/pie
 | **Dashboard** | Live waveforms, spectral analysis, 3D topographic maps, 3D IMU hand view, session playback, WebXR view, and the [experiences gallery](/software/features/experiences). | Browser: [cloud.pieeg.com](https://cloud.pieeg.com) |
 | **[BrainFlow Devices](/cloud/brainflow)** | Browser-native WebBLE and WebSerial drivers for 19 BrainFlow-compatible third-party boards (`BoardIds`), with Nyquist-adaptive DSP conditioning and 6-axis IMU support. | Browser: [cloud.pieeg.com/lobby](https://cloud.pieeg.com/lobby) |
 | **[Live Lab (Bio-Pen)](/cloud/live-lab)** | Programmable 15 Hz JavaScript signal pipeline, graded curriculum briefs (`check()`), head-to-head Decoder Arena (`loroCV`), and one-click `/lab/:id` permalinks. | Browser: [cloud.pieeg.com/lab](https://cloud.pieeg.com/lab) |
+| **[PiEEG Studio](/cloud/studio)** | Browser-based MNE-Python EEG analysis & MOABB BCI benchmark suite with FIR/IIR filtering, ICA, topomaps, ERPs, connectivity, and `.xlsx`/`.fif`/`.edf`/`.py`/`.ipynb` export — with per-browser session isolation and automatic handoff to local port `1618` when running locally. | Browser: [pieeg-studio.fly.dev](https://pieeg-studio.fly.dev) / `127.0.0.1:1618` |
 | **[Buddy AI](/cloud/buddy)** | Integrated EEG & BCI copilot inside the dashboard: live brain & patterns panel, Turnkey Cloud AI + BYOK + offline Built-in Neural Analyst, guided pattern training, Lab Notebook sessions, PiEEG docs RAG, `.ipynb` export, and dashboard actuators. | Browser: [cloud.pieeg.com](https://cloud.pieeg.com) |
 | **[Local Bridge](/cloud/local-bridge)** | Standalone 5 MB Rust gateway that receives frames from the browser over a P2P WebRTC data channel and forwards them locally as OSC packets. | Local binary (`127.0.0.1` / LAN) |
 
@@ -96,6 +98,7 @@ Acquisition, packet decoding, filtering, spectral analysis, and [Buddy AI's](/cl
 <Cards>
   <Cards.Card title="BrainFlow Devices" href="/cloud/brainflow" />
   <Cards.Card title="Live Lab (Bio-Pen)" href="/cloud/live-lab" />
+  <Cards.Card title="PiEEG Studio (MNE)" href="/cloud/studio" />
   <Cards.Card title="Experiences gallery" href="/software/features/experiences" />
   <Cards.Card title="Local Bridge" href="/cloud/local-bridge" />
   <Cards.Card title="Self-host the server" href="/software/getting-started/installation" />
