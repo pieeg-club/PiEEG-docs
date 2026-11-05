@@ -1,6 +1,6 @@
 ---
 title: Chrome Extension
-description: Real-time brain state feedback overlaid on any webpage — powered by PiEEG-server with optional AI insights from PiEEG-agent.
+description: Real-time spectral band-power ratios and EEG metrics overlaid on any webpage — powered by PiEEG-server with optional AI analysis from PiEEG-agent.
 ---
 
 import { Callout, Steps } from 'nextra/components'
@@ -75,25 +75,27 @@ The PiEEG icon appears in the toolbar. Pin it from the puzzle-piece menu if need
 
 ### Brain Insights Overlay
 
-A draggable, on-page HUD that turns live band power into real-time cognitive-state estimates.
+A draggable, on-page HUD that computes classical spectral band-power ratios in real time.
 
-| Index | Formula | Reference |
+| Shorthand Label | Band-Power Ratio Formula | Literature Origin |
 |-------|---------|-----------|
-| Engagement | β / (α + θ) | Pope, Bogart & Bartolome (1995) |
-| Workload | θ / α | Gevins et al. (1997); Holm (2009) |
-| Fatigue | (θ + α) / β | Eoh, Chung & Kim (2005) |
-| Calm | α / total power | Pfurtscheller & Lopes da Silva (1999) |
+| Engagement | $\beta / (\alpha + \theta)$ | Pope, Bogart & Bartolome (1995) |
+| Workload | $\theta / \alpha$ | Gevins et al. (1997); Holm (2009) |
+| Fatigue | $(\theta + \alpha) / \beta$ | Eoh, Chung & Kim (2005) |
+| Calm | $\alpha / \text{total power}$ | Pfurtscheller & Lopes da Silva (1999) |
 
-Each index is normalized to an **adaptive within-session baseline** (EWMA z-score → logistic), so every level is relative to your own recent activity. Confidence reflects baseline coverage and live signal stability. All formulas and caveats are shown in an expandable details panel.
+<Callout type="info">
+  **Honest metrics — spectral ratios, not cognitive diagnoses:** Although the BCI literature historically named these ratios *Engagement*, *Workload*, *Fatigue*, and *Calm*, each bar is strictly a mathematical ratio of FFT band powers ($\theta, \alpha, \beta$) normalized to an **adaptive within-session baseline** (EWMA z-score → logistic). Because scalp $\alpha$ changes strongly with eyes open/closed and $\beta$ is sensitive to forehead/jaw muscle tension (sEMG), treat these values as relative spectral indicators ("higher or lower $\beta/(\alpha+\theta)$ than your recent baseline"), not direct measurements of mental state.
+</Callout>
 
-Toggle from the popup. Drag anywhere on the page. Expand **Method & raw signals** for raw band values and index formulas.
+Toggle from the popup. Drag anywhere on the page. Expand **Method & raw signals** for raw band power values and ratio formulas.
 
 ### Neural Feedback Assistant
 
 AI-powered chat copilot overlay (requires [PiEEG-agent](/software/integrations/pieeg-agent) on port 8000).
 
-- Natural language conversations about your brain state
-- Live brain state bars (Focus, Calm, Engagement, Workload)
+- Natural language queries about your live EEG spectrum, band powers, and signal quality
+- Live spectral band-power ratio bars
 - Pattern training guidance and signal analysis
 - Connectivity exploration
 - Draggable glass morphism panel, minimizable

@@ -19,7 +19,7 @@ Stream live EEG from PiEEG-server into Unity and build no-code neuro-reactive av
 
 | Component | What it does | Works without VRChat? |
 |-----------|--------------|----------------------|
-| **Neuro Binder** | UI Toolkit routing table: map EEG bands (`Alpha`, `Focus_Ratio`, etc.) to blendshapes or material properties via AnimationCurve | ✅ |
+| **Neuro Binder** | UI Toolkit routing table: map EEG band powers (`EEG_Alpha`, `EEG_Beta`, `EEG_Focus_Ratio`, etc.) to blendshapes or material properties via AnimationCurve | ✅ |
 | **Live Preview** | Connects to the server in Edit mode, runs FFT, drives your avatar while you tune curves wearing the headset | ✅ |
 | **Neuro Reactor** | Runtime MonoBehaviour that applies bindings in any standalone/XR Unity build | ✅ |
 | **VRChat SDK Automator** | Generates clips + 1D blend tree, merges via Modular Avatar without mutating base FX | VRChat only |
@@ -114,15 +114,15 @@ The Reactor applies bindings at runtime and in Edit mode automatically.
 
 ## Available EEG Sources
 
-| Source | Description |
-|--------|-------------|
-| `EEG_Delta` | 0.5–4 Hz (slow waves, deep sleep) |
-| `EEG_Theta` | 4–8 Hz (meditation, drowsiness) |
-| `EEG_Alpha` | 8–13 Hz (relaxed, eyes closed) |
-| `EEG_Beta` | 13–30 Hz (focus, active thinking) |
-| `EEG_Gamma` | 30–100 Hz (high cognition) |
-| `EEG_Focus_Ratio` | Beta / (Alpha + Theta) |
-| Custom | Define in server config |
+| Source | Frequency Band / Formula | Notes |
+|--------|--------------------------|-------|
+| `EEG_Delta` | 0.5–4 Hz (delta band power) | Slow-wave band; also picks up slow electrode drift and movement artifacts |
+| `EEG_Theta` | 4–8 Hz (theta band power) | Mid-low frequency band |
+| `EEG_Alpha` | 8–13 Hz (alpha band power) | Rises prominently over posterior/occipital sites when the eyes close |
+| `EEG_Beta` | 13–30 Hz (beta band power) | Fast cortical rhythm; also increases with forehead or jaw muscle tension (sEMG) |
+| `EEG_Gamma` | 30–100 Hz (gamma band power) | High-frequency band; heavily influenced by cranial/facial sEMG on scalp/face montages |
+| `EEG_Focus_Ratio` | `Beta / (Alpha + Theta)` | Shorthand band-power ratio (fast-to-slow power), not a direct measure of cognitive attention |
+| Custom | Define in server config | Any custom channel or band combination |
 
 All sources are normalized 0–1 via rolling-max with configurable window (default 10 seconds).
 

@@ -34,4 +34,4 @@ The GPU makes JNEEG a good fit for projects that need real-time inference:
 - **Eyes-closed detector:** compute alpha power once per second and switch something on when it rises.
 - **Blink and jaw-clench control:** detect artifacts on the front channels and use them as buttons for a robot or a game.
 - **EEG + camera:** combine a webcam model (face, hand or object detection) with EEG features in one app.
-- **Mental-state classifier:** train a small network on band-power features and run it on the GPU. Start from the [PiEEG-16 machine-learning example](/hardware/devices/pieeg-16/examples#machine-learning-stress-detection).
+- **Band-power condition classifier:** train a small network on spectral band-power features ($\delta, \theta, \alpha, \beta, \gamma$) and run it on the GPU. Start from the [PiEEG-16 machine-learning example](/hardware/devices/pieeg-16/examples#machine-learning-alpha-power-condition-classification).

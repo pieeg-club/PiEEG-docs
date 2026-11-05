@@ -59,37 +59,37 @@ Open **http://localhost:8000**. On first launch, a setup wizard prompts for an L
 
 ## What It Can Do
 
-### 1. Real-Time Brain State Monitoring
+### 1. Real-Time Spectral & Signal Quality Monitoring
 
 ```
 you > how's my signal?
 copilot > All channels read "good", quality 0.98 — trustworthy signal.
 
-you > am I focused or relaxed?
-copilot > Relaxed. Alpha is dominant (0.87) and focus is low (0.31).
+you > what are my band powers right now?
+copilot > Alpha is dominant (relative power 0.87, 8–13 Hz) and Beta/Theta ratio is low (0.31).
 ```
 
 Available tools: `get_neural_state`, `get_band_powers`, `get_channel_quality`, `get_recent_events`, `find_artifacts`
 
 ### 2. Pattern Training
 
-Train custom mental-state classifiers by conversation:
+Train custom condition classifiers by conversation:
 
 ```
-you > train a pattern called "meditation"
-copilot > Starting pattern training for "meditation"…
+you > train a pattern called "eyes-closed-alpha"
+copilot > Starting pattern training for "eyes-closed-alpha"…
           First, sit normally with eyes open.
           Ready to record 'rest' for 4 seconds? (say yes when ready)
 
 you > yes
 copilot > ✓ Captured 32 frames, quality 0.94.
-          Now close your eyes and meditate.
+          Now close your eyes for the active condition.
 
 [repeats 3 reps]
 
-copilot > Pattern "meditation" trained:
+copilot > Pattern "eyes-closed-alpha" trained:
           - Balanced accuracy: 0.89 (leave-one-rep-out CV)
-          - Top cue: Alpha increase in O1/O2
+          - Top cue: Alpha power increase in O1/O2
           - Channel importance: O1★★★ O2★★★ C3★ C4★
 ```
 
@@ -118,19 +118,19 @@ copilot > Mean correlation: 0.34
 ### 5. Session Recording & Comparison
 
 ```
-you > record a session called "meditation" for 60 seconds
+you > record a session called "eyes-closed" for 60 seconds
 [later]
-you > compare meditation vs eyes-open-focus
-copilot > Alpha power: +0.92 SD (meditation higher)
-          Beta power: -0.54 SD (meditation lower)
+you > compare eyes-closed vs eyes-open
+copilot > Alpha power: +0.92 SD (eyes-closed higher)
+          Beta power: -0.54 SD (eyes-closed lower)
           — effect sizes are within-session Cohen's d
 ```
 
 ### 6. Jupyter Notebook Generation
 
 ```
-you > create a notebook analyzing my meditation pattern
-copilot > ✓ Created: meditation_analysis.ipynb
+you > create a notebook analyzing my eyes-closed alpha pattern
+copilot > ✓ Created: eyes_closed_alpha_analysis.ipynb
           Includes: pattern ROC curve, feature importance, band power evolution
 ```
 
@@ -139,7 +139,7 @@ copilot > ✓ Created: meditation_analysis.ipynb
 ```bash
 pieeg-agent streams     # Discover available LSL streams
 pieeg-agent monitor     # Live state monitor (no LLM)
-pieeg-agent ask "am I focused?"   # One-shot question
+pieeg-agent ask "what is my alpha band power?"   # One-shot question
 pieeg-agent chat        # Interactive terminal chat
 pieeg-agent web         # Web interface (recommended)
 pieeg-agent mcp         # Same tools, for an external MCP host (no built-in LLM)
@@ -288,8 +288,8 @@ PiEEG Agent solves the rate mismatch between LLMs (~1 Hz) and EEG (250–500 Hz)
 |------|------|----------------|----------|
 | T0 Raw | 250 Hz | float32 µV samples | Never |
 | T1 Features | 8 Hz | band powers, quality | Never |
-| T2 State | 1 Hz | focus / relax / engagement | On demand |
-| T3 Events | ~sparse | `"focus_high"` @ timestamp | Yes — main input |
+| T2 State | 1 Hz | band-power ratios (`focus` / `relax` / `engagement`), dominant band | On demand |
+| T3 Events | ~sparse | debounced band-ratio & artifact transitions @ timestamp | Yes — main input |
 | T4 Reason | on query | NL questions + tools | — |
 
 The LLM pulls state via tools — it is never streamed raw data. An MCP host pulls the same tools. Raw samples stay in this process either way. The ingestion thread runs independently of the caller so no samples are lost.
@@ -297,10 +297,10 @@ The LLM pulls state via tools — it is never streamed raw data. An MCP host pul
 ## Honest Metrics
 
 <Callout type="warning">
-  PiEEG Agent is designed for neurofeedback research and UX prototyping, not clinical use.
+  PiEEG Agent is designed for neuroscience education, signal exploration, and BCI prototyping — not clinical use.
 </Callout>
 
-- **Brain state indices** (`focus`, `relax`, `engagement`) are normalized to a rolling 10-minute window. They mean "high *for you, right now*", not absolute or clinical values.
+- **Band-power ratio indices** (`focus`, `relax`, `engagement`) are shorthand names for spectral band-power ratios (such as $\beta/(\alpha+\theta)$ and $\alpha/(\alpha+\beta)$) normalized to a rolling 10-minute within-session window. They indicate whether a band ratio is high or low *relative to your recent baseline*, **not** an absolute or validated measure of cognitive focus, relaxation, or emotion (and can shift with eyes open/closed or cranial muscle tension).
 - A `~` prefix marks the warm-up period before enough variance is established.
 - **Pattern CV scores** are leave-one-rep-out balanced accuracy — honest at the data scale you have.
 - **Session comparisons** report within-session Cohen's d with explicit caveats — not a generalization claim.

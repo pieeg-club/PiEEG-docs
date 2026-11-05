@@ -51,19 +51,19 @@ All datasets are in the [PiEEG-8 repository](https://github.com/pieeg-club/PiEEG
 
 Each dataset folder has a plotting script, for example `1.data_graph_visualization.py` and `2.Alpha_plot.py`.
 
-## Machine learning: stress detection
+## Machine learning: alpha-power condition classification
 
-A complete beginner pipeline in [`ML_application`](https://github.com/pieeg-club/PiEEG-8/tree/main/ML_application): record, turn raw EEG into alpha power, then train a classifier.
+A complete beginner pipeline in [`ML_application`](https://github.com/pieeg-club/PiEEG-8/tree/main/ML_application): record two conditions, turn raw EEG into alpha-band power, then train a binary classifier.
 
 | Step | Script | What it does |
 |---|---|---|
-| 1. **Collect** | `1.save_data_short_Pi5.py` | Record raw EEG to Excel. Aim for about 50 recordings of 1 minute or more for each condition (for example, *stress* and *no stress*). |
-| 2. **Extract features** | `2.Convert_to_Power_Alpha.py` | Convert raw EEG to alpha-band power, which is more informative for stress than raw voltage. Remove recordings with strong artifacts first. |
+| 1. **Collect** | `1.save_data_short_Pi5.py` | Record raw EEG to Excel. Aim for about 50 recordings of 1 minute or more for each condition (for example, *eyes closed* vs. *eyes open*, or *task* vs. *rest*). |
+| 2. **Extract features** | `2.Convert_to_Power_Alpha.py` | Convert raw EEG to alpha-band power (8–13 Hz), which separates spectral conditions much better than raw voltage. Remove recordings with strong artifacts first. |
 | 3. **Prepare** | | Combine the recordings into one file per condition, and add a column with the recording (or subject) number. |
 | 4. **Train** | `3.ML.py` | Train and test a classifier on the two conditions. |
 
-Full walkthrough: [How to use machine learning for stress control via EEG](https://pieeg.com/news/instruction-how-to-use-machine-learning-to-stress-or-emoinal-control-via-eeg/).
+Full walkthrough: [How to use machine learning with alpha-band power via EEG](https://pieeg.com/news/instruction-how-to-use-machine-learning-to-stress-or-emoinal-control-via-eeg/).
 
 <Callout type="warning">
-  This is a learning example. A classifier trained on a few recordings is not a validated measure of stress, emotion or health.
+  **Honest metrics:** This is a feature-extraction and classification learning example. While the original blog tutorial framed the two classes as "stress" vs. "no stress", a classifier trained on a few short alpha-power recordings only learns to separate the spectral band power of those two recording windows — it is **not** a validated measure of psychological stress, emotion, or health.
 </Callout>

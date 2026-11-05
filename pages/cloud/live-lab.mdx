@@ -12,7 +12,7 @@ import { Callout, Cards } from 'nextra/components'
 Opening `/lab` or any shared `/lab/:penId` link boots directly into the workbench. If no physical board is connected yet, the workbench automatically starts an 8-channel 250 Hz simulated stream (`demo:8`) so pipelines run immediately.
 
 <Callout type="info">
-  **Honest metrics:** Within-session Cohen's *d* and Leave-One-Rep-Out cross-validation (`loroCV`) scores measure class separation within the current electrode placement and session. They are descriptive within-session diagnostics, not cross-subject or cross-day generalisation claims.
+  **Honest metrics:** Within-session Cohen's *d* and Leave-One-Rep-Out cross-validation (`loroCV`) scores measure class separation within the current electrode placement and session. They are descriptive within-session diagnostics, not cross-subject or cross-day generalisation claims. Similarly, the `focus` and `relax` fields on `LabFrame` are shorthand names for smoothed spectral band-power ratios (`(Beta + Gamma) / (Alpha + Theta + Delta)` and `Alpha / total + Theta / Beta`), not direct cognitive-state measurements.
 </Callout>
 
 ## Architecture & Live Loop
@@ -47,8 +47,8 @@ Every stage cell runs in strict mode with the following identifiers pre-bound in
 | `win` | `number[][]` | Last 2 seconds of raw samples per channel: `win[ch][sampleIdx]` in µV |
 | `EEG` | `number[]` | Latest instantaneous sample per channel in µV |
 | `bands` | `LabBands` | `{ delta, theta, alpha, beta, gamma, relative, totalPower, dominantFrequency }` |
-| `focus` | `number` | Engagement index in `[0, 1]` |
-| `relax` | `number` | Relaxation index in `[0, 1]` |
+| `focus` | `number` | Smoothed high-to-low band-power ratio `(Beta + Gamma) / (Alpha + Theta + Delta)` in `[0, 1]` |
+| `relax` | `number` | Smoothed composite alpha / theta-beta band-power ratio in `[0, 1]` |
 | `fs` | `number` | Active sample rate in Hz (e.g. `250`) |
 | `dataset` | `LabDataset` | Session epochs `{ X, y, reps, labels, featureNames }` |
 | `state` | `Record<string, any>` | Persistent per-stage object preserved across ticks (for EMAs, counters, refractory gates) |

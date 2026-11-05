@@ -13,11 +13,11 @@ A round 16-channel board whose spring-loaded pogo pins are the electrodes, so th
 
 | Reading | Meaning |
 |---|---|
-| **Band power** | δ θ α β γ, relative (share of total power) |
-| **Focus** | Uncalibrated index, Beta / (Beta + Theta) |
-| **Relax** | Uncalibrated index, Alpha / (Alpha + Beta) |
-| **RMS** | Signal size in µV |
-| **Strongest band** | The band with the most power right now |
+| **Band power** | δ θ α β γ, relative (share of total spectral power) |
+| **Focus (`β / (β + θ)`)** | Shorthand label for the uncalibrated `Beta / (Beta + Theta)` band-power ratio |
+| **Relax (`α / (α + β)`)** | Shorthand label for the uncalibrated `Alpha / (Alpha + Beta)` band-power ratio |
+| **RMS** | Signal amplitude in µV |
+| **Strongest band** | The frequency band with the highest power right now |
 | **EEG ok** | Green when RMS is between 2 and 200 µV |
 
 | Band | Range |
@@ -71,4 +71,4 @@ Elecrow's All-in-One Starter Kit for Arduino (SEA0004T): an Arduino Uno-compatib
 - **Distance** needs a facing surface. A missed echo is a negative number, not "very far".
 - **Sound, soil and knob** are raw counts (0–1023), not calibrated units.
 - **Tilt** has no compass heading.
-- **Focus and relax** are uncalibrated indexes. Do not treat them as mood or a clinical score.
+- **Focus and relax** are shorthand names for uncalibrated band-power ratios (`Beta / (Beta + Theta)` and `Alpha / (Alpha + Beta)`). Because alpha rises when the eyes close and beta rises with facial/jaw muscle tension, do not treat them as measures of attention, mood, or a clinical score.

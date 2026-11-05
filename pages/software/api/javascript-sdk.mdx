@@ -110,8 +110,8 @@ Pick a board with the `device` option on `connectBLE()` / `connectSerial()`.
 const eeg = new PiEEG();
 
 eeg.onBandPowers((powers) => {
-  console.log('Alpha', powers.Alpha, 'Beta', powers.Beta);
-  console.log('focus', eeg.getFocusIndex(), 'relax', eeg.getRelaxationIndex());
+  const betaThetaRatio = powers.Beta / (powers.Beta + powers.Theta);
+  console.log('Alpha', powers.Alpha, 'Beta', powers.Beta, 'Beta/(Beta+Theta)', betaThetaRatio);
 });
 
 // Must be called from a click handler.
@@ -144,9 +144,8 @@ or HTTPS, and open it in Chrome/Edge:
 
       eeg.onBandPowers((powers) => {
         out.textContent =
-          `Alpha ${powers.Alpha.toFixed(2)}  Beta ${powers.Beta.toFixed(2)}\n` +
-          `focus ${eeg.getFocusIndex().toFixed(2)}  ` +
-          `relax ${eeg.getRelaxationIndex().toFixed(2)}`;
+          `Delta ${powers.Delta.toFixed(2)}  Theta ${powers.Theta.toFixed(2)}\n` +
+          `Alpha ${powers.Alpha.toFixed(2)}  Beta  ${powers.Beta.toFixed(2)}  Gamma ${powers.Gamma.toFixed(2)}`;
       });
 
       eeg.onDisconnect(() => { out.textContent = 'Disconnected.'; });
@@ -250,20 +249,24 @@ eeg.onDisconnect(() => { /* device dropped */ });
 `powers` is keyed by band name — `Delta`, `Theta`, `Alpha`, `Beta`, `Gamma`
 (see `PiEEG.FREQUENCY_BANDS`).
 
-## Neural-state helpers
+## Spectral & band-power ratio helpers
 
-Derived from the latest band powers:
+Derived directly from the latest FFT band powers (`Delta`, `Theta`, `Alpha`, `Beta`, `Gamma`):
 
-| Method | Returns |
+| Method | Formula / Returns |
 |--------|---------|
-| `getFocusIndex()` | Beta / (Beta + Theta) |
-| `getRelaxationIndex()` | Alpha / (Alpha + Beta) |
-| `getMeditationIndex()` | (Theta + Alpha) / total power |
-| `isFocused(threshold = 0.6)` | boolean |
-| `isRelaxed(threshold = 0.6)` | boolean |
-| `getBandPower(name)` | single band value |
-| `getBandPowers()` | copy of all band powers |
-| `getSpectrum()` | latest FFT spectrum |
+| `getBandPowers()` | Copy of all band powers (`{ Delta, Theta, Alpha, Beta, Gamma }`) |
+| `getBandPower(name)` | Single band power value |
+| `getSpectrum()` | Latest FFT magnitude spectrum |
+| `getFocusIndex()` | `Beta / (Beta + Theta)` band-power ratio (`0–1`) |
+| `getRelaxationIndex()` | `Alpha / (Alpha + Beta)` band-power ratio (`0–1`) |
+| `getMeditationIndex()` | `(Theta + Alpha) / totalPower` band-power ratio (`0–1`) |
+| `isFocused(threshold = 0.6)` | `boolean` (`getFocusIndex() >= threshold`) |
+| `isRelaxed(threshold = 0.6)` | `boolean` (`getRelaxationIndex() >= threshold`) |
+
+<Callout type="info">
+  **Honest metrics:** Methods like `getFocusIndex()`, `getRelaxationIndex()`, and `getMeditationIndex()` compute simple ratios of spectral band power. Despite the shorthand method names, a single band-power ratio is **not** a validated measure of cognitive focus, relaxation, or meditation: `Alpha` rises strongly whenever the eyes close (posterior visual cortex idling), and `Beta` / `Gamma` increase whenever forehead or jaw muscles tense (sEMG). Prefer `getBandPowers()` and explicit band ratios when building experiments.
+</Callout>
 
 ## Status
 

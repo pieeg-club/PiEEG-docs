@@ -13,7 +13,7 @@ Octopus 16 streams over Bluetooth LE, so it works straight from a browser tab or
 |---|---|---|---|
 | **[PiEEG Cloud](#pieeg-cloud)** | Dashboards, spectra, experiences, Buddy AI | Chrome or Edge | None |
 | **[octoBridge](#octobridge)** | Classrooms, block programs, the OctoBio Kit | Chrome or Edge | None |
-| **[octoWatch](#garmin-smartwatch-app--octowatch)** | Live wrist EEG scope, readiness HUD & 10–20 fit guide | Garmin smartwatches | [Connect IQ Store](https://apps.garmin.com/apps/8e994535-c853-45ca-abe3-ccef61119c8b) |
+| **[octoWatch](#garmin-smartwatch-app--octowatch)** | Live wrist EEG scope, relative band-power HUD & 10–20 fit guide | Garmin smartwatches | [Connect IQ Store](https://apps.garmin.com/apps/8e994535-c853-45ca-abe3-ccef61119c8b) |
 | **[JavaScript SDK](#javascript-sdk)** | Your own web app | Chrome or Edge | One script |
 | **[Python SDK](#python-sdk)** | Live view with heatmap and FFT, recording to Excel | Windows, macOS, Linux | `pip install bleak` |
 
@@ -41,10 +41,10 @@ The classroom lab at **[octobridge.pieeg.com](https://octobridge.pieeg.com/)**. 
 
 | Reading | Meaning |
 |---|---|
-| **Band power** | δ θ α β γ, relative (share of total power) |
-| **Focus** | Uncalibrated index, Beta / (Beta + Theta) |
-| **Relax** | Uncalibrated index, Alpha / (Alpha + Beta) |
-| **RMS** | Signal size in µV |
+| **Band power** | δ θ α β γ, relative (share of total spectral power) |
+| **Focus (`β / (β + θ)`)** | Shorthand label for the uncalibrated `Beta / (Beta + Theta)` band-power ratio |
+| **Relax (`α / (α + β)`)** | Shorthand label for the uncalibrated `Alpha / (Alpha + Beta)` band-power ratio |
+| **RMS** | Signal amplitude in µV |
 | **EEG ok** | Green when RMS is between 2 and 200 µV |
 
 More: [octoBridge](/software/octobridge) · [OctoBio Kit lessons](/hardware/devices/OctoBio_Kit/lessons).

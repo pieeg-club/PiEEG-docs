@@ -1,7 +1,9 @@
 ---
 title: Detectors
-description: Client-side EEG processing hooks — band powers, blink detection, focus, and relaxation.
+description: Client-side EEG processing hooks — spectral band powers, frontal EOG blink detection, and band-power ratio heuristics.
 ---
+
+import { Callout } from 'nextra/components'
 
 # Detectors
 
@@ -10,6 +12,10 @@ Browser-side EEG processing hooks — React refs, zero re-renders. Read `.curren
 ```ts
 import { useBandPowers, useBlink, useFocus, useRelax } from "../../hooks/detectors";
 ```
+
+<Callout type="info">
+  **Honest metrics — spectral band-power ratios vs. mental states:** `useBandPowers` and `useBlink` measure physical signal properties (FFT spectral power in µV²/Hz and frontal corneal-retinal EOG deflections). The `useFocus` and `useRelax` hooks are **shorthand heuristic names** for composite spectral band-power ratios (`(Beta + Gamma) / (Alpha + Theta + Delta)` and `Alpha / total + Theta / Beta`). High-frequency power (Beta/Gamma) is strongly influenced by scalp/facial muscle activity (sEMG) and electrode placement, and Alpha power changes primarily with eyes-closed vs. eyes-open visual cortex rhythms — these ratios are useful for interactive game controls and neurofeedback exploration, not direct measures of cognitive attention or emotional relaxation.
+</Callout>
 
 ## `useBandPowers(eegData, config?)`
 
@@ -61,13 +67,13 @@ Prefer `state.current.count` over the one-shot `blinked` flag: miss one 25 ms po
 
 ## `useFocus(eegData, config?)`
 
-Cortical engagement index — (Beta + Gamma) / (Alpha + Theta + Delta).
+High-to-low frequency band-power ratio — `(Beta + Gamma) / (Alpha + Theta + Delta)`. Named `focus` as an interactive control shorthand; reflects relative fast-wave power (which can rise with both cortical beta activity and cranial/facial sEMG).
 
 | Field | Type | Description |
 |---|---|---|
-| `focus` | `number` | 0 (relaxed) – 1 (highly focused), smoothed |
-| `raw` | `number` | Unsmoothed, uncalibrated ratio |
-| `calibrated` | `boolean` | Whether baseline has been captured |
+| `focus` | `number` | Smoothed `(Beta + Gamma) / (Alpha + Theta + Delta)` ratio normalized to `0–1` |
+| `raw` | `number` | Unsmoothed, uncalibrated band-power ratio |
+| `calibrated` | `boolean` | Whether a within-session baseline has been captured |
 
 **Config:** `{ channels?, updateHz?, smoothing?, scaleDivisor? }`
 
@@ -75,14 +81,14 @@ Cortical engagement index — (Beta + Gamma) / (Alpha + Theta + Delta).
 
 ## `useRelax(eegData, config?)`
 
-Alpha-dominance + theta-beta ratio composite relaxation index.
+Alpha-dominance and theta-to-beta ratio composite — combines relative Alpha power (`Alpha / totalPower`) with the `Theta / Beta` ratio. Named `relax` as a shorthand; primarily tracks posterior/global alpha rhythm elevation (for example, closing the eyes) relative to beta power.
 
 | Field | Type | Description |
 |---|---|---|
-| `relaxation` | `number` | 0 (alert) – 1 (deeply relaxed), smoothed |
-| `alphaRelative` | `number` | Alpha / total power (0–1) |
-| `thetaBetaRatio` | `number` | θ / β raw ratio |
-| `calibrated` | `boolean` | Whether baseline has been captured |
+| `relaxation` | `number` | Smoothed composite alpha / theta-beta index normalized to `0–1` |
+| `alphaRelative` | `number` | Relative alpha power, `Alpha / totalPower` (`0–1`) |
+| `thetaBetaRatio` | `number` | Raw `Theta / Beta` power ratio |
+| `calibrated` | `boolean` | Whether a within-session baseline has been captured |
 
 **Config:** `{ channels?, updateHz?, smoothing?, alphaWeight?, tbrCeiling? }`
 
@@ -93,13 +99,14 @@ Alpha-dominance + theta-beta ratio composite relaxation index.
 All detectors use the same ref-based pattern for zero-rerender reads:
 
 ```tsx
-const { state: focus } = useFocus(eegData);
+const bands = useBandPowers(eegData);
 
 useEffect(() => {
   let raf: number;
   function loop() {
-    const f = focus.current.focus; // read directly, no re-render
-    // use f to drive animation, game logic, etc.
+    const alphaRel = bands.current.relative.Alpha; // 0–1 relative alpha power
+    const betaRel = bands.current.relative.Beta;   // 0–1 relative beta power
+    // use band powers to drive animation, game logic, etc.
     raf = requestAnimationFrame(loop);
   }
   raf = requestAnimationFrame(loop);

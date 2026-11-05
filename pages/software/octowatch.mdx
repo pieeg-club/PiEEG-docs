@@ -15,7 +15,7 @@ import { Callout, Steps, Cards } from 'nextra/components'
 </Callout>
 
 <Callout type="warning">
-  Research, education, and athletic neuro-feedback tool only. **Not a medical device.** Band power, readiness, focus, and calm metrics are uncalibrated educational indices and must not be used for clinical diagnosis.
+  **Honest metrics:** Research, education, and biosignal exploration tool only — **not a medical device**. On-watch HUD labels (`RDY`, `α CALM`, `β FOCUS`, `θ REST`) are compact smartwatch shorthand for **relative spectral band-power estimators** ($\alpha$ 8–13 Hz, $\beta$ 13–30 Hz, $\theta$ 4–8 Hz) and signal stability (`SQI%`). Because $\alpha$ power changes with eyes open/closed and $\beta$ power is sensitive to scalp/jaw muscle tension (sEMG), these bars are uncalibrated spectral indicators and must not be interpreted as clinical readiness, attention, or emotional state.
 </Callout>
 
 ---
@@ -32,7 +32,7 @@ import { Callout, Steps, Cards } from 'nextra/components'
 - **On-Watch DSP & Signal Quality**
   - Zero-allocation 16-channel × 128-sample circular ring buffer (`~0.51 s` window at 250 SPS).
   - Online IIR high-pass DC blocker (`α = 0.992`) per channel to eliminate electrode drift and keep waveforms centered.
-  - Live 64-sample RMS amplitude (`µV`), measured sampling rate (`SPS`), packet drop counter, relative spectral band estimators (`α` Calm, `β` Focus, `θ` Rest), and composite Signal Quality Index (`SQI%`).
+  - Live 64-sample RMS amplitude (`µV`), measured sampling rate (`SPS`), packet drop counter, relative spectral band power estimators ($\alpha$, $\beta$, $\theta$, labeled `α CALM`, `β FOCUS`, `θ REST` on the watch face), and composite Signal Quality Index (`SQI%`).
 
 ---
 
@@ -43,7 +43,7 @@ Tap the touch screen (or press the **Select / Start** button) to cycle through t
 | Page | Screen Name | What It Shows |
 | :---: | :--- | :--- |
 | **1** | **`1CH SCOPE`** | High-precision 250 SPS single-channel oscilloscope with dual-pass neon glow trace, 10–20 electrode label (`Fp1`–`P8`), brain region (`PREFRONTAL`, `MOTOR`, `PARIETAL`, `OCCIPITAL`, `TEMPORAL`), `SQI%`, live `µV`, and RMS readout. |
-| **2** | **`GARMIN HUD`** | Athlete Neuro-Readiness Dashboard showing **Readiness (`RDY`)**, live **α CALM**, **β FOCUS**, and **θ REST** band bars, training guidance (`READY FOR ZONE 2 / NEURO-TRAIN`), watch battery %, and local time. |
+| **2** | **`GARMIN HUD`** | Relative Band-Power Dashboard showing composite index (`RDY`), live relative **α (8–13 Hz)**, **β (13–30 Hz)**, and **θ (4–8 Hz)** band power bars (labeled `α CALM`, `β FOCUS`, `θ REST` in the watch UI), watch battery %, and local time. |
 | **3** | **`FIT GUIDE`** | Interactive **How to Wear & 10–20 Scalp Fit Guide** with a top-down head diagram, live green/amber/red electrode contact nodes, ear reference (`A1`) / BIAS (`A2`) indicators, and 4 step-by-step instructions (swipe **Up/Down** to step `1/4` → `4/4`). |
 | **4** | **`4CH BANK`** | Simultaneous 4-channel stacked montage (`BANK 01–04`, `05–08`, `09–12`, `13–16`) around the active channel. |
 | **5** | **`16CH GRID`** | Full 4×4 16-electrode impedance & activity matrix color-coded by `SQI%` and RMS activity, plus live packet (`PKT`) and drop (`DROP`) counters. |

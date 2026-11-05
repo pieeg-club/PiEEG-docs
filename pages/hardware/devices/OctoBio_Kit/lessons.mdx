@@ -12,15 +12,15 @@ import { Callout } from 'nextra/components'
 Every lesson is a single rule, so students see cause and effect straight away. Pick a lesson, press the controls and watch the program and the hardware react.
 
 <Callout type="info">
-  The demos on the product page use simulated signals to show the idea. Real recordings are noisier, and focus and relax are uncalibrated indicators.
+  **Honest metrics:** The demos on the product page use simulated signals to show the idea. Real recordings are noisier, and the `focus` ($\beta/(\beta+\theta)$) and `relax` ($\alpha/(\alpha+\beta)$) blocks are uncalibrated spectral band-power ratios — not measures of a student's attention, ability, or emotional state.
 </Callout>
 
 ## Lesson list
 
 | Lesson | Signal → Action | Headset | Concepts |
 |---|---|:---:|---|
-| **Eyes closed, light on** | alpha → LED D10 | ✅ | Alpha rhythm, if / else, threshold |
-| **Focus meter** | focus → servo | ✅ | Mapping a range, beta band, servo |
+| **Eyes closed, light on** | alpha → LED D10 | ✅ | Alpha rhythm (8–13 Hz), if / else, threshold |
+| **Focus meter (β/θ ratio)** | `focus` ($\beta/(\beta+\theta)$) → servo | ✅ | Mapping a range, beta/theta band-power ratio, servo |
 | **Quiet room** | alpha + no motion → screen | ✅ | Combining two signals, PIR motion, 16×2 LCD |
 | **Follow the knob** | knob → servo | ❌ | Analog input, mapping a range |
 | **Plant care** | soil → buzzer | ❌ | Raw ADC counts, threshold, buzzer |
@@ -38,9 +38,9 @@ forever
       light D10 off
 ```
 
-### Focus meter
+### Focus meter (beta / theta band-power ratio)
 
-The focus index is mapped onto the servo angle, so the arm becomes a needle. It is an uncalibrated indicator, so it means "higher than a moment ago", not a score.
+The `focus` block computes the uncalibrated band-power ratio $\beta / (\beta + \theta)$ and maps it onto the servo angle (`0–180°`), so the arm acts like a physical gauge of relative high-frequency power. Because beta power also increases with forehead or jaw muscle tension (sEMG) and shifts when alpha/theta change, teach students that the needle shows a **spectral power ratio**, not a score of how hard someone is thinking.
 
 ```
 forever
@@ -112,4 +112,4 @@ Same kit, same lessons. Move up a level as the class does.
 
 - Start every class with **Follow the knob**: it works without a headset and teaches mapping.
 - Use **Blink is not a thought** early, so students learn that a big signal is not always brain activity.
-- Never present focus or relax as a score of a student's ability or mood.
+- Never present `focus` ($\beta/(\beta+\theta)$) or `relax` ($\alpha/(\alpha+\beta)$) as a score of a student's ability, attention, or mood — explain them as ratios of frequency band power.

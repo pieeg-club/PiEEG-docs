@@ -57,7 +57,7 @@ Webhook rules support three service modes — **Generic**, **IFTTT**, **Zapier**
 
 ## Use Cases
 
-- **IFTTT**: Turn on a smart light when alpha power is high (relaxation)
-- **Zapier**: Log focus scores to a Google Sheet every minute
-- **n8n / Node-RED**: Complex automation chains with EEG triggers
-- **Home Assistant**: Dim lights when focus drops, play ambient when relaxing
+- **IFTTT**: Turn on a smart light when alpha band power crosses a threshold (for example, during an eyes-closed alpha test)
+- **Zapier**: Log relative band powers ($\delta, \theta, \alpha, \beta, \gamma$) or $\beta/(\alpha+\theta)$ ratios to a Google Sheet every minute
+- **n8n / Node-RED**: Build automation chains triggered by band-power thresholds or frontal EOG blink events
+- **Home Assistant**: Drive lighting or audio scenes from real-time alpha/beta band-power ratios
