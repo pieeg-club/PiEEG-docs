@@ -300,7 +300,7 @@ The LLM pulls state via tools — it is never streamed raw data. An MCP host pul
   PiEEG Agent is designed for neuroscience education, signal exploration, and BCI prototyping — not clinical use.
 </Callout>
 
-- **Band-power ratio indices** (`focus`, `relax`, `engagement`) are shorthand names for spectral band-power ratios (such as $\beta/(\alpha+\theta)$ and $\alpha/(\alpha+\beta)$) normalized to a rolling 10-minute within-session window. They indicate whether a band ratio is high or low *relative to your recent baseline*, **not** an absolute or validated measure of cognitive focus, relaxation, or emotion (and can shift with eyes open/closed or cranial muscle tension).
+- **Band-power ratio indices** (`focus`, `relax`, `engagement`) are shorthand names for spectral band-power ratios (such as `β / (α + θ)` and `α / (α + β)`) normalized to a rolling 10-minute within-session window. They indicate whether a band ratio is high or low *relative to your recent baseline*, **not** an absolute or validated measure of cognitive focus, relaxation, or emotion (and can shift with eyes open/closed or cranial muscle tension).
 - A `~` prefix marks the warm-up period before enough variance is established.
 - **Pattern CV scores** are leave-one-rep-out balanced accuracy — honest at the data scale you have.
 - **Session comparisons** report within-session Cohen's d with explicit caveats — not a generalization claim.

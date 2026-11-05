@@ -12,7 +12,7 @@ import { Callout, Steps } from 'nextra/components'
 Project name: **octobridge**. Product name in the app: **octoBridge**.
 
 <Callout type="warning">
-  Classroom tool. Not a medical device. Band powers and the `focus` ($\beta/(\beta+\theta)$) and `relax` ($\alpha/(\alpha+\beta)$) band-power ratios are uncalibrated classroom indicators, not a clinical score or a measurement of mental state.
+  Classroom tool. Not a medical device. Band powers and the `focus` (`β / (β + θ)`) and `relax` (`α / (α + β)`) band-power ratios are uncalibrated classroom indicators, not a clinical score or a measurement of mental state.
 </Callout>
 
 ## Open it
@@ -58,13 +58,13 @@ You can use one without the other.
 
 **octoBio Kit:** light (lux), distance (cm; needs a facing surface), temperature (°C), humidity (%), moisture (ADC 0–1023), sound (ADC), knob (ADC), button, PIR motion, IR remote codes, and 6-axis tilt (no heading).
 
-**Octopus-16:** relative delta, theta, alpha, beta, and gamma band powers; uncalibrated band-power ratio blocks (`focus` = $\beta/(\beta+\theta)$ and `relax` = $\alpha/(\alpha+\beta)$); RMS (µV); strongest EEG band; and an “EEG ok” check (RMS between 2 and 200 µV). Blink and jaw tension raise RMS, beta, and gamma.
+**Octopus-16:** relative delta, theta, alpha, beta, and gamma band powers; uncalibrated band-power ratio blocks (`focus` = `β / (β + θ)` and `relax` = `α / (α + β)`); RMS (µV); strongest EEG band; and an “EEG ok” check (RMS between 2 and 200 µV). Blink and jaw tension raise RMS, beta, and gamma.
 
 ## What you can move
 
 On the octoBio Kit: light D10 (on, off, flash), light D8 (on, off), relay, buzzer, servo (0–180°), and the 16×2 screen.
 
-Blocks can mix a reading into a move. Examples already in the lab: eyes closed (alpha power) → light on, walk-by → buzzer, knob → servo, $\beta/(\beta+\theta)$ ratio (`focus` block) → servo, distance → light, alpha power and no motion → a line on the screen.
+Blocks can mix a reading into a move. Examples already in the lab: eyes closed (alpha power) → light on, walk-by → buzzer, knob → servo, `β / (β + θ)` ratio (`focus` block) → servo, distance → light, alpha power and no motion → a line on the screen.
 
 ## Flash firmware
 
@@ -84,7 +84,7 @@ When the octoBio Kit port opens, the board restarts. Wait until status is live. 
 - USB serial and Bluetooth stay in this browser. Nothing is uploaded to a PiEEG server.
 - Distance needs a facing surface. A missed echo is a negative number, not “very far”.
 - Sound, moisture, and the knob are raw counts (0–1023), not calibrated units.
-- `focus` ($\beta/(\beta+\theta)$) and `relax` ($\alpha/(\alpha+\beta)$) are shorthand names for uncalibrated band-power ratios. Alpha rises when the eyes close, and beta/gamma rise with forehead or jaw muscle tension — do not treat them as a measure of attention, mood, or clinical state.
+- `focus` (`β / (β + θ)`) and `relax` (`α / (α + β)`) are shorthand names for uncalibrated band-power ratios. Alpha rises when the eyes close, and beta/gamma rise with forehead or jaw muscle tension — do not treat them as a measure of attention, mood, or clinical state.
 
 ## Related
 

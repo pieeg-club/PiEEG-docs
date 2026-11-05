@@ -32,7 +32,7 @@ Open the gallery with **`V`**, or from the dashboard header. Search and filter b
 Every experience must explain itself in the UI: a **How it works** overlay on first open, a header button to reopen it, and honest sensor limits. Do not bury that only in a README.
 
 <Callout type="info">
-  **Honest metrics in experiences:** Where an experience or tag references `Focus`, `Calm`, or `Relax`, it is driven by a **spectral band-power ratio** (`useFocus` = $(\beta + \gamma) / (\alpha + \theta + \delta)$; `useRelax` = relative $\alpha$ + $\theta/\beta$), not a direct measurement of cognitive focus or emotional calm. Closing the eyes raises posterior $\alpha$ power, and tensing facial/jaw muscles raises $\beta/\gamma$ power via sEMG.
+  **Honest metrics in experiences:** Where an experience or tag references `Focus`, `Calm`, or `Relax`, it is driven by a **spectral band-power ratio** (`useFocus` = `(β + γ) / (α + θ + δ)`; `useRelax` = relative `α` + `θ / β`), not a direct measurement of cognitive focus or emotional calm. Closing the eyes raises posterior α power, and tensing facial/jaw muscles raises β/γ power via sEMG.
 </Callout>
 
 ---
@@ -42,9 +42,9 @@ Every experience must explain itself in the UI: a **How it works** overlay on fi
 | Experience | Tag | Description |
 |---|---|---|
 | **octoCaptcha** | EOG / Liveness | Cognitive CAPTCHA: blink N times after a random GO cue. Verifies living EOG morphology on Fp1/Fp2 (envelope, spatial coherence, count, human timing). Proof-of-concept liveness, not a production credential. |
-| **Neural Flight** | VR / AR | First-person flight over a procedural world — the $(\beta+\gamma)/(\alpha+\theta+\delta)$ band-power ratio (`useFocus`) controls lift. Demo autopilot, then Live. Asset-free noise terrain. VR or AR. |
+| **Neural Flight** | VR / AR | First-person flight over a procedural world — the `(β + γ) / (α + θ + δ)` band-power ratio (`useFocus`) controls lift. Demo autopilot, then Live. Asset-free noise terrain. VR or AR. |
 | **PiEEG Virtual Lab** | Lab / VR | Photoreal lab with the live dashboard on the workstation monitor. WASD + mouse, sit to interact, or enter VR. |
-| **Room Buddy (AR)** | AR | Place a buddy on your floor with phone AR. It waves, hops when the $\beta/\gamma$ band-power ratio rises (`useFocus`), and flinches on blink. Vanilla three.js WebXR. |
+| **Room Buddy (AR)** | AR | Place a buddy on your floor with phone AR. It waves, hops when the β/γ band-power ratio rises (`useFocus`), and flinches on blink. Vanilla three.js WebXR. |
 | **Mind Reader** | BCI / ML | P300 “guess my number” (1–9). Cued teaching trains placement-agnostic shrinkage-LDA; Bayesian accumulation reads live. Each round folds back into training. |
 | **Spoon Bend** | Focus | Matrix-style telekinesis. Relative Beta/Gamma band power drives the 3D spoon; digital rain; baseline calibration. |
 
@@ -71,13 +71,13 @@ Every experience must explain itself in the UI: a **How it works** overlay on fi
 
 | Experience | Tag | Notes | Description |
 |---|---|---|---|
-| **Room Buddy (AR)** | AR | | Phone AR buddy driven by $\beta/\gamma$ band-power ratio (`useFocus`) and frontal EOG blinks. |
+| **Room Buddy (AR)** | AR | | Phone AR buddy driven by β/γ band-power ratio (`useFocus`) and frontal EOG blinks. |
 | **PiEEG Virtual Lab** | Lab / VR | VR + hands | Walk a neuroscience lab; full dashboard on the in-world monitor. |
 | **Neural Wave Space** | VR / 3D | VR + hands | 3D EEG wave arc in a starfield. |
 | **Neural Flight** | VR / AR | VR + hands | Band-power-ratio-controlled flight (`useFocus`) over an endless daylit world. |
 | **Northern Lights** | VR / Audio | VR + hands | Aurora curtains shaped by δ/α/γ; ethereal sonification. |
 | **Premeditatio Malorum** | XR / Stoic | VR | Mixed-reality Stoic pairs of 360° YouTube scenes. Hold high alpha power through disruption; score is beta-spike recovery to baseline. |
-| **The Glitching Reality** | MR / Shader | | Camera passthrough + WebGL2. Frontal Alpha Asymmetry ($\ln \alpha_R - \ln \alpha_L$) drives shader distortion. Optional mental-arithmetic task. |
+| **The Glitching Reality** | MR / Shader | | Camera passthrough + WebGL2. Frontal Alpha Asymmetry (`ln(α_R) − ln(α_L)`) drives shader distortion. Optional mental-arithmetic task. |
 
 ---
 
@@ -86,7 +86,7 @@ Every experience must explain itself in the UI: a **How it works** overlay on fi
 | Experience | Tag | Description |
 |---|---|---|
 | **Neural Sonification** | Audio | Bands → music: Delta drone, Theta FM pad, Alpha lead, Beta harmonics, Gamma shimmer. DJ controls for scale, key, reverb, delay. |
-| **MindCast** | Audio | Podcast playback speed follows the $\beta/(\alpha+\theta)$ band-power ratio (`useFocus`). |
+| **MindCast** | Audio | Podcast playback speed follows the `β / (α + θ)` band-power ratio (`useFocus`). |
 | **Northern Lights** | VR / Audio | Wind, drones, and chimes layered on the aurora. |
 
 ---
@@ -97,8 +97,8 @@ Every experience must explain itself in the UI: a **How it works** overlay on fi
 |---|---|---|---|
 | **Spoon Bend** | Focus | | Bend a virtual spoon with Beta/Gamma band-power ratio (`useFocus`). |
 | **Penalty Shooters** | BCI / Game | | Retro SNES penalty kicks. Blink to shoot; trainless adaptive frontal detector. |
-| **Neural Maze Lock** | BCI / Game | | EOG gaze maze with high-$\beta$ (`useFocus`), high-$\alpha$ (`useRelax`), and blink gates. Tracks false triggers and completion time. |
-| **Orb Control** | BCI / EOG | | High-$\beta$ ratio (`useFocus`) grabs the orb, EOG gaze moves it, high-$\alpha$ ratio (`useRelax`) steadies it, high-amplitude artifacts destabilize it, blink releases charge. |
+| **Neural Maze Lock** | BCI / Game | | EOG gaze maze with high-β (`useFocus`), high-α (`useRelax`), and blink gates. Tracks false triggers and completion time. |
+| **Orb Control** | BCI / EOG | | High-β ratio (`useFocus`) grabs the orb, EOG gaze moves it, high-α ratio (`useRelax`) steadies it, high-amplitude artifacts destabilize it, blink releases charge. |
 | **Hand of God** | BCI / Game / sEMG | Aura | Mexico ’86 hang-ball punch. Space/click, or Aura fist. Score only when the referee looks away. |
 
 ---

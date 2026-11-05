@@ -79,13 +79,13 @@ A draggable, on-page HUD that computes classical spectral band-power ratios in r
 
 | Shorthand Label | Band-Power Ratio Formula | Literature Origin |
 |-------|---------|-----------|
-| Engagement | $\beta / (\alpha + \theta)$ | Pope, Bogart & Bartolome (1995) |
-| Workload | $\theta / \alpha$ | Gevins et al. (1997); Holm (2009) |
-| Fatigue | $(\theta + \alpha) / \beta$ | Eoh, Chung & Kim (2005) |
-| Calm | $\alpha / \text{total power}$ | Pfurtscheller & Lopes da Silva (1999) |
+| Engagement | `β / (α + θ)` | Pope, Bogart & Bartolome (1995) |
+| Workload | `θ / α` | Gevins et al. (1997); Holm (2009) |
+| Fatigue | `(θ + α) / β` | Eoh, Chung & Kim (2005) |
+| Calm | `α / total power` | Pfurtscheller & Lopes da Silva (1999) |
 
 <Callout type="info">
-  **Honest metrics — spectral ratios, not cognitive diagnoses:** Although the BCI literature historically named these ratios *Engagement*, *Workload*, *Fatigue*, and *Calm*, each bar is strictly a mathematical ratio of FFT band powers ($\theta, \alpha, \beta$) normalized to an **adaptive within-session baseline** (EWMA z-score → logistic). Because scalp $\alpha$ changes strongly with eyes open/closed and $\beta$ is sensitive to forehead/jaw muscle tension (sEMG), treat these values as relative spectral indicators ("higher or lower $\beta/(\alpha+\theta)$ than your recent baseline"), not direct measurements of mental state.
+  **Honest metrics — spectral ratios, not cognitive diagnoses:** Although the BCI literature historically named these ratios *Engagement*, *Workload*, *Fatigue*, and *Calm*, each bar is strictly a mathematical ratio of FFT band powers (`θ`, `α`, `β`) normalized to an **adaptive within-session baseline** (EWMA z-score → logistic). Because scalp `α` changes strongly with eyes open/closed and `β` is sensitive to forehead/jaw muscle tension (sEMG), treat these values as relative spectral indicators ("higher or lower `β / (α + θ)` than your recent baseline"), not direct measurements of mental state.
 </Callout>
 
 Toggle from the popup. Drag anywhere on the page. Expand **Method & raw signals** for raw band power values and ratio formulas.

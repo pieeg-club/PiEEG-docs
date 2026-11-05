@@ -15,7 +15,7 @@ import { Callout, Steps, Cards } from 'nextra/components'
 </Callout>
 
 <Callout type="warning">
-  **Honest metrics:** Research, education, and biosignal exploration tool only — **not a medical device**. On-watch HUD labels (`RDY`, `α CALM`, `β FOCUS`, `θ REST`) are compact smartwatch shorthand for **relative spectral band-power estimators** ($\alpha$ 8–13 Hz, $\beta$ 13–30 Hz, $\theta$ 4–8 Hz) and signal stability (`SQI%`). Because $\alpha$ power changes with eyes open/closed and $\beta$ power is sensitive to scalp/jaw muscle tension (sEMG), these bars are uncalibrated spectral indicators and must not be interpreted as clinical readiness, attention, or emotional state.
+  **Honest metrics:** Research, education, and biosignal exploration tool only — **not a medical device**. On-watch HUD labels (`RDY`, `α CALM`, `β FOCUS`, `θ REST`) are compact smartwatch shorthand for **relative spectral band-power estimators** (α 8–13 Hz, β 13–30 Hz, θ 4–8 Hz) and signal stability (`SQI%`). Because α power changes with eyes open/closed and β power is sensitive to scalp/jaw muscle tension (sEMG), these bars are uncalibrated spectral indicators and must not be interpreted as clinical readiness, attention, or emotional state.
 </Callout>
 
 ---
@@ -32,7 +32,7 @@ import { Callout, Steps, Cards } from 'nextra/components'
 - **On-Watch DSP & Signal Quality**
   - Zero-allocation 16-channel × 128-sample circular ring buffer (`~0.51 s` window at 250 SPS).
   - Online IIR high-pass DC blocker (`α = 0.992`) per channel to eliminate electrode drift and keep waveforms centered.
-  - Live 64-sample RMS amplitude (`µV`), measured sampling rate (`SPS`), packet drop counter, relative spectral band power estimators ($\alpha$, $\beta$, $\theta$, labeled `α CALM`, `β FOCUS`, `θ REST` on the watch face), and composite Signal Quality Index (`SQI%`).
+  - Live 64-sample RMS amplitude (`µV`), measured sampling rate (`SPS`), packet drop counter, relative spectral band power estimators (α, β, θ, labeled `α CALM`, `β FOCUS`, `θ REST` on the watch face), and composite Signal Quality Index (`SQI%`).
 
 ---
 
