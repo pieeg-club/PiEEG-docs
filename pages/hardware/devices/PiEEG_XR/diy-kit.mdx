@@ -1,0 +1,339 @@
+---
+title: "DIY Kit Build Guide"
+description: "Build your own PiEEG XR mask with the DIY kit: turn a spare VR face cover into a 10-electrode mask. Parts, electrode positions, punching, electrodes, cables, board wiring, case, testing, troubleshooting and care."
+---
+
+import { Steps, Callout } from 'nextra/components'
+
+# DIY Kit Build Guide
+
+The **PiEEG XR DIY Kit** turns a spare face cover for your own headset into a PiEEG XR mask. You punch 10 small holes, push in 10 flat dry Ag/AgCl electrodes, snap on the cables and plug them into the IronBCI-16 board. **No soldering.** A first build takes about **60–90 minutes**.
+
+![A finished DIY PiEEG XR mask with its cable bundle and BCI box](/images/hardware/2026/11/pieegxr_diy_hero.jpg)
+
+The finished mask works like the ready-made PiEEG XR: same electrode layout, same board, same software (BodyPress, PiEEG Cloud, PiEEG Server, VRChat OSC).
+
+| | |
+|---|---|
+| **Electrodes** | 10 flat dry Ag/AgCl: 8 channels + Ref + Bias |
+| **Board** | IronBCI-16 Pro (ADS1299, 24-bit, 250 SPS) |
+| **Wireless** | Bluetooth LE 5, appears as `PiEEG XR` |
+| **Power** | 5 V over USB-C, **battery only** |
+| **Headsets** | Any headset with a removable face cushion: Meta Quest, PICO and others |
+| **Build time** | 60–90 minutes, no soldering |
+
+<Callout type="error">
+  **Battery power only.** Never power the board from a wall charger or a computer on mains power while the mask is worn. Read [Safety](/hardware/devices/PiEEG_XR/safety) before your first session.
+</Callout>
+
+## 1. Check the parts
+
+### In the kit
+
+![Kit contents: IronBCI-16 Pro board, 10 flat Ag/AgCl electrodes, 10 electrode leads, round case and lid](/images/hardware/2026/11/pieegxr_diy_parts.png)
+
+| Item | Qty | What it does |
+|---|---|---|
+| IronBCI-16 Pro board | 1 | Amplifies and digitises the signals, sends them over Bluetooth |
+| Flat Ag/AgCl electrodes with snap stud | 10 | The skin contacts |
+| Electrode leads (snap socket → single-pin socket) | 10 | Connect each electrode to the board |
+| Round case and lid | 1 | Holds the board on the side of the headset |
+
+### You provide
+
+| Item | Notes |
+|---|---|
+| **Spare face cover for your exact headset** | Silicone or PU leather. Search "*your headset* face cover". Keep your original cushion untouched. |
+| Silicone sleeve for the same model (optional) | Smoother, wipe-clean surface that grips the electrodes well |
+| Hole punch | 1 mm hollow punch for silicone; the smallest tube of a rotary leather punch for PU leather |
+| Marker, ruler, blunt tweezers | For marking and seating the electrodes |
+| Cable labels | Masking tape and a pen are fine |
+| Ø 6 mm braided cable sleeve + 2–3 small ties | Bundles the 10 leads into one neat cable |
+| 5 V power bank + **USB-A to USB-C** cable | Powers the board. Some USB-C to USB-C supplies do not switch on. |
+
+<Callout type="warning">
+  **Before you continue:** count 10 electrodes and 10 leads, and check that the spare cover clips onto your headset.
+</Callout>
+
+## 2. Mark the 10 positions
+
+Mark **6 positions across the forehead and 2 on each temple**. The layout is the same as the ready-made mask (see [Mask & Electrodes](/hardware/devices/PiEEG_XR/connections)).
+
+![Electrode positions on the skin-contact side of the cover: Ch3–Ch6 across the forehead, Ref and Bias in the centre, Ch1/Ch2 and Ch7/Ch8 on the temples](/images/hardware/2026/11/pieegxr_diy_map_face_side.png)
+
+| Electrode | Position (skin-contact side facing you, as drawn) | Picks up | Board pin |
+|---|---|---|---|
+| **Ch1**, **Ch2** | Left temple, lower and upper | Eye movement, jaw and temple muscles | E1, E2 |
+| **Ch3**, **Ch4** | Left forehead | Frontal EEG, blinks | E3, E4 |
+| **Ref** | Centre forehead, left of the centre line, slightly lower | Reference for all channels | REF |
+| **Bias** | Centre forehead, right of the centre line, slightly lower | Cancels common-mode noise (mains hum) | BIAS |
+| **Ch5**, **Ch6** | Right forehead | Frontal EEG, blinks | E5, E6 |
+| **Ch7**, **Ch8** | Right temple, upper and lower | Eye movement, jaw and temple muscles | E7, E8 |
+
+There are **no electrodes on the lower cheek area**. Left and right describe the drawing, not your anatomical sides.
+
+<Steps>
+
+### Mark the centre
+
+Use the nose notch to find the centre line. Mark **Ref** and **Bias** on opposite sides of it, about 2 cm from the line. They must never touch.
+
+### Mark the forehead and temples
+
+Mark Ch3–Ch6 in a row along the forehead band, slightly higher than Ref and Bias. Mark Ch1/Ch2 and Ch7/Ch8 on the temple pads. Keep each mark in the middle of the pad, away from seams and edges.
+
+### Try the fit
+
+Clip the cover onto the headset and wear it for a minute. Every mark should sit on skin that the cushion presses. Move a mark a few millimetres if it lands on a seam, a fold or the rigid frame.
+
+### Label the back
+
+Write each name (Ch1…Ch8, Ref, Bias) next to its mark on the **back** of the cover. You need these labels when you fit the cables.
+
+</Steps>
+
+<Callout type="info">
+  The drawing is a position guide, not a full-size template. The pattern — 6 on the forehead, Ref and Bias in the middle, 2 per temple — matters more than the exact millimetres.
+</Callout>
+
+## 3. Punch the holes
+
+![Punching a hole in the face cover with a rotary punch](/images/hardware/2026/11/pieegxr_diy_punch.jpg)
+
+| Cover material | Hole |
+|---|---|
+| **Silicone** | **1 mm**, with a hollow punch. Silicone stretches over the electrode stud. |
+| **PU leather or foam** | The smallest suitable punch, about **2 mm**. Leather does not stretch. |
+
+<Steps>
+
+### Make a test hole
+
+Take the cover off the headset. Punch one hole in a hidden corner and push an electrode stud through. It should need firm pressure and then stay put. If it is loose, use a smaller hole on a fresh spot.
+
+### Align the layers
+
+If you use a silicone sleeve, fit it on the cover first and punch both layers together. Avoid the rigid plastic frame.
+
+### Punch and clear
+
+Centre the tool on each mark, keep it square to the material and punch once. Remove the plug of material, then repeat for all 10 positions.
+
+</Steps>
+
+<Callout type="warning">
+  **Before you continue:** all 10 holes are clean and aligned, with no tears, split edges or damage to the frame.
+</Callout>
+
+## 4. Insert the electrodes
+
+The stud goes through from the **skin-contact side**. The flat silver disc stays on the face side.
+
+![Side section: push the stud through the hole, then seat the disc flat with the stud fully out at the back](/images/hardware/2026/11/pieegxr_diy_electrode_insert.png)
+
+<Steps>
+
+### Hold by the edge
+
+Avoid fingerprints on the silver contact face. Line the stud up with the hole.
+
+### Ease the stud through
+
+Use your fingers or a blunt tool to ease the material over the stud head. Do not scratch the silver coating.
+
+### Inspect both sides
+
+The disc sits flat on the face side. The complete stud head is visible behind the cover, with no material trapped under it.
+
+### Repeat ten times
+
+Run a fingertip gently across the contacts. Fix any electrode that is lifted, tilted or loose.
+
+</Steps>
+
+## 5. Snap on and label the leads
+
+Each lead has a **snap socket** for the electrode stud and a **single-pin socket** for the board header.
+
+![The two cable ends, pressing the snap straight onto the stud, and checking that it is seated](/images/hardware/2026/11/pieegxr_diy_cable_snap.png)
+
+<Steps>
+
+### Support and press
+
+Turn the cover over. Hold the electrode from the face side and push the snap straight onto its stud until it seats with a **click**.
+
+### Label straight away
+
+Mark the pin-socket end of the lead with the name next to its hole: **Ch1…Ch8, Ref or Bias**.
+
+### Check the connection
+
+Hold the connector housing and tug gently. The snap should stay on.
+
+</Steps>
+
+<Callout type="info">
+  Match each label to the **hole position**, not the cable colour — lead colours can vary. Make the Ref and Bias labels easy to tell apart.
+</Callout>
+
+## 6. Route the cable bundle
+
+Keep all leads on the back of the cover and leave the face side clear.
+
+![Rear view of the cover: leads run along the frame to the side where the case is mounted. Labels appear mirrored from the front view](/images/hardware/2026/11/pieegxr_diy_cable_route.png)
+
+<Steps>
+
+### Leave slack at each snap
+
+Leave about **2–3 cm** of loose lead at every electrode so the cushion can flex without pulling on a contact.
+
+### Bundle and secure
+
+Collect the leads in the **Ø 6 mm braided sleeve**, heading towards the side where the case will sit. Fix the bundle to the frame with 2–3 small ties. Keep the lens opening, clips and latches clear.
+
+### Try the cover again
+
+Clip the cover onto the headset. It must clip fully into place without trapping a cable.
+
+</Steps>
+
+<Callout type="info">
+  The rear view is a mirror image of the front view: Ch1–Ch4 now appear on the right. Electrode names stay with their holes.
+</Callout>
+
+## 7. Connect the board
+
+Disconnect power first. Header **J3.3** on the IronBCI-16 board is a 1 × 10 row of pins printed **E1 … E8, BIAS, REF**.
+
+![J3.3 connection order: Ch1–Ch8 to E1–E8 (pins 1–8), Bias to BIAS (pin 9), Ref to REF (pin 10)](/images/hardware/2026/11/pieegxr_diy_board_j33.png)
+
+| Lead label | J3.3 pin | Printed on the board |
+|---|---|---|
+| Ch1 … Ch8 | 1 … 8 | E1 … E8 |
+| **Bias** | **9** | **BIAS** |
+| **Ref** | **10** | **REF** |
+
+<Steps>
+
+### Identify the header
+
+Find the printed E1–E8, BIAS and REF markings. Read the labels; do not guess the pin order from how the board is turned.
+
+### Push the sockets fully on
+
+Connect Ch1 to E1 through Ch8 to E8, one lead at a time. Each socket goes onto exactly one pin.
+
+### Check the last two
+
+**Bias → BIAS (pin 9)** and **Ref → REF (pin 10)**. Swapped, they give a noisy, flat or saturated signal on every channel.
+
+### Leave J3.4 empty
+
+The second header, **J3.4 (E9–E16)**, is for the 16-channel version. Leave it unused for this build.
+
+</Steps>
+
+<Callout type="warning">
+  **Match your board revision.** If the printed labels on your board differ from this table, confirm the pinout with PiEEG ([pieeg@pieeg.com](mailto:pieeg@pieeg.com)) before connecting. Full pinout: [Specification](/hardware/devices/PiEEG_XR/Specification).
+</Callout>
+
+## 8. Close the case and mount it
+
+![Case assembly (lid, board, base with cable slot) and mounting under the head strap](/images/hardware/2026/11/pieegxr_diy_case_mount.png)
+
+<Steps>
+
+### Close without pinching
+
+Seat the board on its supports in the base. Line the cable exit up with the **cable slot**, then close the lid without forcing it. No wire may cross the rim of the lid.
+
+### Mount on the headset
+
+Detach the rear head strap, hold the case against the headset and reattach the strap so it clamps the case. The exact arrangement varies by headset. Keep the board's antenna side clear of metal parts and the strap buckle.
+
+### Secure the bundle
+
+Fix the cable so head movement cannot pull on the electrodes.
+
+</Steps>
+
+## 9. Fit and test
+
+![Power bank → USB-A to USB-C → PiEEG XR → Bluetooth LE → app or browser](/images/hardware/2026/11/pieegxr_diy_power_chain.png)
+
+<Callout type="error">
+  **While the mask is worn:** no wall charger, no USB connection to a mains-powered computer, no headset charging, and keep the power bank off charge too.
+</Callout>
+
+<Steps>
+
+### Power the board
+
+Connect a **5 V power bank** with a **USB-A to USB-C** cable. The board starts advertising over Bluetooth as `PiEEG XR`.
+
+### Clean and fit
+
+Wipe your forehead, temples and the electrodes with an alcohol pad and let them dry. Move hair aside, put the headset on and tighten the strap for even, comfortable contact.
+
+### Connect wirelessly
+
+| Option | How |
+|---|---|
+| **On the Quest** | [BodyPress on the Meta Quest Store](https://www.meta.com/en-gb/experiences/bodypress/1271355469389420/) |
+| **In the browser** | [cloud.pieeg.com](https://cloud.pieeg.com) in Chrome or Edge → **PiEEG Devices** → **PiEEG XR** |
+| **On Android** | [BodyPress on Google Play](https://play.google.com/store/apps/details?id=com.bodypress.governorhq) |
+| **On a PC** | `pip install "pieeg-server[ironbci]"`, then `pieeg-server --device ironbci8` |
+
+Use the app's contact check where available. More in [Software](/hardware/devices/PiEEG_XR/software).
+
+### Let the signal settle
+
+Sit still and relax your face for a few seconds. Check that all eight channel traces are live.
+
+### Blink and look
+
+**Blink hard 3–5 times.** You should see clear peaks on the forehead channels (Ch3–Ch6). Then look far left and far right: the two temple sides should swing in opposite directions.
+
+![Illustrative blink response: one clear peak per blink](/images/hardware/2026/11/pieegxr_diy_blink_check.png)
+
+</Steps>
+
+<Callout type="info">
+  The blink test shows that the contacts work. It is not a medical measurement or a calibration of EEG accuracy. A real recording is shown in [Signals & Projects](/hardware/devices/PiEEG_XR/examples).
+</Callout>
+
+## Troubleshooting
+
+Check one cause at a time. Take the headset off and disconnect power before changing any wiring.
+
+| What you see | Check first | What to do |
+|---|---|---|
+| No `PiEEG XR` device | Power, cable and Bluetooth | Use a charged battery and a USB-A to USB-C lead. Rescan in the app. Still missing → [Firmware & Service](/hardware/devices/PiEEG_XR/Service). |
+| All channels noisy or flat | Ref and Bias contact or wiring | Check both centre discs touch skin. Confirm Bias → BIAS and Ref → REF. |
+| One channel unstable | One contact, snap or socket | Move hair away and adjust the fit. With power off, reseat that snap and its board socket. |
+| Responses on the wrong side | Lead labels | Compare each contact with the map in step 2 and the table in step 7. The rear view is mirrored. |
+| Signal changes when you move | Cable tension | Add slack at that electrode. Fix the bundle to the frame. |
+| Cover does not clip on | A lead crossing a clip or latch | Reroute the lead along the back of the frame. Do not force the cover. |
+| Electrode lifts or wobbles | Hole size or torn material | Use a sound replacement cover; do not enlarge the hole. |
+
+More fixes: [Troubleshooting & FAQ](/hardware/devices/PiEEG_XR/FQA).
+
+## Care and safe use
+
+**After each session**
+
+- **Clean and dry.** Wipe the electrodes and silicone surfaces with an alcohol pad and let them dry. Keep liquid away from the board; do not soak the cover.
+- **Remove without pulling the lead.** Disconnect power, hold the connector housing and unclip the snap first. Support the cover, then push the stud back through.
+- **Store without tension** on the cables.
+
+**Safe use**
+
+1. Research and education only. Do not use this device for diagnosis or treatment.
+2. Battery power only while worn. Keep the headset, board and power bank off chargers.
+3. Use clean, intact skin. Stop if an electrode causes redness, soreness or irritation.
+4. With an implanted electronic device, get your physician's approval before use.
+5. Remove the mask before firmware updates. Follow the headset maker's VR safety guidance.
+
+**Help:** [Discord](https://discord.gg/5Ps24p47) · [pieeg@pieeg.com](mailto:pieeg@pieeg.com)
