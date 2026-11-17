@@ -9,7 +9,7 @@ import { Steps, Callout } from 'nextra/components'
 
 The **PiEEG XR DIY Kit** turns a spare face cover for your own headset into a PiEEG XR mask. You punch 10 small holes, push in 10 flat dry Ag/AgCl electrodes, snap on the cables and plug them into the IronBCI-16 board. **No soldering.** A first build takes about **60–90 minutes**.
 
-![A finished DIY PiEEG XR mask with its cable bundle and BCI box](/images/hardware/2026/11/pieegxr_diy_hero.jpg)
+![A finished DIY PiEEG XR mask with its cable bundle and BCI box](/images/hardware/2026/11/diy/pieegxr_diy_hero.jpg)
 
 The finished mask works like the ready-made PiEEG XR: same electrode layout, same board, same software (BodyPress, PiEEG Cloud, PiEEG Server, VRChat OSC).
 
@@ -30,7 +30,7 @@ The finished mask works like the ready-made PiEEG XR: same electrode layout, sam
 
 ### In the kit
 
-![Kit contents: IronBCI-16 Pro board, 10 flat Ag/AgCl electrodes, 10 electrode leads, round case and lid](/images/hardware/2026/11/pieegxr_diy_parts.png)
+![Kit contents: IronBCI-16 Pro board, 10 flat Ag/AgCl electrodes, 10 electrode leads, round case and lid](/images/hardware/2026/11/diy/pieegxr_diy_parts.png)
 
 | Item | Qty | What it does |
 |---|---|---|
@@ -59,7 +59,7 @@ The finished mask works like the ready-made PiEEG XR: same electrode layout, sam
 
 Mark **6 positions across the forehead and 2 on each temple**. The layout is the same as the ready-made mask (see [Mask & Electrodes](/hardware/devices/PiEEG_XR/connections)).
 
-![Electrode positions on the skin-contact side of the cover: Ch3–Ch6 across the forehead, Ref and Bias in the centre, Ch1/Ch2 and Ch7/Ch8 on the temples](/images/hardware/2026/11/pieegxr_diy_map_face_side.png)
+![Electrode positions on the skin-contact side of the cover: Ch3–Ch6 across the forehead, Ref and Bias in the centre, Ch1/Ch2 and Ch7/Ch8 on the temples](/images/hardware/2026/11/diy/pieegxr_diy_map_face_side.png)
 
 | Electrode | Position (skin-contact side facing you, as drawn) | Picks up | Board pin |
 |---|---|---|---|
@@ -98,7 +98,7 @@ Write each name (Ch1…Ch8, Ref, Bias) next to its mark on the **back** of the c
 
 ## 3. Punch the holes
 
-![Punching a hole in the face cover with a rotary punch](/images/hardware/2026/11/pieegxr_diy_punch.jpg)
+![Punching a hole in the face cover with a rotary punch](/images/hardware/2026/11/diy/pieegxr_diy_punch.jpg)
 
 | Cover material | Hole |
 |---|---|
@@ -129,7 +129,7 @@ Centre the tool on each mark, keep it square to the material and punch once. Rem
 
 The stud goes through from the **skin-contact side**. The flat silver disc stays on the face side.
 
-![Side section: push the stud through the hole, then seat the disc flat with the stud fully out at the back](/images/hardware/2026/11/pieegxr_diy_electrode_insert.png)
+![Side section: push the stud through the hole, then seat the disc flat with the stud fully out at the back](/images/hardware/2026/11/diy/pieegxr_diy_electrode_insert.png)
 
 <Steps>
 
@@ -155,7 +155,7 @@ Run a fingertip gently across the contacts. Fix any electrode that is lifted, ti
 
 Each lead has a **snap socket** for the electrode stud and a **single-pin socket** for the board header.
 
-![The two cable ends, pressing the snap straight onto the stud, and checking that it is seated](/images/hardware/2026/11/pieegxr_diy_cable_snap.png)
+![The two cable ends, pressing the snap straight onto the stud, and checking that it is seated](/images/hardware/2026/11/diy/pieegxr_diy_cable_snap.png)
 
 <Steps>
 
@@ -181,7 +181,7 @@ Hold the connector housing and tug gently. The snap should stay on.
 
 Keep all leads on the back of the cover and leave the face side clear.
 
-![Rear view of the cover: leads run along the frame to the side where the case is mounted. Labels appear mirrored from the front view](/images/hardware/2026/11/pieegxr_diy_cable_route.png)
+![Rear view of the cover: leads run along the frame to the side where the case is mounted. Labels appear mirrored from the front view](/images/hardware/2026/11/diy/pieegxr_diy_cable_route.png)
 
 <Steps>
 
@@ -207,7 +207,7 @@ Clip the cover onto the headset. It must clip fully into place without trapping 
 
 Disconnect power first. Header **J3.3** on the IronBCI-16 board is a 1 × 10 row of pins printed **E1 … E8, BIAS, REF**.
 
-![J3.3 connection order: Ch1–Ch8 to E1–E8 (pins 1–8), Bias to BIAS (pin 9), Ref to REF (pin 10)](/images/hardware/2026/11/pieegxr_diy_board_j33.png)
+![J3.3 connection order: Ch1–Ch8 to E1–E8 (pins 1–8), Bias to BIAS (pin 9), Ref to REF (pin 10)](/images/hardware/2026/11/diy/pieegxr_diy_board_j33.png)
 
 | Lead label | J3.3 pin | Printed on the board |
 |---|---|---|
@@ -241,7 +241,7 @@ The second header, **J3.4 (E9–E16)**, is for the 16-channel version. Leave it 
 
 ## 8. Close the case and mount it
 
-![Case assembly (lid, board, base with cable slot) and mounting under the head strap](/images/hardware/2026/11/pieegxr_diy_case_mount.png)
+![Case assembly (lid, board, base with cable slot) and mounting under the head strap](/images/hardware/2026/11/diy/pieegxr_diy_case_mount.png)
 
 <Steps>
 
@@ -261,7 +261,7 @@ Fix the cable so head movement cannot pull on the electrodes.
 
 ## 9. Fit and test
 
-![Power bank → USB-A to USB-C → PiEEG XR → Bluetooth LE → app or browser](/images/hardware/2026/11/pieegxr_diy_power_chain.png)
+![Power bank → USB-A to USB-C → PiEEG XR → Bluetooth LE → app or browser](/images/hardware/2026/11/diy/pieegxr_diy_power_chain.png)
 
 <Callout type="error">
   **While the mask is worn:** no wall charger, no USB connection to a mains-powered computer, no headset charging, and keep the power bank off charge too.
@@ -296,7 +296,7 @@ Sit still and relax your face for a few seconds. Check that all eight channel tr
 
 **Blink hard 3–5 times.** You should see clear peaks on the forehead channels (Ch3–Ch6). Then look far left and far right: the two temple sides should swing in opposite directions.
 
-![Illustrative blink response: one clear peak per blink](/images/hardware/2026/11/pieegxr_diy_blink_check.png)
+![Illustrative blink response: one clear peak per blink](/images/hardware/2026/11/diy/pieegxr_diy_blink_check.png)
 
 </Steps>
 
