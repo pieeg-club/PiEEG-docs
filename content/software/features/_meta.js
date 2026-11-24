@@ -1,0 +1,13 @@
+export default {
+  "server": "Server",
+  "dashboard": "Dashboard",
+  "registers": "ADS1299 Registers",
+  "experiences": "Experiences",
+  "biopose": "BioPose Recorder",
+  "aura-dataset": "Aura Dataset Lab",
+  "optical-bench": "Optical Physiological Bench",
+  "oculomotor-bench": "Oculomotor & Pupillometry Bench",
+  "detectors": "Detectors",
+  "recording": "Recording",
+  "studio": "PiEEG Studio (MNE)"
+}

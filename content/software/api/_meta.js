@@ -1,0 +1,5 @@
+export default {
+  "websocket": "WebSocket API",
+  "javascript-sdk": "JavaScript SDK",
+  "data-format": "Data Format"
+}
