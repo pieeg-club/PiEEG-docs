@@ -24,5 +24,5 @@ npm run dev
 npm run build
 ```
 
-`npm run build` outputs the static site to `out/` and runs `postbuild` (`pagefind`) to generate the search index at `out/_pagefind`.
+`npm run build` outputs the static site to `out/` and runs `postbuild` (`pagefind`) to generate the search index at `public/_pagefind` (for `npm run dev`) and `out/_pagefind` (for static deployments).
 

@@ -9,6 +9,7 @@ old/
 # next.js
 /.next/
 /out/
+/public/_pagefind/
 
 # production
 /build

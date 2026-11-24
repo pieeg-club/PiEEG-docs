@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "pagefind --site out --output-path out/_pagefind",
+    "postbuild": "pagefind --site out --output-path public/_pagefind && node -e \"require('fs').cpSync('public/_pagefind', 'out/_pagefind', { recursive: true })\"",
     "localize-images": "node scripts/localize-remote-images.mjs",
     "start": "next start",
     "lint": "next lint"
