@@ -1,0 +1,8 @@
+export default {
+  "index": "Overview",
+  "brainflow": "BrainFlow Devices",
+  "live-lab": "Live Lab (Bio-Pen)",
+  "studio": "PiEEG Studio (MNE)",
+  "buddy": "Buddy AI",
+  "local-bridge": "Local Bridge"
+}

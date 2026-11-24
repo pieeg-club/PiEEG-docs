@@ -1,0 +1,10 @@
+export default {
+  "index": "Overview",
+  "getting-started": "Getting Started",
+  "features": "Features",
+  "api": "API Reference",
+  "integrations": "Integrations",
+  "octobridge": "octoBridge",
+  "octowatch": "octoWatch (Garmin)",
+  "reference": "Reference"
+}

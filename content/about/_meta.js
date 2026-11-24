@@ -1,0 +1,9 @@
+export default {
+  "index": "About PiEEG",
+  "team": "Team",
+  "community": "Community & Open Source",
+  "support": "Support & Contact",
+  "partnership": "Partnership",
+  "careers": "Careers",
+  "faq": "FAQ"
+}

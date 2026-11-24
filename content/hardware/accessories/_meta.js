@@ -1,0 +1,6 @@
+export default {
+  "index": "Overview",
+  "electrodes": "Electrodes",
+  "cap": "Cap",
+  "power-bank": "Power Bank"
+}
