@@ -38,6 +38,10 @@ body {
   border-radius: 6px;
 }
 
+.dark .pieeg-brand img {
+  filter: brightness(0) invert(1);
+}
+
 .pieeg-badge {
   font-family: var(--x-font-mono);
   font-size: 0.65rem;
@@ -103,6 +107,12 @@ article table tr:hover td {
 pre {
   border-radius: 10px !important;
   border: 1px solid var(--pieeg-border) !important;
+}
+
+pre,
+pre code.nextra-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-variant-ligatures: none;
 }
 
 code.nextra-code {

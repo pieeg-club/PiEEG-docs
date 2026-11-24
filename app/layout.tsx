@@ -40,7 +40,6 @@ const navbar = (
     logo={
       <span className="pieeg-brand">
         <img src="/logo.webp" alt="PiEEG" />
-        <span>PiEEG</span>
         <span className="pieeg-badge">Docs</span>
       </span>
     }
