@@ -26,7 +26,8 @@ export const metadata: Metadata = {
   description:
     'Complete documentation for PiEEG hardware, PiEEG Server software, and brain-computer interface integrations.',
   icons: {
-    icon: '/logo.webp',
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
   },
   openGraph: {
     title: 'PiEEG Documentation',

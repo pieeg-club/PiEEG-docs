@@ -7,5 +7,8 @@ export default {
   "ironbci": "IronBCI",
   "microbci": "MicroBCI",
   "ironbci-32": "IronBCI-32",
-   "OctoBio_Kit": "OctoBio Kit"
+  "Octopus_16": "Octopus 16",
+  "PiEEG_XR": "PiEEG XR",
+  "Aura_VR": "Aura VR",
+  "OctoBio_Kit": "OctoBio Kit"
 }

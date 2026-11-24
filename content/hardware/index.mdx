@@ -1,25 +1,73 @@
 ---
 title: PiEEG Hardware
-description: Hardware documentation for PiEEG devices, accessories, setup, and signal quality.
+description: Complete hardware documentation for all PiEEG devices, accessories, 3D-printable enclosures, signal quality, and safety.
 ---
 
-import { Cards } from 'nextra/components'
+import { Cards, Callout } from 'nextra/components'
 
 # PiEEG Hardware
 
-Hardware documentation for the PiEEG device family, including setup, required equipment, electrode connections, accessories, and signal-quality guidance.
+Complete hardware documentation for the PiEEG biosignal device family — from 8-channel Raspberry Pi, Arduino, STM32, and Jetson Nano shields to wireless BLE/ESP32 wearables, VR/XR neural interfaces, 32-channel research systems, accessories, and signal-quality guidance.
+
+<Callout type="info">
+  All PiEEG hardware is designed for research, education, and prototyping purposes only. Review [Safety & Liabilities](/hardware/safety) before connecting electrodes.
+</Callout>
+
+## Hardware Lineup
+
+| Device | Channels | Platform / Connectivity | Signals | Key Specs |
+|---|---|---|---|---|
+| [**PiEEG-8**](/hardware/devices/pieeg-8) | 8 | Raspberry Pi 3/4/5 (SPI) | EEG, EMG, ECG | 24-bit, 250 SPS–16 kSPS, programmable gain 1–24, impedance check |
+| [**PiEEG-16**](/hardware/devices/pieeg-16) | 16 | Raspberry Pi 5 (SPI) | EEG, EMG, ECG | 24-bit, 250 SPS–16 kSPS, programmable gain 1–24, impedance check |
+| [**JNEEG**](/hardware/devices/jneeg) | 8 | NVIDIA Jetson Nano (SPI) | EEG, EMG, ECG | 24-bit, 250 SPS–16 kSPS, ML/DL on-device processing |
+| [**ardEEG**](/hardware/devices/ardeeg) | 8 | Arduino UNO R4 WiFi (SPI) | EEG, EMG, ECG | 24-bit, programmable gain 1–24, ultra-low power wearable |
+| [**MicroBCI**](/hardware/devices/microbci) | 8 | STM32 NUCLEO-WB55 (SPI / BLE) | EEG, EMG, ECG | 24-bit, 250 SPS, programmable gain 1–24, Python + Mobile SDK |
+| [**IronBCI**](/hardware/devices/ironbci) | 8 | Standalone Wearable (BLE 5) | EEG, EMG, ECG | 24-bit, 250 SPS, 50 mm diameter, Python + Android SDK |
+| [**IronBCI-32**](/hardware/devices/ironbci-32) | 32 | STM32H7 (USB Serial) | EEG, EMG, ECG | 4× AD7771 ADCs, 512 SPS/ch, BrainFlow integrated |
+| [**Octopus 16**](/hardware/devices/Octopus_16) | 16 | Seeed XIAO ESP32-S3 (BLE) | EEG, EMG, ECG | 2× ADS131M08 24-bit ADCs, battery-powered, PiEEG Cloud ready |
+| [**PiEEG XR**](/hardware/devices/PiEEG_XR) | 8 | VR Headset Face Gasket (BLE 5) | EEG, EMG | Dry electrodes, 24-bit, 250 SPS, Focus-to-Action & avatar EMG |
+| [**Aura VR**](/hardware/devices/Aura_VR) | 8 | VR Headset Integration (BLE) | EEG, EMG | Spatial computing neural interface for VR workflows |
+| [**OctoBio Kit**](/hardware/devices/OctoBio_Kit) | 16 | Octopus 16 + Arduino Starter Kit | EEG | Classroom-ready kit with browser block coding at octobridge.pieeg.com |
+
+## All Devices
 
 <Cards>
   <Cards.Card title="Device Overview" href="/hardware/devices" />
   <Cards.Card title="PiEEG-8" href="/hardware/devices/pieeg-8" />
   <Cards.Card title="PiEEG-16" href="/hardware/devices/pieeg-16" />
+  <Cards.Card title="JNEEG" href="/hardware/devices/jneeg" />
+  <Cards.Card title="ardEEG" href="/hardware/devices/ardeeg" />
+  <Cards.Card title="MicroBCI" href="/hardware/devices/microbci" />
+  <Cards.Card title="IronBCI" href="/hardware/devices/ironbci" />
   <Cards.Card title="IronBCI-32" href="/hardware/devices/ironbci-32" />
-  <Cards.Card title="Accessories" href="/hardware/accessories" />
-  <Cards.Card title="Signal Quality" href="/hardware/signal-quality/noise-elimination" />
+  <Cards.Card title="Octopus 16" href="/hardware/devices/Octopus_16" />
+  <Cards.Card title="PiEEG XR" href="/hardware/devices/PiEEG_XR" />
+  <Cards.Card title="Aura VR" href="/hardware/devices/Aura_VR" />
+  <Cards.Card title="OctoBio Kit" href="/hardware/devices/OctoBio_Kit" />
+</Cards>
+
+## Accessories & Enclosures
+
+<Cards>
+  <Cards.Card title="Accessories Overview" href="/hardware/accessories" />
+  <Cards.Card title="Electrodes" href="/hardware/accessories/electrodes" />
+  <Cards.Card title="EEG Caps" href="/hardware/accessories/cap" />
+  <Cards.Card title="Power Bank" href="/hardware/accessories/power-bank" />
+  <Cards.Card title="3D Printer Models (STL)" href="/hardware/3D-Printer-Models/3dprinter" />
+</Cards>
+
+## Signal Quality & Safety
+
+<Cards>
+  <Cards.Card title="Signal Quality Overview" href="/hardware/signal-quality" />
+  <Cards.Card title="Noise Elimination" href="/hardware/signal-quality/noise-elimination" />
+  <Cards.Card title="Calibration" href="/hardware/signal-quality/Calibration" />
+  <Cards.Card title="Safety Guidelines" href="/hardware/safety" />
+  <Cards.Card title="Liabilities" href="/hardware/safety/liabilities" />
 </Cards>
 
 ## Support
 
 All scripts, software, datasets, and manuals are available from the [PiEEG Club GitHub](https://github.com/pieeg-club). For questions, use the PiEEG [Discord](https://discord.gg/5Ps24p47).
 
-All 3D models in STL format for 3D printer in PiEEG [thingiverse](https://www.thingiverse.com/PiEEG/designs)
+All 3D models in STL format for 3D printing are available on [PiEEG Thingiverse](https://www.thingiverse.com/PiEEG/designs).
