@@ -1,0 +1,168 @@
+/* PiEEG Technical / Medical Documentation Theme */
+
+:root {
+  --x-font-sans: var(--font-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --x-font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --pieeg-accent: #0284c7;
+  --pieeg-accent-soft: rgba(2, 132, 199, 0.08);
+  --pieeg-border: rgba(15, 23, 42, 0.09);
+  --pieeg-surface: rgba(248, 250, 252, 0.8);
+}
+
+.dark {
+  --pieeg-accent: #38bdf8;
+  --pieeg-accent-soft: rgba(56, 189, 248, 0.1);
+  --pieeg-border: rgba(148, 163, 184, 0.14);
+  --pieeg-surface: rgba(15, 23, 42, 0.65);
+}
+
+body {
+  font-family: var(--x-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Navbar brand lockup */
+.pieeg-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-size: 1.05rem;
+}
+
+.pieeg-brand img {
+  height: 1.75rem;
+  width: auto;
+  border-radius: 6px;
+}
+
+.pieeg-badge {
+  font-family: var(--x-font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 9999px;
+  color: var(--pieeg-accent);
+  background: var(--pieeg-accent-soft);
+  border: 1px solid color-mix(in srgb, var(--pieeg-accent) 25%, transparent);
+}
+
+/* Crisp technical typography */
+article h1 {
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+article h2,
+article h3 {
+  letter-spacing: -0.02em;
+}
+
+/* Modernize cards */
+.nextra-card {
+  border-radius: 10px !important;
+  border-color: var(--pieeg-border) !important;
+  background: var(--pieeg-surface) !important;
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease !important;
+}
+
+.nextra-card:hover {
+  border-color: color-mix(in srgb, var(--pieeg-accent) 48%, transparent) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px -8px rgba(2, 132, 199, 0.18);
+}
+
+.dark .nextra-card:hover {
+  box-shadow: 0 6px 24px -8px rgba(56, 189, 248, 0.16);
+}
+
+/* Technical specification tables */
+article table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.92rem;
+}
+
+article table th {
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  background: var(--pieeg-surface);
+}
+
+article table tr:hover td {
+  background: var(--pieeg-accent-soft);
+}
+
+/* Code blocks & inline code */
+pre {
+  border-radius: 10px !important;
+  border: 1px solid var(--pieeg-border) !important;
+}
+
+code.nextra-code {
+  font-family: var(--x-font-mono);
+  font-size: 0.86em;
+}
+
+/* Rich footer */
+.pieeg-footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.pieeg-footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.pieeg-footer-col h4 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.55;
+  margin: 0 0 0.65rem;
+}
+
+.pieeg-footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.pieeg-footer-col a {
+  font-size: 0.875rem;
+  opacity: 0.78;
+  text-decoration: none;
+  transition: opacity 150ms ease, color 150ms ease;
+}
+
+.pieeg-footer-col a:hover {
+  opacity: 1;
+  color: var(--pieeg-accent);
+}
+
+.pieeg-footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--pieeg-border);
+  font-size: 0.82rem;
+  opacity: 0.7;
+}
