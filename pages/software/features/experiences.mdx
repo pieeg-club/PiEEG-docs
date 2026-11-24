@@ -9,10 +9,10 @@ import { Callout, Steps, Cards } from 'nextra/components'
 
 The gallery on **[cloud.pieeg.com](https://cloud.pieeg.com)** (and the self-hosted dashboard) is a card-based launcher for immersive EEG experiences. Every entry is lazy-loaded from a single registry — adding one does not grow the initial dashboard bundle.
 
-Open the gallery with **`V`**, or from the dashboard header. Search and filter by category (VR, AR, XR/MR, BCI, ML, EOG, Face/EMG, Audio, Games, Lab, Meditation). Featured cards currently highlight **octoCaptcha**, **Neural Flight**, **PiEEG Virtual Lab**, **Room Buddy**, **Mind Reader**, and **Spoon Bend**.
+Open the gallery with **`V`**, or from the dashboard header. Press **`/`** to focus search, star (**`★`**) favorites to pin them, and filter by category (VR, AR, XR/MR, BCI, ML, EOG, Face/EMG, Audio, Games, Lab, Meditation). Featured cards currently highlight **octoCaptcha**, **Neural Flight**, **PiEEG Virtual Lab**, **Room Buddy**, **Mind Reader**, and **Spoon Bend**.
 
 <Callout type="info">
-  Catalog below matches the local PiEEG-server-cloud registry (`cloud/src/experiences/registry.ts`) — **34** playable experiences. Empty folders that are not registered (`blink-runner`, `affective-mirror`) are omitted.
+  Catalog below matches the local PiEEG-server-cloud registry (`cloud/src/experiences/registry.ts`) — **46** playable experiences. Empty folders that are not registered (`blink-runner`, `affective-mirror`) are omitted.
 </Callout>
 
 ## How to run them
@@ -63,6 +63,7 @@ Every experience must explain itself in the UI: a **How it works** overlay on fi
 
 | Experience | Tag | Description |
 |---|---|---|
+| **MindMap** | 3D / Learn / AR | Interactive 3D brain atlas (344 Z-Anatomy / BodyParts3D structures, CC BY-SA 4.0) fused with a real-time EEG cortical heatmap. Peel back the cortex to reveal deep structures, toggle 10-20 pins, switch δ/θ/α/β/γ lenses, take a tour or quiz, and enter WebXR AR. |
 | **Signal Lab** | Learn / Game | DSP mini-course: Time Domain → Cleaning → Frequency Domain. Theory, live EEG sandbox, quiz (up to 3 stars). Progress saved. |
 
 ---
@@ -71,6 +72,11 @@ Every experience must explain itself in the UI: a **How it works** overlay on fi
 
 | Experience | Tag | Notes | Description |
 |---|---|---|---|
+| **Neural Ocean (AR)** | AR / Shader | VR + hands | Waist-to-chest deep GPU ocean driven by your live 3D Time-Frequency EEG spectrum in Meta Quest Passthrough AR (plus Desktop 3D). Fresnel reflections, caustics, hand/body ripples, finger spectrum probe, crouch to dive, real-time DSP controls, `H` to hide UI. |
+| **NeuroBench AR** | AR / Lab | VR + hands | Optical-glass WebXR passthrough AR research workbench (plus Desktop 3D): pinch-grab 5 live instruments (3D DSP Filter Lenses, Volumetric Scalp & Coherence Explorer, 3D Waterfall Terrain with two-handed Freeze/Time-Slice, 3D Oscilloscope + Spectral Prism, Motor-Fusion ERP Averager) with MNE-Python script & CSV export. |
+| **Use the Force — Telekinesis (AR)** | AR / 3D | Hands | Mixed-reality passthrough AR telekinesis (plus Desktop 3D). Concentrate to trigger seismic tremors and rattling perimeter stones, then levitate a multi-ton basalt monolith. Supports WebXR hand-lift resonance, double-blink Force Surge, and 3 mass tiers. |
+| **10, 20, Freeze! (AR)** | AR / Game | Hands | Room-scale WebXR passthrough AR statue game inspired by 10-20 EEG. Walk toward a 1.9 m VRM Sentinel: high Alpha stretches Green Light (+60%) and raises a Composure Shield; high Beta speeds her chant; double-blinks jam her clockwork (+1.35 s); Flip Ends for Round 2. |
+| **The Neural Construct** | VR / Architecture | VR + hands | Monumental white architectural gallery box for WebXR VR and desktop 3D. Live 3D cortical topography transforms matte-plaster walls across spectral colors with mirror-stone bounce light, HRTF spatial sound from a frosted-glass Monolith, and a motorized ceiling oculus. |
 | **Room Buddy (AR)** | AR | | Phone AR buddy driven by β/γ band-power ratio (`useFocus`) and frontal EOG blinks. |
 | **PiEEG Virtual Lab** | Lab / VR | VR + hands | Walk a neuroscience lab; full dashboard on the in-world monitor. |
 | **Neural Wave Space** | VR / 3D | VR + hands | 3D EEG wave arc in a starfield. |
@@ -95,6 +101,7 @@ Every experience must explain itself in the UI: a **How it works** overlay on fi
 
 | Experience | Tag | Notes | Description |
 |---|---|---|---|
+| **10, 20, Freeze! (AR)** | AR / Game | Hands | Room-scale WebXR passthrough AR statue game: Alpha stretches Green Light and shields Red Light; double-blinks jam the Sentinel's clockwork. |
 | **Spoon Bend** | Focus | | Bend a virtual spoon with Beta/Gamma band-power ratio (`useFocus`). |
 | **Penalty Shooters** | BCI / Game | | Retro SNES penalty kicks. Blink to shoot; trainless adaptive frontal detector. |
 | **Neural Maze Lock** | BCI / Game | | EOG gaze maze with high-β (`useFocus`), high-α (`useRelax`), and blink gates. Tracks false triggers and completion time. |
@@ -107,6 +114,8 @@ Every experience must explain itself in the UI: a **How it works** overlay on fi
 
 | Experience | Tag | Description |
 |---|---|---|
+| **Mushroom Body Decoder** | BCI / Connectome | Live EEG band powers drive a *Drosophila* mushroom-body connectome (~2,000 sparsely firing Kenyon cells, APL inhibition). Only the KC→MBON readout is trained (30 s eyes-open vs. eyes-closed); renders the live 3D Kenyon-cell constellation with held-out balanced accuracy. |
+| **Blink Morse** | EOG / Commands | Eyelid-timing communication for people who can blink and little else. Context places (home, hospital, work, night, out, talk, meal) with 8 commands each, narrowing on closure, hold to send/call, free spelling, and 16-pad channel scanning. |
 | **Blink Browser** | BCI | Scroll articles with blinks. Per-user calibration on frontal electrodes. |
 | **Eye Track** | BCI | EOG gaze from Fp1/Fp2. Polynomial ridge regression, online adaptive learning, `localStorage` models, live algorithm editor. |
 | **P300 Mini-Game** | BCI / ML | Shrinkage-LDA P300 decoder, Bayesian accumulation, labelled-dataset export. Themeable stimulus grid; reusable marker contract. |
@@ -146,6 +155,9 @@ These need **Aura VR**. Orientation comes from the IMU; EMG is for grip / pen-do
 
 | Experience | Tag | Description |
 |---|---|---|
+| **NeuroBench AR** | AR / Lab | Optical-glass WebXR passthrough AR (plus Desktop 3D) research workbench with 5 pinch-grabbable instruments, live DSP filter lenses, 3D waterfall terrain, ERP epoch averager, and MNE-Python / CSV export. |
+| **Rorschach Recorder** | EEG / Dataset | Silent inkblot trials (5–10 s liquid bilateral mask, then spoken/typed description). Lexicon maps speech to semantic dimensions labelling only the silent mask EEG; exports ZIP (native-rate EEG, trials table, `multimodal.xlsx`). Not Hermann Rorschach plates; not a clinical test. |
+| **PiEEG-XR Dataset Lab** | fEMG / Dataset | Dataset recorder for PiEEG-XR (8-ch / 16-ch) under a VR headset (no camera). Progressive 3-2-1 cue rhythm with randomized expression order per run, post-CAR contact bars, HOLD/REST audio tones, Session QC, IndexedDB crash recovery, and native-rate CSV / `multimodal.xlsx` / JSON export. |
 | **[Oculomotor, Blink & Pupillometry Bench](/software/features/oculomotor-bench)** | Lab / Oculomotor | Dual-eye roll-stabilized video-oculography and pupillometry bench: renders only the two zoomed `96x56` periocular eye scopes (`OD` Right Eye and `OS` Left Eye; full face is never shown), exposes behind-the-scenes pixel segmentation (dark pupil, iris stroma, Purkinje glint gate, Sobel gradient) and 1D horizontal iris chord profiles `I(u)`, computes distance-invariant pupil-to-iris ratios (`D_pupil / D_iris`), ballistic blink velocity (`dA/dt`), Pupillary Light Reflex (PLR) step latency/constriction, 68% BCEA fixation stability, and online L2 Ridge Regression coupling optical eye kinematics to concurrent PiEEG bio channels (`oculomotor-bench-take:v1`). |
 | **[Optical Physiological Bench](/software/features/optical-bench)** | Lab / Optical | Quantitative webcam rPPG bench: runs `POS`, `CHROM`, and `GREEN` simultaneously on identical frames, maps the forehead as an R × C virtual optical sensor array (pulsatile amplitude, SNR, spatial coherence, pairwise correlation), tracks slow optical dynamics (&lt; 0.15 Hz RGB/chromaticity drift with ambient/AE/AWB quality gates), and computes SNR-gated pulse-interval statistics (`instantBpm`, `sdnnOptMs`, `rmssdOptMs`, `pavCvPct`). Preserves raw ROI and grid RGB for offline reprocessing, CSV/JSON export (`optical-bench-take:v1`), and concurrent PiEEG bio recording. |
 | **PiEEG Virtual Lab** | Lab / VR | In-world dashboard workstation. |
