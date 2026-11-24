@@ -129,31 +129,50 @@ Connect any WebSocket client to `ws://<device-ip>:1616`.
 
 ## Platform Architecture
 
-```
-┌──────────────────────────────────────────────────────────┐
-│  Raspberry Pi + PiEEG Shield (8 or 16 ch)                │
-│  or IronBCI / EAREEG board (8 ch, Bluetooth LE)          │
-│  or IronBCI-32 board (32 ch, USB serial)                 │
-│                                                          │
-│  hardware.py     → SPI/GPIO init, ADS1299 config         │
-│  ironbci.py      → BLE scan, GATT notifications, parsing │
-│  ironbci_32.py   → USB serial (pyserial), FreeEEG frames │
-│       ↓                                                  │
-│  acquisition.py  → 250 Hz read loop (background thread)  │
-│       ↓ pub/sub                                          │
-│       ├── server.py     → WebSocket broadcast            │
-│       ├── recorder.py   → CSV writer                     │
-│       ├── monitor.py    → Terminal sparklines             │
-│       ├── osc_vrchat.py → VRChat OSC bridge              │
-│       └── lsl.py        → Lab Streaming Layer outlet     │
-│                                                          │
-│  ws://0.0.0.0:1616  │  http://0.0.0.0:1617              │
-└──────────┬───────────────────────────────────────────────┘
-           │  Local network / internet
-           ├── Browser dashboard (React + Vite)
-           ├── Python / Jupyter notebook
-           ├── VRChat (OSC over UDP)
-           ├── LSL consumers (OpenViBE, MNE, LabRecorder…)
-           ├── IFTTT / Zapier (webhooks)
-           └── Any WebSocket client
+```mermaid
+flowchart LR
+  subgraph hw["Hardware"]
+    pi["Raspberry Pi + PiEEG Shield<br/>8 or 16 ch"]
+    ble["IronBCI / EAREEG<br/>8 ch · BLE"]
+    usb["IronBCI-32<br/>32 ch · USB serial"]
+  end
+
+  subgraph srv["PiEEG Server"]
+    hwp["hardware.py<br/>SPI/GPIO · ADS1299"]
+    blep["ironbci.py<br/>BLE · GATT"]
+    usbp["ironbci_32.py<br/>pyserial · FreeEEG"]
+    acq["acquisition.py<br/>250 Hz read loop (pub/sub)"]
+
+    dash["dashboard.py<br/>http://0.0.0.0:1617"]
+    ws["server.py<br/>ws://0.0.0.0:1616"]
+    osc["osc_vrchat.py<br/>OSC bridge"]
+    lsl["lsl.py<br/>LSL outlet"]
+    rec["recorder.py<br/>CSV writer"]
+    mon["monitor.py<br/>Terminal sparklines"]
+  end
+
+  subgraph clients["Clients (Local Network / Internet)"]
+    browser["Browser Dashboard<br/>React + Vite"]
+    py["Python / Jupyter /<br/>WebSocket Clients"]
+    hooks["IFTTT / Zapier<br/>Webhooks"]
+    vrc["VRChat<br/>OSC over UDP"]
+    lslc["LSL Consumers<br/>OpenViBE · MNE · LabRecorder"]
+  end
+
+  pi --> hwp --> acq
+  ble --> blep --> acq
+  usb --> usbp --> acq
+
+  acq --> ws
+  acq --> osc
+  acq --> lsl
+  acq --> rec
+  acq --> mon
+
+  dash --> browser
+  ws --> browser
+  ws --> py
+  ws --> hooks
+  osc --> vrc
+  lsl --> lslc
 ```
