@@ -1,0 +1,49 @@
+---
+title: "What's in the Box"
+description: "Contents of the EasyEXG package and the extra items you need: a microcontroller, a 3-lead electrode cable, gel electrodes, jumper wires and a battery."
+---
+
+import { Callout } from 'nextra/components'
+
+# What's in the Box
+
+## Included
+
+| Item | Details |
+|---|---|
+| **1 × EasyEXG board** | Analog front end with a 3.5 mm electrode jack (J1), a 3-pin electrode header (J2) and a 4-pin output header (J3) |
+
+![EasyEXG board](/images/hardware/2026/11/easyexg/easyexg_board.jpg)
+
+## Not included
+
+| Item | Requirements | More |
+|---|---|---|
+| **Microcontroller** | Any board with an ADC. The Wi-Fi software needs an **Arduino UNO R4 WiFi**, **ESP32** or **ESP8266**. A classic Arduino UNO, Nano or Raspberry Pi Pico works with the USB sketch. | [Connection & Pinout](/hardware/devices/easy_exg/connections) |
+| **3-lead electrode cable** | Snap-electrode cable with a **3.5 mm TRS plug** (Tip = IN+, Ring = IN−, Sleeve = REF), as used for EMG / ECG modules | [Electrodes](/hardware/accessories/electrodes) |
+| **Gel electrodes** | Disposable Ag/AgCl snap electrodes, 3 per session. For EEG on the forehead and earlobe, a small cup or ear-clip electrode also works. | [Electrodes](/hardware/accessories/electrodes) |
+| **Jumper wires** | 3 × female–male (or female–female) Dupont wires for GND, VCC and OUT | [Connection & Pinout](/hardware/devices/easy_exg/connections) |
+| **Pin headers** | Only if your board came without headers soldered: 1 × 4-pin (J3), optional 1 × 3-pin (J2), 2.54 mm | [Specification](/hardware/devices/easy_exg/specification) |
+| **Power** | 5 V **power bank** for the microcontroller, or a **laptop running on battery** (charger unplugged) | [Power bank](/hardware/accessories/power-bank) |
+| **USB cable** | To upload the sketch (and to read the data with the USB sketch) | [Software](/hardware/devices/easy_exg/software) |
+| **Computer** | Arduino IDE; Python 3.9+ for the Wi-Fi viewer | [Software](/hardware/devices/easy_exg/software) |
+| **Skin prep** | Alcohol wipe or soap and water to clean the skin under the electrodes | [Electrode Placement](/hardware/devices/easy_exg/electrode-placement) |
+| **Soldering iron** | Only to change the gain jumper JP1 (bridge for ECG / EEG) | [Connection & Pinout](/hardware/devices/easy_exg/connections#gain-jumper-jp1) |
+
+<Callout type="warning">
+  **Battery only.** Upload the sketch with nobody connected. While electrodes are on a person, the microcontroller runs from a power bank or a laptop on battery, never from a wall charger or a mains-powered computer.
+</Callout>
+
+## Checklist
+
+- [ ] EasyEXG board
+- [ ] Microcontroller (Arduino UNO R4 WiFi, ESP32, Arduino UNO, Pico …)
+- [ ] 3-lead snap cable with 3.5 mm plug
+- [ ] 3 gel electrodes per session, alcohol wipes
+- [ ] 3 jumper wires
+- [ ] Power bank (charged) or laptop on battery
+- [ ] USB cable
+- [ ] Computer with the Arduino IDE (and Python for Wi-Fi)
+- [ ] Soldering iron, only for ECG / EEG
+
+Next: [How to Start](/hardware/devices/easy_exg/setup)

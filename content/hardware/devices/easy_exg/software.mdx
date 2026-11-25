@@ -1,0 +1,223 @@
+---
+title: "Software"
+description: "Software for EasyEXG: the USB sketch for the Arduino Serial Plotter, the Wi-Fi sketch for UNO R4 WiFi / ESP32 / ESP8266, and the EasyEXG Studio Python viewer with filters and CSV recording."
+---
+
+import { Callout } from 'nextra/components'
+
+# Software
+
+EasyEXG gives an analog signal, so any code that calls `analogRead()` can use it. The repository has two ready-made ways to see it:
+
+| Option | Board | Link to the PC | Viewer | Best for |
+|---|---|---|---|---|
+| **USB sketch** | Any Arduino-compatible board | USB serial, 115200 baud | Arduino **Serial Plotter** | First test, cleanest signal |
+| **Wi-Fi sketch** | Arduino UNO R4 WiFi, ESP32, ESP8266 | Wi-Fi (UDP, port 5005) | **EasyEXG Studio** (Python) | No cable to the person, filters, CSV recording |
+
+Source: [github.com/pieeg-club/EasyEXG](https://github.com/pieeg-club/EasyEXG) · folders [`Arduino`](https://github.com/pieeg-club/EasyEXG/tree/main/Arduino) and [`SDK`](https://github.com/pieeg-club/EasyEXG/tree/main/SDK)
+
+## USB sketch (Serial Plotter)
+
+`Arduino/EasyEXG_Arduino.ino` reads A0 at 500 Hz and prints the signal and its envelope.
+
+```cpp
+const int PIN = A0;
+const long BAUD = 115200;
+const int FS = 500;                                // samples per second
+
+void loop() {
+  ...
+  int raw = analogRead(PIN);
+  baseline += (raw - baseline) * 0.002f;           // slow drift removal (~1 s)
+  float signal = raw - baseline;                   // biosignal centred at 0
+  envelope += (fabs(signal) - envelope) * 0.02f;   // muscle activity level (EMG)
+
+  Serial.print(signal);                            // trace 1: raw signal
+  Serial.print(' ');
+  Serial.println(envelope);                        // trace 2: envelope
+}
+```
+
+1. Upload it, then open **Tools → Serial Plotter** at **115200 baud**.
+2. Blue trace: the signal. Yellow trace: the envelope (activity level).
+3. On another board, change `PIN` to your ADC pin (for example `PA0` on STM32).
+
+<Callout type="error">
+  With the USB sketch, the board is connected to the computer while electrodes are on a person. The laptop **must run on battery**, charger unplugged.
+</Callout>
+
+## Wi-Fi sketch
+
+`SDK/Arduino/1_Arduino.ino` samples A0 at 500 Hz, removes the drift, removes 50 Hz mains hum (notch filter), calculates the envelope, and sends **25 samples per packet, 20 packets per second** over UDP. Boards: **Arduino UNO R4 WiFi, ESP32, ESP8266**.
+
+```
+ EasyEXG ──wires──► Arduino UNO R4 WiFi / ESP32 ──Wi-Fi (UDP 5005)──► PC: EasyEXG Studio
+                         ▲
+                         └── USB cable: only to upload the sketch, then a power bank
+```
+
+### Choose the Wi-Fi mode
+
+At the top of the sketch:
+
+```cpp
+#define USE_ACCESS_POINT 0                    // 0 = join your home Wi-Fi
+
+const char* STA_SSID = "YOUR_WIFI_NAME";      // your Wi-Fi name (2.4 GHz)
+const char* STA_PASS = "YOUR_WIFI_PASSWORD";  // your Wi-Fi password
+```
+
+| Mode | Setting | Network | The PC connects to |
+|---|---|---|---|
+| **Home Wi-Fi** (recommended) | `USE_ACCESS_POINT 0` | Your router, **2.4 GHz** | Your home Wi-Fi |
+| **Own network** (no router) | `USE_ACCESS_POINT 1` | The board makes **EasyEXG**, password `easyexg123` | The **EasyEXG** network (no internet while connected) |
+
+<Callout type="warning">
+  Typing your Wi-Fi name and password is **not enough**: you must also set `USE_ACCESS_POINT` to `0`, otherwise the board ignores them and makes its own "EasyEXG" network. Remove your password before sharing the sketch.
+</Callout>
+
+### Wi-Fi sketch settings
+
+| Setting | Default | Meaning |
+|---|---|---|
+| `FS` | 500 | Samples per second. 1000 is better for EMG |
+| `ADC_BITS` | 10 | ADC resolution. Use 14 on the UNO R4 for EEG (finer steps) |
+| `USE_NOTCH` | true | Remove mains hum |
+| `NOTCH_HZ` | 50.0 | 50 Hz in UK / Europe / Asia, 60 Hz in the Americas |
+| `UDP_PORT` | 5005 | Must match the Python viewer |
+
+### Upload and check
+
+1. **Tools → Board → Boards Manager:** install **Arduino UNO R4 Boards** (or the ESP32 / ESP8266 package).
+2. Choose the board and its port (`COM5`, `/dev/cu.usbmodem…`, `/dev/ttyACM0`), click **Upload**.
+3. Open **Tools → Serial Monitor** at **115200 baud**. You should see:
+
+```
+Connecting to YOUR_WIFI_NAME....
+Board IP: 192.168.1.57  UDP port: 5005
+Waiting for PC on Wi-Fi 'YOUR_WIFI_NAME', board IP 192.168.1.57
+```
+
+Write down the **Board IP** (only needed if the viewer can't find the board by itself). Then unplug the USB cable and power the board from a **power bank**.
+
+## EasyEXG Studio (Python viewer)
+
+The viewer in [`SDK/Python`](https://github.com/pieeg-club/EasyEXG/tree/main/SDK/Python) receives the Wi-Fi stream and shows the raw signal (top) and the band-pass filtered signal (bottom). Windows, macOS and Linux, Python 3.9 or newer.
+
+```bash
+pip install matplotlib numpy scipy
+cd SDK/Python
+python easyexg_studio.py
+```
+
+1. Put the PC on the **same Wi-Fi** as the board (or on the **EasyEXG** network in mode 1).
+2. Click **EEG**, **EOG**, **EMG** or **ECG**. The window shows the JP1 setting and where the electrodes go.
+3. Leave Source on **Wi-Fi** and click **Connect**. The board is found automatically.
+4. When Windows asks, allow Python on **Private and Public** networks.
+
+![Real horizontal EOG in EasyEXG Studio](/images/hardware/2026/11/easyexg/easyexg_eog_recording.png)
+
+### Settings for each measurement
+
+| Mode | Band-pass | JP1 / gain | Window | Extra reading |
+|---|---|---|---|---|
+| **EEG** | 1–40 Hz | Bridged, 1 048× | 5 s | Alpha (8–12 Hz) share of power |
+| **EOG** | 0.1–10 Hz | Open, 221× | 10 s | – |
+| **EMG** | 20–240 Hz | Open, 221× | 3 s | Activity line (moving RMS) |
+| **ECG** | 0.5–40 Hz | Bridged, 1 048× | 5 s | Heart rate (bpm) |
+
+In the window you can change the **band-pass**, the **notch** (50 / 60 Hz), the **gain** (must match JP1), the **window** length, start **● Record CSV**, or pick **Source → Demo** to try it without a board. The status bar shows samples per second received (about 500) and samples lost over Wi-Fi.
+
+Settings at the top of the file:
+
+| Setting | Default | Meaning |
+|---|---|---|
+| `BOARD_IP` | `"auto"` | Finds the board by itself. Put the IP from the Serial Monitor here if that fails |
+| `UDP_PORT` | `5005` | Must match the sketch |
+| `VREF` | `5.0` | ADC reference voltage: 5.0 for UNO R4, 3.3 for ESP32 |
+| `MAINS_HZ` | `50` | 50 or 60 |
+
+### Simple command-line viewer
+
+`easyexg_wifi_plot.py` shows the signal and its envelope:
+
+```bash
+python easyexg_wifi_plot.py                                   # finds the board
+python easyexg_wifi_plot.py --host 192.168.1.57               # board IP from the Serial Monitor
+python easyexg_wifi_plot.py --units uV --gain 1048 --csv ecg.csv
+python easyexg_wifi_plot.py --vref 3.3                        # ESP32
+python easyexg_wifi_plot.py --demo                            # no board needed
+```
+
+## Recorded CSV files
+
+| Column | Meaning |
+|---|---|
+| `time_s` | Time from the start of the recording, in seconds |
+| `raw_uV` | Raw signal, µV at the electrodes |
+| `filtered_uV` | Signal after the band-pass and notch filters |
+| `mode` | EEG, EOG, EMG or ECG |
+| `band_Hz` | Band-pass used, e.g. `0.5-40` |
+| `gain` | Gain setting (221 or 1048) |
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+
+d = pd.read_csv("easyexg_ECG_20261125_180551.csv")
+plt.plot(d.time_s, d.filtered_uV)
+plt.xlabel("Time (s)"); plt.ylabel("µV")
+plt.show()
+```
+
+Record at least 10–20 seconds so there are enough heartbeats, blinks or muscle bursts to look at.
+
+## Write your own code
+
+### Convert ADC counts to µV at the electrodes
+
+```python
+uV = counts * VREF / (2**ADC_BITS) / GAIN * 1e6
+# example: UNO R4, 10-bit, JP1 open → 1 count = 5.0 / 1024 / 221 ≈ 22 µV
+#          UNO R4, 14-bit, JP1 bridged → 1 count ≈ 0.29 µV
+```
+
+Subtract the resting level (about half the ADC range) first, as the sketches do.
+
+### Wi-Fi packet format
+
+Little-endian, 16-byte header followed by the samples:
+
+| Bytes | Type | Content |
+|---|---|---|
+| 0–3 | char[4] | `"EXG1"` |
+| 4–7 | uint32 | Index of the first sample in this packet |
+| 8–9 | uint16 | Number of samples (normally 25) |
+| 10–11 | uint16 | Sample rate (Hz) |
+| 12 | uint8 | ADC bits |
+| 13–15 | | Padding |
+| 16… | float, float | Per sample: signal, envelope (ADC counts, centred at 0) |
+
+The PC must send the text `HELLO` to the board's UDP port 5005 about once a second. The board streams to the last PC that said hello and stops 5 s after the hellos stop.
+
+```python
+import socket, struct
+
+BOARD = ("192.168.1.57", 5005)            # board IP from the Serial Monitor
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.settimeout(1.0)
+HEADER = struct.Struct("<4sIHHB3x")
+
+while True:
+    sock.sendto(b"HELLO", BOARD)          # keep the stream alive
+    try:
+        data, _ = sock.recvfrom(2048)
+    except socket.timeout:
+        continue
+    magic, first, count, fs, bits = HEADER.unpack_from(data)
+    if magic != b"EXG1":
+        continue
+    samples = struct.unpack_from(f"<{count * 2}f", data, HEADER.size)
+    signal = samples[0::2]                 # ADC counts, centred at 0
+    print(first, fs, bits, round(signal[0], 1))
+```

@@ -1,0 +1,53 @@
+---
+title: "Troubleshooting"
+description: "Fix common EasyEXG problems: flat or clipped signal, mains hum, uploading, Wi-Fi and the Python viewer."
+---
+
+import { Callout } from 'nextra/components'
+
+# Troubleshooting
+
+## Signal
+
+| Problem | Fix |
+|---|---|
+| **Flat line** | Check the wiring: OUT → A0, VCC and GND connected. Push the plug fully into J1. Check the electrodes touch clean skin. |
+| **Signal stuck at the top or bottom** | The input is too big for the gain: open JP1 (221×) for EMG / EOG. Wait 10–20 s after the electrodes go on for the high-pass to settle. |
+| **Resting value not near the middle** | OUT should rest at VCC/2 (about 512 of 1023 on a 10-bit ADC). If not, check VCC and GND, and that J1 and J2 aren't both used. |
+| **Strong 50/60 Hz hum** | Check the **REF** electrode first: clean skin, firm contact, on a bony spot. Run on battery, move away from chargers and power strips, keep the cable short. Set the notch to your mains frequency. |
+| **Signal upside down** | IN+ and IN− are swapped. Swap the two electrodes, or invert in software. |
+| **Big swings when moving** | Electrode or cable movement. Sit still, tape the cable down, use fresh electrodes. |
+| **No ECG heartbeat** | Bridge JP1 (1 048×). Check the placement: left chest, right chest, REF on the right lower abdomen. |
+| **No alpha on EEG** | Bridge JP1. Close the eyes for at least 10 s and relax the face. Filter 8–12 Hz. Use 14-bit ADC on the UNO R4. |
+| **EMG bursts too small** | Put IN+ and IN− over the belly of the muscle, 2–3 cm apart, along the fibres. Sample at 1000 Hz. |
+| **µV values wrong by about 4.7×** | The Gain setting in the viewer doesn't match JP1 (221 vs 1048). |
+| **ESP32 values clipped** | VCC must be **3.3 V** on an ESP32, and `VREF = 3.3` in the viewer. |
+
+## Uploading
+
+| Problem | Fix |
+|---|---|
+| No port in Tools → Port | Try another USB cable (some only charge) or another USB socket. |
+| Upload fails: "port busy" | Close the Serial Monitor / Plotter and any Python viewer, then upload again. |
+| `This sketch needs a Wi-Fi board` | The Wi-Fi sketch only builds for UNO R4 WiFi, ESP32 and ESP8266. Use the USB sketch on other boards. |
+
+## Wi-Fi and viewer
+
+| Problem | Fix |
+|---|---|
+| Serial Monitor shows only dots | Wrong Wi-Fi name or password, or a 5 GHz-only network. Use 2.4 GHz. |
+| Board makes an "EasyEXG" network instead of joining yours | Set `USE_ACCESS_POINT 0` and upload again. |
+| Viewer: "No data yet" | PC and board must be on the same Wi-Fi. Guest networks often block devices from talking to each other. |
+| Still no data | Windows firewall: allow Python on **Private and Public** networks. |
+| Viewer can't find the board | Type the Board IP from the Serial Monitor into the "Board IP" box (or `--host`). |
+| `ModuleNotFoundError` | Run `pip install matplotlib numpy scipy` again. |
+| Much fewer than 500 samples/s, "lost" keeps rising | Weak Wi-Fi: move the board closer to the router or use mode 1 (own network). |
+| Small steps in the signal every 50 ms | Wi-Fi radio bursts. Use fresh electrodes, push the plug in fully, power the board from a power bank. For the cleanest signal use the USB sketch. |
+
+<Callout type="info">
+  **Is it the board or the setup?** Unplug the electrode cable: OUT should sit quietly at VCC/2. Then short IN+, IN− and REF together on J2 with a jumper: the signal should stay near zero with only a little noise. If it does, the board is fine and the noise comes from the electrodes or the environment. See [Noise elimination](/hardware/signal-quality/noise-elimination).
+</Callout>
+
+## Still stuck?
+
+Ask on [Discord](https://discord.gg/5Ps24p47), open an issue on [GitHub](https://github.com/pieeg-club/EasyEXG/issues), or email [pieeg@pieeg.com](mailto:pieeg@pieeg.com).

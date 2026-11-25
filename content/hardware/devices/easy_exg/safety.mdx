@@ -1,0 +1,46 @@
+---
+title: "Safety"
+description: "Read before using EasyEXG on a person: battery-only operation, no mains connection, and responsible use."
+---
+
+import { Callout } from 'nextra/components'
+
+# Safety
+
+**Read this before putting electrodes on anyone.**
+
+<Callout type="warning">
+  EasyEXG is **not a medical device** and has not been certified by any regulator for use with the human body. It is a tool for research, education and engineering. You use it at your own risk.
+</Callout>
+
+## Rules
+
+1. **Battery only.** While electrodes are on a person, EasyEXG and everything cabled to it (Arduino, ESP32, laptop) run from a **5 V power bank** or a **laptop on battery** with the charger unplugged.
+2. **Upload off the person.** Connect to a computer on mains power only to upload the sketch, with no electrodes on anyone.
+3. **No mains connection of any kind.** No wall charger, no desk power supply, no mains-powered monitor or computer while recording.
+4. **No diagnosis.** Don't use EasyEXG to diagnose, monitor or treat any medical condition.
+5. **Implanted devices.** Don't use it on a person with a pacemaker or other implanted electronic device without a physician's approval.
+6. **Skin.** Use clean, intact skin. Stop if the skin becomes irritated, and remove gel electrodes gently after each session.
+7. **Exposed electronics.** The board has no case. Handle it by the edges, use anti-static precautions and keep liquids away.
+
+## Power while recording
+
+| Setup | While electrodes are on | Why |
+|---|---|---|
+| **MCU + EasyEXG on a 5 V power bank, Wi-Fi to the PC** | ✅ Safe | No cable path to the mains. |
+| **USB to a laptop running on battery** (charger unplugged) | ✅ Safe | The laptop is not connected to the mains. |
+| **USB to a laptop with the charger plugged in** | ❌ Never | Links the person to the mains through the charger. |
+| **USB to a desktop computer** | ❌ Never | Desktops are always mains-powered. |
+| **MCU on a wall charger** | ❌ Never | Connects the person to the mains through the electrodes. |
+
+<Callout type="error">
+  EasyEXG has **no patient isolation circuitry**. Full isolation from the mains depends entirely on running from a battery. The driven-right-leg current is limited to about 13 µA by design, but that does not protect against a mains fault.
+</Callout>
+
+## Good practice
+
+- Charge the power bank and the laptop **before** the session, never during it.
+- Check every cable before each session. An adult or supervisor checks the setup when students use it.
+- Use fresh disposable electrodes for each person.
+
+See also the general [PiEEG safety](/hardware/safety) and [liabilities](/hardware/safety/liabilities) pages, and the [liability notice](https://pieeg.com/liability/).

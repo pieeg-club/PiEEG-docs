@@ -1,0 +1,120 @@
+---
+title: "Connection & Pinout"
+description: "EasyEXG connectors and pinout: the 3.5 mm electrode jack, the electrode header, the output header, the gain jumper JP1, and wiring to Arduino, ESP32 and Raspberry Pi Pico."
+---
+
+import { Callout } from 'nextra/components'
+
+# Connection & Pinout
+
+## What's on the board
+
+![EasyEXG parts: J1, J2, J3, U1, U2, JP1](/images/hardware/2026/11/easyexg/easyexg_annotated.jpg)
+
+| Label | Part | What it does |
+|---|---|---|
+| **J1** | 3.5 mm audio jack (CUI SJ-3523-SMT) | Plug for a standard 3-lead snap-electrode cable: Tip = IN+, Ring = IN−, Sleeve = REF/DRL |
+| **J2** | 3-pin header, 2.54 mm (optional) | Same three electrode signals as J1, for loose wires: + / − / REF |
+| **U1** | TI INA333 | Instrumentation amplifier, first gain stage (9.9×) |
+| **U2** | TI OPA4388 | Quad op-amp: VCC/2 reference, driven right leg, 0.16 Hz high-pass + gain, 500 Hz low-pass |
+| **JP1** | Solder jumper "HI GAIN" | Open = 221× (EMG, EOG). Bridged = 1 048× (ECG, EEG) |
+| **J3** | 4-pin header, 2.54 mm | GND · VCC · OUT · VREF |
+| **H1, H2** | 2 × M2 mounting holes, Ø 2.2 mm | 40.2 mm apart |
+
+![EasyEXG connection overview](/images/hardware/2026/11/easyexg/easyexg_connection.png)
+
+## Electrode inputs
+
+![IN+, IN− and REF on the jack J1 and the header J2](/images/hardware/2026/11/easyexg/easyexg_inputs.png)
+
+Both connectors carry the same three signals. **Use one at a time.**
+
+| Signal | J1 · 3.5 mm jack | J2 · 3 pins (silkscreen) | Purpose |
+|:---:|:---:|:---:|---|
+| **IN+** | Tip | pin 1 · "+" (square pad) | Positive measuring electrode |
+| **IN−** | Ring | pin 2 · "−" | Negative measuring electrode |
+| **REF** | Sleeve | pin 3 · "REF" | Reference / driven right leg: cancels mains hum |
+
+<Callout type="info">
+  Wire colours differ between electrode cables. Follow the **plug position** (Tip / Ring / Sleeve), not the colour. If you're unsure, check with a multimeter in continuity mode: tip of the plug → which snap.
+</Callout>
+
+The amplifier measures **IN+ minus IN−**. Swapping them only flips the signal upside down. The **REF** electrode is actively driven by the board (driven right leg, current limited to about 13 µA by a 390 kΩ resistor) and keeps the body at the board's mid-supply level, which removes most 50/60 Hz hum.
+
+## Output header J3
+
+| Pin | Name | Connect to | Notes |
+|:---:|---|---|---|
+| 1 | **GND** | MCU GND | Square pad |
+| 2 | **VCC** | MCU 5 V or 3.3 V | Use the same voltage as the MCU's ADC range. Max 5.5 V |
+| 3 | **OUT** | MCU analog input (A0) | Rests at VCC/2, swings with the biosignal |
+| 4 | **VREF** | Not needed | VCC/2 reference, optional: use it for a differential ADC or to subtract the offset in hardware |
+
+![J3 pinout on the bottom silkscreen](/images/hardware/2026/11/easyexg/easyexg_pinout_bottom.jpg)
+
+The pinout and the jack wiring are also printed on the bottom of the board.
+
+## Wiring to your microcontroller
+
+Always power EasyEXG from the **same voltage as your MCU's ADC range**. The output swings between 0 V and VCC, so a 5 V supply on a 3.3 V board can push more than 3.3 V into its analog pin.
+
+| MCU | VCC from | OUT to | GND | Software |
+|---|---|---|---|---|
+| **Arduino UNO R4 WiFi** | 5V | A0 | GND | USB or Wi-Fi sketch |
+| **Arduino UNO / Nano / Mega** | 5V | A0 | GND | USB sketch |
+| **ESP32** | 3V3 | GPIO36 (VP, A0) | GND | Wi-Fi sketch |
+| **ESP8266** | 3V3 | A0 | GND | Wi-Fi sketch |
+| **Raspberry Pi Pico** (Arduino-Pico core) | 3V3(OUT), pin 36 | GP26 / ADC0, pin 31 | GND, pin 38 | USB sketch |
+| **STM32** (Arduino core) | 3V3 | Any ADC pin, e.g. PA0 / A0 | GND | USB sketch (change `PIN`) |
+
+### Arduino UNO R4 WiFi
+
+![Wiring to an Arduino UNO R4 WiFi](/images/hardware/2026/11/easyexg/easyexg_wiring_arduino.png)
+
+### ESP32
+
+![Wiring to an ESP32](/images/hardware/2026/11/easyexg/easyexg_wiring_esp32.png)
+
+<Callout type="error">
+  On an ESP32 or ESP8266, connect VCC to **3.3 V**. Their analog inputs take 3.3 V max. In the Python viewer set `VREF = 3.3` so the µV values are correct.
+</Callout>
+
+### Raspberry Pi Pico
+
+![Wiring to a Raspberry Pi Pico](/images/hardware/2026/11/easyexg/easyexg_wiring_pico.png)
+
+Install the **Raspberry Pi Pico/RP2040** board package (Arduino-Pico core) in the Boards Manager, then upload the USB sketch unchanged: `A0` is GP26 on the Pico.
+
+## Gain jumper JP1
+
+![JP1 open and bridged](/images/hardware/2026/11/easyexg/easyexg_jp1_gain.png)
+
+| JP1 | Total gain | Use for | Max input before clipping (5 V / 3.3 V) |
+|---|---|---|---|
+| **Open** (as shipped) | **221×** | EMG, EOG | 10.9 mV / 7.2 mV |
+| **Bridged** | **1 048×** | ECG, EEG | 2.3 mV / 1.5 mV |
+
+**To bridge:** with the board unpowered, heat both pads with a clean soldering iron and add a small blob of solder so it joins them.
+**To open again:** remove the solder with solder wick.
+
+![JP1 and the signal chain on the board](/images/hardware/2026/11/easyexg/easyexg_configuration.png)
+
+<Callout type="info">
+  The gain in your software must match JP1, otherwise the µV values are 4.7× too big or too small. The Python viewer has a **Gain** setting (221 / 1048).
+</Callout>
+
+## Mounting and dimensions
+
+![EasyEXG dimensions](/images/hardware/2026/11/easyexg/easyexg_dimensions.jpg)
+
+![EasyEXG 3D model with dimensions](/images/hardware/2026/11/easyexg/easyexg_board_3d.png)
+
+| Dimension | Value |
+|---|---|
+| Board | 46.0 × 26.0 × 1.6 mm, corner radius 1.5 mm, 2-layer FR-4 |
+| With the jack nose | 48.0 × 26.0 mm (the jack sticks out 2.0 mm on the left) |
+| Mounting holes | 2 × Ø 2.2 mm (M2) at (3.0, 16.2) and (43.2, 21.8) mm from the top-left corner |
+| Height: ICs / jack / pin headers | ≈ 1.2 mm / ≈ 5.0 mm / 8.5 mm above the board |
+| Bottom side | No components |
+
+STEP and STL models for designing an enclosure are in the [`3D_Model`](https://github.com/pieeg-club/EasyEXG/tree/main/3D_Model) folder.

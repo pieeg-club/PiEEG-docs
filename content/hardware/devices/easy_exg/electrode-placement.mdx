@@ -1,0 +1,88 @@
+---
+title: "Electrode Placement"
+description: "Where to put the IN+, IN− and REF electrodes for EMG, ECG, horizontal and vertical EOG, and frontal EEG with EasyEXG, and which gain and sample rate to use."
+---
+
+import { Callout } from 'nextra/components'
+
+# Electrode Placement
+
+EasyEXG uses **three electrodes**: two measuring electrodes (**IN+** and **IN−**) and one reference (**REF**). Each animation below shows where to place them and the signal you should see.
+
+Electrode colours in the pictures: **IN+** red · **IN−** yellow · **REF** green.
+
+## Summary
+
+| Signal | JP1 | IN+ | IN− | REF | Sample rate |
+|---|---|---|---|---|---|
+| **EMG** (forearm) | Open · 221× | Forearm muscle, a hand-width from the wrist | Same muscle, 2–3 cm further along | Elbow | 500–1000 Hz |
+| **ECG** (Lead I) | Bridged · 1 048× | Left chest, below the collarbone | Right chest, below the collarbone | Right lower abdomen | 250–500 Hz |
+| **EOG** horizontal | Open · 221× | Outer corner of the right eye | Outer corner of the left eye | Centre of the forehead | 100–250 Hz |
+| **EOG** vertical | Open · 221× | Just above one eyebrow | Just below the same eye | Forehead, to the side | 100–250 Hz |
+| **EEG** (Fp1) | Bridged · 1 048× | Forehead above the left eye | Left earlobe | Centre of the forehead | 250 Hz |
+
+*"Right" and "left" mean the person's own right and left. The waveforms in the animations are illustrations of typical signals, not recordings.*
+
+## Before you start
+
+1. **Clean the skin** under each electrode with an alcohol wipe or soap and water, and let it dry. Oil and dead skin are the main cause of noise.
+2. **Snap the electrodes onto the cable first**, then stick them on. Pressing on a stuck electrode moves it.
+3. **Set JP1** for the signal: see [Gain jumper JP1](/hardware/devices/easy_exg/connections#gain-jumper-jp1).
+4. **Power on battery only**, then plug the cable into J1.
+5. **Sit still and wait 10–20 seconds**: the 0.16 Hz high-pass needs a few seconds to settle after the electrodes go on.
+
+## Muscle (EMG)
+
+![EMG: electrodes on the forearm, bursts when the fist is clenched](/images/hardware/2026/11/easyexg/easyexg_app_emg.gif)
+
+- **IN+ and IN−** along the muscle fibres, 2–3 cm apart, over the belly of the muscle. **REF** on a bony spot away from the muscle (elbow, wrist bone).
+- **What you see:** bursts when you clench your fist, a flat line when you relax. The stronger the contraction, the bigger the bursts.
+- **Other muscles:** biceps, calf, jaw (masseter). Keep the same rule: two electrodes on the muscle, reference on bone.
+- **Tip:** sample at **1000 Hz** for the full EMG band (20–450 Hz). Use the envelope to switch things on and off.
+
+## Heart (ECG)
+
+![ECG Lead I: electrodes on the chest, heartbeat waveform](/images/hardware/2026/11/easyexg/easyexg_app_ecg.gif)
+
+- **Bridge JP1** (1 048×).
+- **What you see:** a heartbeat about once a second: a small P wave, a sharp QRS spike and a T wave.
+- **Wrist alternative:** IN+ on the left wrist, IN− on the right wrist, REF on the right ankle or the back of the right hand. The signal is smaller but easy to set up.
+- **Tip:** breathe normally and don't talk. Arm movement adds muscle noise.
+
+## Eye movement, horizontal (EOG)
+
+![Horizontal EOG: the trace steps as the eyes look left and right](/images/hardware/2026/11/easyexg/easyexg_app_eogh.gif)
+
+- **JP1 open** (221×).
+- **What you see:** the trace steps one way when you look left and the other way when you look right, then slowly drifts back to centre (the high-pass filter).
+- **Use it for:** eye-controlled cursors, games, "look left / look right" switches.
+
+## Eye movement, vertical (EOG)
+
+![Vertical EOG: steps for up and down, spikes for blinks](/images/hardware/2026/11/easyexg/easyexg_app_eogv.gif)
+
+- **JP1 open** (221×).
+- **What you see:** slow steps when you look up or down, and a sharp spike for each blink.
+- **Use it for:** blink detection, a "blink to click" switch.
+
+## Brain (EEG)
+
+![Frontal EEG: alpha rhythm grows when the eyes close](/images/hardware/2026/11/easyexg/easyexg_app_eeg.gif)
+
+- **Bridge JP1** (1 048×).
+- **What you see:** with the eyes closed and relaxed, a 10 Hz alpha rhythm grows. Open the eyes and it shrinks.
+- **EEG is tiny** (10–50 µV): sit still, relax the face and jaw, and keep cables short and away from chargers.
+- **Tip:** filter 1–40 Hz to see it, or 8–12 Hz to see only alpha. Blinks show up as large slow bumps on Fp1.
+
+<Callout type="info">
+  The UNO R4's ADC can run at **14 bits**: set `ADC_BITS = 14` in the Wi-Fi sketch for finer steps on EEG. See [Software](/hardware/devices/easy_exg/software#wi-fi-sketch-settings).
+</Callout>
+
+## Electrode tips
+
+| Do | Don't |
+|---|---|
+| Use fresh gel electrodes on clean, dry skin | Reuse dried-out electrodes |
+| Push the plug fully into J1 | Let the cable hang and pull on the electrodes |
+| Keep the cable short and away from power strips | Record next to a charger or a running motor |
+| Put REF on a bony, neutral spot | Put REF on a muscle you are measuring |

@@ -1,0 +1,86 @@
+---
+title: "How to Start"
+description: "Set up EasyEXG with an Arduino: set the gain, wire three pins, place the electrodes, upload the sketch and see your muscle signal in the Serial Plotter."
+---
+
+import { Steps, Callout } from 'nextra/components'
+
+# How to Start
+
+From the box to a live muscle signal (EMG) in the Arduino Serial Plotter, in six steps. The same steps work for ECG, EOG and EEG: only the jumper and the electrode positions change.
+
+![The four steps: wiring, electrodes, upload, read the signal](/images/hardware/2026/11/easyexg/easyexg_arduino.gif)
+
+<Steps>
+
+### Gather the parts
+
+You need the EasyEXG, an Arduino (any UNO, Nano or UNO R4), 3 jumper wires, a 3-lead snap cable with a 3.5 mm plug, 3 gel electrodes and a USB cable. See [What's in the Box](/hardware/devices/easy_exg/required-equipment).
+
+### Set the gain jumper JP1
+
+| Measurement | JP1 | Gain |
+|---|---|---|
+| **EMG** (muscle), **EOG** (eyes) | **Open** (as shipped) | 221× |
+| **ECG** (heart), **EEG** (brain) | **Bridged** with a solder blob | 1 048× |
+
+For this first test (EMG), leave JP1 **open**. Details: [Gain jumper JP1](/hardware/devices/easy_exg/connections#gain-jumper-jp1).
+
+### Wire J3 to the Arduino
+
+Use three jumper wires, with the Arduino unplugged:
+
+| EasyEXG pin (J3) | Arduino pin | Wire colour in the pictures |
+|:---:|:---:|:---:|
+| **GND** | GND | grey |
+| **VCC** | 5V (or 3.3V) | red |
+| **OUT** | A0 | yellow |
+| **VREF** | not connected | — |
+
+![EasyEXG wired to an Arduino UNO R4 WiFi](/images/hardware/2026/11/easyexg/easyexg_wiring_arduino.png)
+
+Using an ESP32 or a Raspberry Pi Pico? Power EasyEXG from **3.3 V**, see [Connection & Pinout](/hardware/devices/easy_exg/connections#wiring-to-your-microcontroller).
+
+### Upload the sketch
+
+1. Install the [Arduino IDE](https://www.arduino.cc/en/software).
+2. Open `EasyEXG_Arduino.ino` from the [`Arduino`](https://github.com/pieeg-club/EasyEXG/tree/main/Arduino) folder of the EasyEXG repository.
+3. Plug the Arduino into the computer, choose your board and port in **Tools**, and click **Upload**.
+
+The sketch samples A0 at **500 Hz**, removes the resting level (about 512 counts = VCC/2) and prints two numbers per line: the **signal** and its **envelope** (muscle activity level).
+
+### Place the electrodes
+
+Clean the skin with an alcohol wipe, snap the electrodes onto the cable and stick them on:
+
+| Electrode | Plug contact | Where (EMG, forearm) |
+|---|---|---|
+| **IN+** | Tip | On the forearm muscle, a hand-width from the wrist |
+| **IN−** | Ring | Same muscle, 2–3 cm further along |
+| **REF** | Sleeve | On a bony spot: the elbow |
+
+Plug the cable into the **3.5 mm jack J1**.
+
+![EMG electrode placement on the forearm](/images/hardware/2026/11/easyexg/easyexg_app_emg.gif)
+
+<Callout type="error">
+  EasyEXG has **no isolation**. Before the electrodes go on, **unplug the laptop charger** so the laptop runs on battery, or switch to the Wi-Fi sketch and power the Arduino from a power bank. Never record from a computer plugged into the mains.
+</Callout>
+
+### Read the signal
+
+Open **Tools → Serial Plotter** and set **115200 baud**.
+
+| Test | What you should see |
+|---|---|
+| **Relax the arm** | Both traces close to flat |
+| **Clench your fist** | Bursts on the blue trace (signal), the yellow trace (envelope) rises |
+| **Relax again** | Both traces go flat |
+
+</Steps>
+
+## Next steps
+
+- **ECG, EOG or EEG:** change JP1 and the electrode positions, see [Electrode Placement](/hardware/devices/easy_exg/electrode-placement).
+- **Wireless, filters, CSV recording:** use the Wi-Fi sketch and the Python viewer, see [Software](/hardware/devices/easy_exg/software).
+- **Noisy or flat signal?** See [Troubleshooting](/hardware/devices/easy_exg/troubleshooting).

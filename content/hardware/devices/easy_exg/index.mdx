@@ -1,0 +1,104 @@
+---
+title: "EasyEXG Intro"
+description: "EasyEXG — a tiny open-source analog front end that records EMG, ECG, EOG and EEG with any microcontroller ADC: Arduino, ESP32, STM32 or Raspberry Pi Pico."
+---
+
+import { Cards, Callout } from 'nextra/components'
+
+# EasyEXG
+
+**Muscle, heart, eye and brain signals on any ADC pin.**
+
+EasyEXG is a small open-source analog front end for biosignals. Plug in a standard 3-lead electrode cable, connect three wires to your microcontroller, and read **EMG** (muscle), **ECG** (heart), **EOG** (eye movement) or **EEG** (brain rhythm) with a plain `analogRead()`. It runs from **3.3 V or 5 V** and gives one analog output centred at VCC/2, so it works with Arduino, ESP32, ESP8266, STM32, Raspberry Pi Pico and any other board with an ADC.
+
+![EasyEXG: electrodes on the body, EasyEXG, signals on any microcontroller](/images/hardware/2026/11/easyexg/easyexg_how_it_works.jpg)
+
+<Callout type="warning">
+  EasyEXG is **not a medical device**. It has **no isolation**: while electrodes are on a person, everything connected to it must run **on battery** (power bank, laptop with the charger unplugged). Read [Safety](/hardware/devices/easy_exg/safety) first.
+</Callout>
+
+## At a glance
+
+| | |
+|---|---|
+| **Channels** | 1 differential input (IN+, IN−) plus reference / driven right leg |
+| **Signals** | EMG, ECG, EOG, EEG |
+| **Amplifiers** | TI INA333 instrumentation amplifier + TI OPA4388 quad op-amp |
+| **Gain** | 221× (JP1 open) or 1 048× (JP1 bridged) |
+| **Bandwidth** | 0.16–500 Hz (−3 dB) |
+| **Output** | 1 analog signal, centred at VCC/2 |
+| **Supply** | 3.3 V or 5 V (max 5.5 V) |
+| **Electrodes** | 3.5 mm jack for 3-lead snap cables, or a 3-pin 2.54 mm header |
+| **Host** | Any microcontroller with an ADC (not included) |
+| **Size** | 46 × 26 mm, 2 × M2 mounting holes |
+| **Software** | Arduino sketches (USB and Wi-Fi) + Python viewer |
+
+## The board
+
+![EasyEXG board, top and bottom](/images/hardware/2026/11/easyexg/easyexg_top_bottom.jpg)
+
+![EasyEXG board rotating in 3D](/images/hardware/2026/11/easyexg/easyexg_board_3d.gif)
+
+## How it works
+
+```
+ IN+ ─┐
+ IN− ─┼─► EasyEXG ──OUT (analog)──► ADC of your MCU ──USB or Wi-Fi──► Serial Plotter
+ REF ─┘   INA333 + OPA4388           Arduino · ESP32 ·                  or Python viewer
+          gain 221× / 1 048×         STM32 · Pico
+          0.16–500 Hz
+```
+
+1. **Amplify:** the INA333 picks up the tiny difference between IN+ and IN− (microvolts to millivolts) and rejects mains hum (CMRR ≥ 100 dB).
+2. **Filter:** the OPA4388 removes slow drift (0.16 Hz high-pass), adds more gain and cuts noise above 500 Hz. It also drives the reference electrode to cancel common-mode noise (driven right leg).
+3. **Read:** the output sits at VCC/2 with no signal and swings up and down with the biosignal. Your microcontroller samples it with its ADC.
+
+## What you can measure
+
+| Signal | What it shows | JP1 | Typical first test |
+|---|---|---|---|
+| **EMG** | Muscle activity | Open · 221× | Clench your fist: bursts appear |
+| **ECG** | Heart activity | Bridged · 1 048× | Electrodes on the chest: a heartbeat every second |
+| **EOG** | Eye movement | Open · 221× | Look left and right: the trace steps |
+| **EEG** | Brain rhythm (alpha) | Bridged · 1 048× | Close your eyes: alpha (8–12 Hz) grows |
+
+![One board, four signals](/images/hardware/2026/11/easyexg/easyexg_applications.jpg)
+
+Electrode positions for each signal: [Electrode Placement](/hardware/devices/easy_exg/electrode-placement).
+
+## EasyEXG or ardEEG?
+
+| | EasyEXG | ardEEG |
+|---|---|---|
+| **Channels** | 1 | 8 |
+| **Output** | Analog, read by your MCU's ADC | Digital, 24-bit ADS1299 |
+| **Host** | Any MCU with an ADC | Arduino UNO R4 WiFi |
+| **Best for** | EMG, ECG, EOG, first EEG experiments, embedded projects | Multi-channel EEG |
+| **Electrodes** | 3-lead snap cable (3.5 mm jack) | 8 electrodes + 2 ear clips |
+
+## Get started
+
+<Cards>
+  <Cards.Card title="What's in the Box" href="/hardware/devices/easy_exg/required-equipment" />
+  <Cards.Card title="How to Start" href="/hardware/devices/easy_exg/setup" />
+  <Cards.Card title="Connection & Pinout" href="/hardware/devices/easy_exg/connections" />
+  <Cards.Card title="Electrode Placement" href="/hardware/devices/easy_exg/electrode-placement" />
+  <Cards.Card title="Software" href="/hardware/devices/easy_exg/software" />
+</Cards>
+
+## Related
+
+- [GitHub: EasyEXG](https://github.com/pieeg-club/EasyEXG): schematic, Gerbers, 3D model, Arduino and Python software
+- [Electrodes](/hardware/accessories/electrodes) and [Power bank](/hardware/accessories/power-bank)
+- [Noise elimination](/hardware/signal-quality/noise-elimination): getting a clean signal
+- [ardEEG](/hardware/devices/ardeeg): 8-channel EEG with an Arduino
+
+## Licence
+
+CC BY-NC 4.0 (Creative Commons Attribution–NonCommercial). Hardware use is subject to the [PiEEG liability notice](https://pieeg.com/liability/).
+
+## Support
+
+- **Discord:** [discord.gg/5Ps24p47](https://discord.gg/5Ps24p47)
+- **GitHub:** [github.com/pieeg-club](https://github.com/pieeg-club)
+- **Email:** [pieeg@pieeg.com](mailto:pieeg@pieeg.com)

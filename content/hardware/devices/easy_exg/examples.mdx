@@ -1,0 +1,58 @@
+---
+title: "Signals & Recordings"
+description: "What EasyEXG signals look like: a real EOG recording, typical EMG, ECG, EOG and EEG waveforms, the simulated frequency response, and project ideas."
+---
+
+import { Callout } from 'nextra/components'
+
+# Signals & Recordings
+
+## Real EOG recording
+
+A real horizontal EOG recording made with EasyEXG Studio (JP1 open, 221×, 500 Hz). Top: raw signal. Bottom: band-pass 0.1–10 Hz with a 50 Hz notch.
+
+![Real horizontal EOG recording: the trace steps down for left, up for right](/images/hardware/2026/11/easyexg/easyexg_eog_recording.png)
+
+The trace steps **down** when the eyes look **left** and **up** when they look **right**. The small sharp spikes on the raw trace are blinks.
+
+## Typical signals
+
+| Signal | Size at the electrodes | What it looks like | Filter to view |
+|---|---|---|---|
+| **EMG** | 0.1–5 mV | Noisy bursts while the muscle works | 20–240 Hz |
+| **ECG** | 0.5–2 mV | P wave, sharp QRS spike, T wave, about once a second | 0.5–40 Hz |
+| **EOG** | 0.1–1 mV | Steps with each eye movement, spikes for blinks | 0.1–10 Hz |
+| **EEG** | 10–50 µV | Small waves; 10 Hz alpha grows with the eyes closed | 1–40 Hz |
+
+![EMG, ECG, EOG and EEG with EasyEXG](/images/hardware/2026/11/easyexg/easyexg_applications.jpg)
+
+*The application pictures show typical signals as illustrations. Placement for each: [Electrode Placement](/hardware/devices/easy_exg/electrode-placement).*
+
+<Callout type="info">
+  Learn to recognise **artifacts** before you analyse anything: blinks and eye movements on EEG, muscle bursts on ECG, steps when a cable moves. Mark or remove them before computing band power or training a model.
+</Callout>
+
+## Frequency response
+
+The amplifier chain was simulated in ngspice with a 10 MHz op-amp model (OPA4388).
+
+![Simulated EasyEXG gain versus frequency](/images/hardware/2026/11/easyexg/easyexg_amp_response.png)
+
+Blue: JP1 open (221×, EMG and EOG). Green: JP1 bridged (1 048×, ECG and EEG). The shaded areas mark the ECG band (0.5–40 Hz) and the EMG band (20–450 Hz). The gain is flat from **0.16 Hz to 500 Hz** and rolls off steeply above 500 Hz.
+
+## Datasets
+
+Recordings will be published in the [`dataset`](https://github.com/pieeg-club/EasyEXG/tree/main/dataset) folder of the EasyEXG repository. Record your own with **● Record CSV** in EasyEXG Studio: see [Software](/hardware/devices/easy_exg/software#recorded-csv-files).
+
+## Projects
+
+EasyEXG gives a simple analog signal, so it fits into almost any microcontroller project:
+
+| Project | Signal | Idea |
+|---|---|---|
+| **Muscle switch** | EMG | Clench your fist to turn on an LED, a relay or a servo |
+| **Robot hand / gripper** | EMG | The envelope controls how far a servo closes |
+| **Heart-rate display** | ECG | Detect R peaks and show bpm on a small screen |
+| **Eye-controlled cursor** | EOG | Look left / right to move, blink to click |
+| **Relax meter** | EEG | Light an LED when alpha rises with the eyes closed |
+| **Game controller** | EMG / EOG | Jump on a muscle burst, steer with the eyes |
